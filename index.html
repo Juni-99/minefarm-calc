@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마인팜 요리 판매 효율 계산기</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 30px auto; padding: 20px; background-color: #f4f7f6; color: #333; }
+    h1 { text-align: center; color: #2c3e50; }
+    .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .form-group { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+    input, select { flex: 1; min-width: 130px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+    button { padding: 10px 20px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    button:hover { background-color: #219150; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+    th, td { padding: 12px; text-align: center; border-bottom: 1px solid #ddd; }
+    th { background-color: #34495e; color: white; }
+    .badge { padding: 5px 10px; border-radius: 15px; font-weight: bold; color: white; display: inline-block; }
+    .high { background-color: #27ae60; }   /* 80% 이상 */
+    .medium { background-color: #f39c12; } /* 50% ~ 79% */
+    .low { background-color: #e74c3c; }    /* 50% 미만 */
+    .btn-delete { background-color: #e74c3c; padding: 5px 10px; font-size: 12px; }
+    .btn-delete:hover { background-color: #c0392b; }
+    .info-text { font-size: 13px; color: #666; margin-top: -5px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>🌾 마인팜 요리 효율 계산기</h1>
+
+  <!-- 1. 판매가 계산 영역 -->
+  <div class="card">
+    <h3>1. 요리 선택 및 계산</h3>
+    <p class="info-text">요리를 선택한 후 현재 판매가를 입력하면 효율이 자동 계산됩니다.</p>
+    <div class="form-group">
+      <select id="selectDish" onchange="updateMinMaxDisplay()">
+        <option value="">-- 요리 선택 --</option>
+      </select>
+      <input type="number" id="currentPrice" placeholder="현재 판매가 입력 (G)">
+      <button onclick="calculateEfficiency()">효율 계산하기</button>
+    </div>
+    <div id="priceInfo" class="info-text" style="display: none; font-weight: bold; color: #2c3e50;"></div>
+  </div>
+
+  <!-- 2. 추가 요리 등록 영역 (필요시 사용) -->
+  <div class="card">
+    <h3>2. 커스텀 요리 추가 (선택사항)</h3>
+    <div class="form-group">
+      <input type="text" id="dishName" placeholder="요리 이름">
+      <input type="number" id="minPrice" placeholder="최저 판매가">
+      <input type="number" id="maxPrice" placeholder="최고 판매가">
+      <button onclick="registerDish()">요리 추가</button>
+    </div>
+  </div>
+
+  <!-- 3. 계산 결과 목록 -->
+  <div class="card">
+    <h3>3. 계산 결과 목록</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>요리 이름</th>
+          <th>최저가 / 최고가</th>
+          <th>현재가</th>
+          <th>판매 효율</th>
+          <th>관리</th>
+        </tr>
+      </thead>
+      <tbody id="resultTableBody">
+        <!-- 결과가 여기에 표시됩니다 -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // 이미지에서 추출한 기본 요리 목록
+    const defaultDishes = [
+      { name: "토마토 스파게티", minPrice: 259, maxPrice: 864 },
+      { name: "어니언 링", minPrice: 307, maxPrice: 1026 },
+      { name: "갈릭 케이크", minPrice: 226, maxPrice: 756 },
+      { name: "삼겹살 토마토 찌개", minPrice: 611, maxPrice: 2039 },
+      { name: "삼색 아이스크림", minPrice: 906, maxPrice: 3022 },
+      { name: "마늘 양갈비 핫도그", minPrice: 513, maxPrice: 1713 },
+      { name: "달콤 시리얼", minPrice: 773, maxPrice: 2578 },
+      { name: "로스트 치킨 파이", minPrice: 640, maxPrice: 2134 },
+      { name: "스윗 치킨 햄버거", minPrice: 970, maxPrice: 3234 },
+      { name: "토마토 파인애플 피자", minPrice: 922, maxPrice: 3077 },
+      { name: "양파 수프", minPrice: 1139, maxPrice: 3797 },
+      { name: "허브 삼겹살 찜", minPrice: 894, maxPrice: 2982 },
+      { name: "토마토 라자냐", minPrice: 1253, maxPrice: 4177 },
+      { name: "딥 크림 빠네", minPrice: 1151, maxPrice: 3837 },
+      { name: "트리플 소갈비 꼬치", minPrice: 1291, maxPrice: 4307 }
+    ];
+
+    // 저장된 요리 목록 불러오기 (없으면 기본 요리 목록 사용)
+    let dishList = JSON.parse(localStorage.getItem('minefarmDishList')) || defaultDishes;
+    let calcResults = JSON.parse(localStorage.getItem('minefarmResults')) || [];
+
+    // 초기화
+    function init() {
+      // 로컬스토리지에 저장된 요리 목록이 없다면 초기 설정
+      if (!localStorage.getItem('minefarmDishList')) {
+        localStorage.setItem('minefarmDishList', JSON.stringify(defaultDishes));
+      }
+      updateSelectOptions();
+      renderResults();
+    }
+
+    // 요리 추가 함수
+    function registerDish() {
+      const name = document.getElementById('dishName').value.trim();
+      const minPrice = parseFloat(document.getElementById('minPrice').value);
+      const maxPrice = parseFloat(document.getElementById('maxPrice').value);
+
+      if (!name || isNaN(minPrice) || isNaN(maxPrice)) {
+        alert('요리 이름, 최저가, 최고가를 모두 입력해주세요.');
+        return;
+      }
+
+      if (minPrice > maxPrice) {
+        alert('최저가가 최고가보다 클 수 없습니다.');
+        return;
+      }
+
+      const existingIndex = dishList.findIndex(d => d.name === name);
+      if (existingIndex > -1) {
+        dishList[existingIndex] = { name, minPrice, maxPrice };
+      } else {
+        dishList.push({ name, minPrice, maxPrice });
+      }
+
+      localStorage.setItem('minefarmDishList', JSON.stringify(dishList));
+      
+      document.getElementById('dishName').value = '';
+      document.getElementById('minPrice').value = '';
+      document.getElementById('maxPrice').value = '';
+
+      updateSelectOptions();
+      alert(`'${name}' 요리가 추가되었습니다.`);
+    }
+
+    // 드롭다운 메뉴 업데이트
+    function updateSelectOptions() {
+      const select = document.getElementById('selectDish');
+      select.innerHTML = '<option value="">-- 요리 선택 --</option>';
+
+      dishList.forEach((dish, index) => {
+        const opt = document.createElement('option');
+        opt.value = index;
+        opt.textContent = dish.name;
+        select.appendChild(opt);
+      });
+    }
+
+    // 요리 선택 시 최저/최고가 출력
+    function updateMinMaxDisplay() {
+      const selectIndex = document.getElementById('selectDish').value;
+      const infoDiv = document.getElementById('priceInfo');
+
+      if (selectIndex !== "") {
+        const dish = dishList[selectIndex];
+        infoDiv.style.display = "block";
+        infoDiv.textContent = `💡 [${dish.name}] 최저가: ${dish.minPrice.toLocaleString()} G | 최고가: ${dish.maxPrice.toLocaleString()} G`;
+      } else {
+        infoDiv.style.display = "none";
+      }
+    }
+
+    // 계산하기
+    function calculateEfficiency() {
+      const selectIndex = document.getElementById('selectDish').value;
+      const currentPrice = parseFloat(document.getElementById('currentPrice').value);
+
+      if (selectIndex === "") {
+        alert('요리를 선택해 주세요.');
+        return;
+      }
+      if (isNaN(currentPrice)) {
+        alert('현재 판매가를 입력해 주세요.');
+        return;
+      }
+
+      const dish = dishList[selectIndex];
+      const efficiency = dish.maxPrice > 0 ? ((currentPrice / dish.maxPrice) * 100).toFixed(1) : 0;
+
+      calcResults.unshift({
+        name: dish.name,
+        minPrice: dish.minPrice,
+        maxPrice: dish.maxPrice,
+        currentPrice: currentPrice,
+        efficiency: parseFloat(efficiency)
+      });
+
+      localStorage.setItem('minefarmResults', JSON.stringify(calcResults));
+      document.getElementById('currentPrice').value = '';
+      renderResults();
+    }
+
+    // 결과 출력
+    function renderResults() {
+      const tbody = document.getElementById('resultTableBody');
+      tbody.innerHTML = '';
+
+      calcResults.forEach((item, index) => {
+        let badgeClass = 'low';
+        if (item.efficiency >= 80) badgeClass = 'high';
+        else if (item.efficiency >= 50) badgeClass = 'medium';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${item.name}</strong></td>
+          <td>${item.minPrice.toLocaleString()} G / ${item.maxPrice.toLocaleString()} G</td>
+          <td>${item.currentPrice.toLocaleString()} G</td>
+          <td><span class="badge ${badgeClass}">${item.efficiency}%</span></td>
+          <td><button class="btn-delete" onclick="deleteResult(${index})">삭제</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 삭제 기능
+    function deleteResult(index) {
+      calcResults.splice(index, 1);
+      localStorage.setItem('minefarmResults', JSON.stringify(calcResults));
+      renderResults();
+    }
+
+    init();
+  </script>
+</body>
+</html>
