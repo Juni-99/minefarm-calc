@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>마인팜 판매 효율 계산기</title>
+  <title>마인팜 판매 및 연금 통합 계산기</title>
   <style>
     * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 30px auto; padding: 20px; padding-bottom: 60px; background-color: #f4f7f6; color: #333; position: relative; min-height: 100vh; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 30px auto; padding: 20px; padding-bottom: 60px; background-color: #f4f7f6; color: #333; position: relative; min-height: 100vh; }
     h1 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
     
     /* 탭 스타일 */
-    .tab-container { display: flex; gap: 10px; margin-bottom: 20px; }
-    .tab-button { flex: 1; padding: 15px; font-size: 16px; font-weight: bold; border: none; background-color: #e0e6ed; color: #7f8c8d; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .tab-container { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-button { flex: 1; min-width: 180px; padding: 12px 10px; font-size: 15px; font-weight: bold; border: none; background-color: #e0e6ed; color: #7f8c8d; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; }
     .tab-button.active { background-color: #27ae60; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     
     .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -24,78 +24,167 @@
     th, td { padding: 12px; text-align: center; border-bottom: 1px solid #ddd; }
     th { background-color: #34495e; color: white; }
     .badge { padding: 5px 10px; border-radius: 15px; font-weight: bold; color: white; display: inline-block; }
-    .high { background-color: #27ae60; }   /* 80% 이상 */
-    .medium { background-color: #f39c12; } /* 50% ~ 79% */
-    .low { background-color: #e74c3c; }    /* 50% 미만 */
+    .high { background-color: #27ae60; }
+    .medium { background-color: #f39c12; }
+    .low { background-color: #e74c3c; }
     .btn-delete { background-color: #e74c3c; padding: 5px 10px; font-size: 12px; color: white; border: none; border-radius: 3px; cursor: pointer; }
-    .btn-delete:hover { background-color: #c0392b; }
     .info-text { font-size: 13px; color: #666; margin-top: -5px; margin-bottom: 10px; }
 
-    /* 우측 하단 제작자 워터마크 */
-    .creator-tag {
-      position: fixed;
-      bottom: 15px;
-      right: 20px;
-      font-size: 13px;
-      font-weight: bold;
-      color: #7f8c8d;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 6px 12px;
-      border-radius: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-      border: 1px solid #ddd;
-      z-index: 999;
-    }
+    /* 연금 계산기 전용 스타일 */
+    .alchemy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 15px; }
+    .alchemy-input-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 10px; text-align: center; }
+    .item-icon { width: 32px; height: 32px; vertical-align: middle; margin-right: 5px; object-fit: contain; }
+    .item-label { font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+    .alchemy-input-box input { width: 100%; padding: 8px; text-align: center; font-weight: bold; }
+    
+    .result-section { background: #eef9f1; border: 1px solid #c3e6cb; border-radius: 8px; padding: 15px; margin-top: 15px; }
+    .result-title { font-weight: bold; color: #155724; font-size: 16px; margin-bottom: 10px; border-bottom: 2px solid #c3e6cb; padding-bottom: 5px; }
+    .result-list { list-style: none; padding: 0; margin: 0; }
+    .result-list li { padding: 6px 0; font-size: 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #d4edda; }
+    .result-list li:last-child { border-bottom: none; }
+    .buy-needed { background: #fff3cd; border: 1px solid #ffeeba; border-radius: 8px; padding: 15px; margin-top: 15px; }
+    .buy-title { font-weight: bold; color: #856404; font-size: 15px; margin-bottom: 8px; }
+
+    .creator-tag { position: fixed; bottom: 15px; right: 20px; font-size: 13px; font-weight: bold; color: #7f8c8d; background: rgba(255, 255, 255, 0.9); padding: 6px 12px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); border: 1px solid #ddd; z-index: 999; }
   </style>
 </head>
 <body>
 
-  <h1>🌾 마인팜 판매 효율 계산기</h1>
+  <h1>🌾 마인팜 통합 계산기</h1>
 
-  <!-- 메인 탭 (재배 / 해양) -->
+  <!-- 메인 탭 -->
   <div class="tab-container">
-    <button class="tab-button active" onclick="switchCategory('crop')">🌱 재배 전문가 (요리)</button>
-    <button class="tab-button" onclick="switchCategory('ocean')">🌊 해양 전문가 (공예품)</button>
+    <button class="tab-button active" onclick="switchCategory('crop')">🌱 재배 (요리 효율)</button>
+    <button class="tab-button" onclick="switchCategory('ocean')">🌊 해양 (공예품 효율)</button>
+    <button class="tab-button" onclick="switchCategory('alchemy')">🧪 해양 연금 최적화</button>
   </div>
 
-  <!-- 계산 영역 -->
-  <div class="card">
-    <h3 id="calcTitle">🌱 재배 전문가 - 요리 판매 효율 계산</h3>
-    <p class="info-text">품목을 선택한 후 현재 판매가를 입력하면 효율이 자동 계산됩니다.</p>
-    <div class="form-group">
-      <select id="selectItem" onchange="updateMinMaxDisplay()">
-        <option value="">-- 품목 선택 --</option>
-      </select>
-      <input type="number" id="currentPrice" placeholder="현재 판매가 입력 (G)">
-      <button class="btn-calc" onclick="calculateEfficiency()">효율 계산하기</button>
+  <!-- 1 & 2번 탭: 효율 계산 영역 -->
+  <div id="efficiencySection">
+    <div class="card">
+      <h3 id="calcTitle">🌱 재배 전문가 - 요리 판매 효율 계산</h3>
+      <p class="info-text">품목을 선택한 후 현재 판매가를 입력하면 효율이 자동 계산됩니다.</p>
+      <div class="form-group">
+        <select id="selectItem" onchange="updateMinMaxDisplay()">
+          <option value="">-- 품목 선택 --</option>
+        </select>
+        <input type="number" id="currentPrice" placeholder="현재 판매가 입력 (G)">
+        <button class="btn-calc" onclick="calculateEfficiency()">효율 계산하기</button>
+      </div>
+      <div id="priceInfo" class="info-text" style="display: none; font-weight: bold; color: #2c3e50;"></div>
     </div>
-    <div id="priceInfo" class="info-text" style="display: none; font-weight: bold; color: #2c3e50;"></div>
+
+    <div class="card">
+      <h3>📋 효율 계산 결과 목록</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>품목 이름</th>
+            <th>최저가 / 최고가</th>
+            <th>현재가</th>
+            <th>판매 효율</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody id="resultTableBody"></tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- 계산 결과 목록 -->
-  <div class="card">
-    <h3>📋 계산 결과 목록</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>품목 이름</th>
-          <th>최저가 / 최고가</th>
-          <th>현재가</th>
-          <th>판매 효율</th>
-          <th>관리</th>
-        </tr>
-      </thead>
-      <tbody id="resultTableBody">
-        <!-- 결과 데이터가 들어갑니다 -->
-      </tbody>
-    </table>
+  <!-- 3번 탭: 해양 연금 최적화 영역 -->
+  <div id="alchemySection" style="display: none;">
+    <div class="card">
+      <h3>🧪 보유한 채집물 수량 입력</h3>
+      <p class="info-text">현재 가지고 있는 1성~3성 채집물의 개수를 입력하시면 최적의 생산 조합과 부족한 재료를 계산해 드립니다.</p>
+      
+      <div class="alchemy-grid">
+        <!-- 1성 입력 -->
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_oyster.png" class="item-icon" onerror="this.style.display='none'"> 굴 ★</div>
+          <input type="number" id="in_oyster_1" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_conch.png" class="item-icon" onerror="this.style.display='none'"> 소라 ★</div>
+          <input type="number" id="in_conch_1" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_octopus.png" class="item-icon" onerror="this.style.display='none'"> 문어 ★</div>
+          <input type="number" id="in_octopus_1" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_seaweed.png" class="item-icon" onerror="this.style.display='none'"> 미역 ★</div>
+          <input type="number" id="in_seaweed_1" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_urchin.png" class="item-icon" onerror="this.style.display='none'"> 성게 ★</div>
+          <input type="number" id="in_urchin_1" value="0" min="0">
+        </div>
+        
+        <!-- 2성 입력 -->
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_oyster.png" class="item-icon" onerror="this.style.display='none'"> 굴 ★★</div>
+          <input type="number" id="in_oyster_2" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_conch.png" class="item-icon" onerror="this.style.display='none'"> 소라 ★★</div>
+          <input type="number" id="in_conch_2" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_octopus.png" class="item-icon" onerror="this.style.display='none'"> 문어 ★★</div>
+          <input type="number" id="in_octopus_2" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_seaweed.png" class="item-icon" onerror="this.style.display='none'"> 미역 ★★</div>
+          <input type="number" id="in_seaweed_2" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_urchin.png" class="item-icon" onerror="this.style.display='none'"> 성게 ★★</div>
+          <input type="number" id="in_urchin_2" value="0" min="0">
+        </div>
+
+        <!-- 3성 입력 -->
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_oyster.png" class="item-icon" onerror="this.style.display='none'"> 굴 ★★★</div>
+          <input type="number" id="in_oyster_3" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_conch.png" class="item-icon" onerror="this.style.display='none'"> 소라 ★★★</div>
+          <input type="number" id="in_conch_3" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_octopus.png" class="item-icon" onerror="this.style.display='none'"> 문어 ★★★</div>
+          <input type="number" id="in_octopus_3" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_seaweed.png" class="item-icon" onerror="this.style.display='none'"> 미역 ★★★</div>
+          <input type="number" id="in_seaweed_3" value="0" min="0">
+        </div>
+        <div class="alchemy-input-box">
+          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_urchin.png" class="item-icon" onerror="this.style.display='none'"> 성게 ★★★</div>
+          <input type="number" id="in_urchin_3" value="0" min="0">
+        </div>
+      </div>
+
+      <button class="btn-calc" style="width: 100%; font-size: 16px; padding: 15px;" onclick="calculateAlchemy()">연금 최적 조합 계산하기</button>
+
+      <!-- 최적 생산 결과 -->
+      <div id="alchemyResult" style="display: none;">
+        <div class="result-section">
+          <div class="result-title">🎁 최적 연금 제작 결과</div>
+          <ul class="result-list" id="resListCrafts"></ul>
+        </div>
+
+        <div class="buy-needed">
+          <div class="buy-title">🛒 추출된 희석액(0성) 추가 제작을 위한 부족한 구매 추천 재료</div>
+          <ul class="result-list" id="resListBuy"></ul>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- 제작자 정보 (우측 하단 고정) -->
   <div class="creator-tag">제작자 : 우브</div>
 
   <script>
-    // 1. 재배 전문가 데이터 (요리 15종)
     const cropDishes = [
       { name: "토마토 스파게티", minPrice: 259, maxPrice: 864 },
       { name: "어니언 링", minPrice: 307, maxPrice: 1026 },
@@ -114,7 +203,6 @@
       { name: "트리플 소갈비 꼬치", minPrice: 1291, maxPrice: 4307 }
     ];
 
-    // 2. 해양 전문가 데이터 (공예품 6종)
     const oceanCrafts = [
       { name: "조개껍데기 브로치", minPrice: 0, maxPrice: 50000 },
       { name: "푸른 향수병", minPrice: 0, maxPrice: 150000 },
@@ -127,37 +215,39 @@
     let currentCategory = 'crop';
     let calcResults = JSON.parse(localStorage.getItem('minefarmTabResults')) || { crop: [], ocean: [] };
 
-    function init() {
-      switchCategory('crop');
-    }
+    function init() { switchCategory('crop'); }
 
     function switchCategory(category) {
       currentCategory = category;
-      
       const buttons = document.querySelectorAll('.tab-button');
       buttons[0].classList.toggle('active', category === 'crop');
       buttons[1].classList.toggle('active', category === 'ocean');
+      buttons[2].classList.toggle('active', category === 'alchemy');
 
-      const title = document.getElementById('calcTitle');
-      if (category === 'crop') {
-        title.textContent = '🌱 재배 전문가 - 요리 판매 효율 계산';
+      const effSection = document.getElementById('efficiencySection');
+      const alcSection = document.getElementById('alchemySection');
+
+      if (category === 'alchemy') {
+        effSection.style.display = 'none';
+        alcSection.style.display = 'block';
       } else {
-        title.textContent = '🌊 해양 전문가 - 공예품 판매 효율 계산';
+        effSection.style.display = 'block';
+        alcSection.style.display = 'none';
+
+        const title = document.getElementById('calcTitle');
+        title.textContent = category === 'crop' ? '🌱 재배 전문가 - 요리 판매 효율 계산' : '🌊 해양 전문가 - 공예품 판매 효율 계산';
+
+        document.getElementById('priceInfo').style.display = 'none';
+        document.getElementById('currentPrice').value = '';
+        updateSelectOptions();
+        renderResults();
       }
-
-      document.getElementById('priceInfo').style.display = 'none';
-      document.getElementById('currentPrice').value = '';
-
-      updateSelectOptions();
-      renderResults();
     }
 
     function updateSelectOptions() {
       const select = document.getElementById('selectItem');
       select.innerHTML = '<option value="">-- 품목 선택 --</option>';
-
       const list = currentCategory === 'crop' ? cropDishes : oceanCrafts;
-
       list.forEach((item, index) => {
         const opt = document.createElement('option');
         opt.value = index;
@@ -175,9 +265,7 @@
         const item = list[selectIndex];
         infoDiv.style.display = "block";
         infoDiv.textContent = `💡 [${item.name}] 최저가: ${item.minPrice.toLocaleString()} G | 최고가: ${item.maxPrice.toLocaleString()} G`;
-      } else {
-        infoDiv.style.display = "none";
-      }
+      } else { infoDiv.style.display = "none"; }
     }
 
     function calculateEfficiency() {
@@ -185,12 +273,8 @@
       const currentPrice = parseFloat(document.getElementById('currentPrice').value);
       const list = currentCategory === 'crop' ? cropDishes : oceanCrafts;
 
-      if (selectIndex === "") {
-        alert('품목을 선택해 주세요.');
-        return;
-      }
-      if (isNaN(currentPrice)) {
-        alert('현재 판매가를 입력해 주세요.');
+      if (selectIndex === "" || isNaN(currentPrice)) {
+        alert('품목과 판매가를 모두 올바르게 입력해 주세요.');
         return;
       }
 
@@ -198,11 +282,8 @@
       const efficiency = item.maxPrice > 0 ? ((currentPrice / item.maxPrice) * 100).toFixed(1) : 0;
 
       calcResults[currentCategory].unshift({
-        name: item.name,
-        minPrice: item.minPrice,
-        maxPrice: item.maxPrice,
-        currentPrice: currentPrice,
-        efficiency: parseFloat(efficiency)
+        name: item.name, minPrice: item.minPrice, maxPrice: item.maxPrice,
+        currentPrice: currentPrice, efficiency: parseFloat(efficiency)
       });
 
       localStorage.setItem('minefarmTabResults', JSON.stringify(calcResults));
@@ -213,14 +294,10 @@
     function renderResults() {
       const tbody = document.getElementById('resultTableBody');
       tbody.innerHTML = '';
-
       const currentResults = calcResults[currentCategory] || [];
 
       currentResults.forEach((item, index) => {
-        let badgeClass = 'low';
-        if (item.efficiency >= 80) badgeClass = 'high';
-        else if (item.efficiency >= 50) badgeClass = 'medium';
-
+        let badgeClass = item.efficiency >= 80 ? 'high' : item.efficiency >= 50 ? 'medium' : 'low';
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${item.name}</strong></td>
@@ -237,6 +314,82 @@
       calcResults[currentCategory].splice(index, 1);
       localStorage.setItem('minefarmTabResults', JSON.stringify(calcResults));
       renderResults();
+    }
+
+    // --- 해양 연금 최적화 로직 ---
+    function calculateAlchemy() {
+      // 1. 보유 재료 읽기 (1성, 2성, 3성)
+      const inputs = {
+        o1: parseInt(document.getElementById('in_oyster_1').value) || 0,
+        c1: parseInt(document.getElementById('in_conch_1').value) || 0,
+        ok1: parseInt(document.getElementById('in_octopus_1').value) || 0,
+        s1: parseInt(document.getElementById('in_seaweed_1').value) || 0,
+        u1: parseInt(document.getElementById('in_urchin_1').value) || 0,
+        
+        o2: parseInt(document.getElementById('in_oyster_2').value) || 0,
+        c2: parseInt(document.getElementById('in_conch_2').value) || 0,
+        ok2: parseInt(document.getElementById('in_octopus_2').value) || 0,
+        s2: parseInt(document.getElementById('in_seaweed_2').value) || 0,
+        u2: parseInt(document.getElementById('in_urchin_2').value) || 0,
+
+        o3: parseInt(document.getElementById('in_oyster_3').value) || 0,
+        c3: parseInt(document.getElementById('in_conch_3').value) || 0,
+        ok3: parseInt(document.getElementById('in_octopus_3').value) || 0,
+        s3: parseInt(document.getElementById('in_seaweed_3').value) || 0,
+        u3: parseInt(document.getElementById('in_urchin_3').value) || 0
+      };
+
+      // 1성 완품 (완품 1셋 = 각 채집물 2개씩 사용 -> 1성 완품 3종 각 1개 생산, 침식 방어의 핵 1개 남음)
+      const sets1 = Math.min(Math.floor(inputs.o1/2), Math.floor(inputs.c1/2), Math.floor(inputs.ok1/2), Math.floor(inputs.s1/2), Math.floor(inputs.u1/2));
+      let leftoverErosion1 = sets1; // 침식 방어의 핵 남은 수량
+
+      // 2성 완품 (완품 1셋 = 각 채집물 2개씩 사용 -> 2성 완품 3종 각 1개 생산, 방어 오염의 결정 1개 남음)
+      const sets2 = Math.min(Math.floor(inputs.o2/2), Math.floor(inputs.c2/2), Math.floor(inputs.ok2/2), Math.floor(inputs.s2/2), Math.floor(inputs.u2/2));
+      let leftoverDefense2 = sets2; // 방어 오염의 결정 남은 수량
+
+      // 3성 완품 (완품 1셋 = 각 채집물 1개씩 사용 -> 3성 완품 3종 각 1개 생산, 타락 침식의 영약 1개 남음)
+      const sets3 = Math.min(inputs.o3, inputs.c3, inputs.ok3, inputs.s3, inputs.u3);
+      let leftoverCorruption3 = sets3; // 타락 침식의 영약 남은 수량
+
+      // 0성 추출된 희석액 제작 가능 개수 (필요 비율: 1성 3개 + 2성 2개 + 3성 1개)
+      const extractableDilution = Math.min(Math.floor(leftoverErosion1 / 3), Math.floor(leftoverDefense2 / 2), leftoverCorruption3);
+
+      // 출력 렌더링
+      const resCrafts = document.getElementById('resListCrafts');
+      const resBuy = document.getElementById('resListBuy');
+      resCrafts.innerHTML = '';
+      resBuy.innerHTML = '';
+
+      // 완품 생산 결과 표시
+      resCrafts.innerHTML += `<li><span><b>1성 완품 세트</b> (영생의 아쿠티스, 크라켄의 광란체, 리바이던의 깃털)</span> <b>각 ${sets1}개</b></li>`;
+      resCrafts.innerHTML += `<li><span><b>2성 완품 세트</b> (해구 파동의 코어, 침묵의 심해 비약, 청해룡의 날개)</span> <b>각 ${sets2}개</b></li>`;
+      resCrafts.innerHTML += `<li><span><b>3성 완품 세트</b> (아쿠아 펄스 파편, 나우틸러스의 손, 무저의 척추)</span> <b>각 ${sets3}개</b></li>`;
+      resCrafts.innerHTML += `<li style="color:#27ae60;"><span>🧪 <b>[0성] 추출된 희석액 바로 제작 가능</b></span> <b>${extractableDilution}개</b></li>`;
+
+      // 추가 [추출된 희석액 1개]를 더 만들기 위한 부족분 구매 계산
+      const targetDilution = extractableDilution + 1;
+      const needErosion1 = Math.max(0, targetDilution * 3 - leftoverErosion1);
+      const needDefense2 = Math.max(0, targetDilution * 2 - leftoverDefense2);
+      const needCorruption3 = Math.max(0, targetDilution * 1 - leftoverCorruption3);
+
+      if (needErosion1 === 0 && needDefense2 === 0 && needCorruption3 === 0) {
+        resBuy.innerHTML = `<li><span>부족한 재료 없이 연금이 완벽하게 딱 떨어집니다!</span></li>`;
+      } else {
+        if (needErosion1 > 0) {
+          const buySets1 = needErosion1; // 1성 셋트 부족분
+          resBuy.innerHTML += `<li><span>🦪 <b>1성 채집물 세트</b> (굴, 소라, 문어, 미역, 성게 각 2개씩)</span> <b style="color:#c0392b;">${buySets1}세트 필요</b></li>`;
+        }
+        if (needDefense2 > 0) {
+          const buySets2 = needDefense2; // 2성 셋트 부족분
+          resBuy.innerHTML += `<li><span>🦪 <b>2성 채집물 세트</b> (굴, 소라, 문어, 미역, 성게 각 2개씩)</span> <b style="color:#c0392b;">${buySets2}세트 필요</b></li>`;
+        }
+        if (needCorruption3 > 0) {
+          const buySets3 = needCorruption3; // 3성 셋트 부족분
+          resBuy.innerHTML += `<li><span>🦪 <b>3성 채집물 세트</b> (굴, 소라, 문어, 미역, 성게 각 1개씩)</span> <b style="color:#c0392b;">${buySets3}세트 필요</b></li>`;
+        }
+      }
+
+      document.getElementById('alchemyResult').style.display = 'block';
     }
 
     init();
