@@ -9,7 +9,6 @@
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 30px auto; padding: 20px; padding-bottom: 60px; background-color: #f4f7f6; color: #333; position: relative; min-height: 100vh; }
     h1 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
     
-    /* 탭 스타일 */
     .tab-container { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
     .tab-button { flex: 1; min-width: 180px; padding: 12px 10px; font-size: 15px; font-weight: bold; border: none; background-color: #e0e6ed; color: #7f8c8d; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; }
     .tab-button.active { background-color: #27ae60; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -30,71 +29,22 @@
     .btn-delete { background-color: #e74c3c; padding: 5px 10px; font-size: 12px; color: white; border: none; border-radius: 3px; cursor: pointer; }
     .info-text { font-size: 13px; color: #666; margin-top: -5px; margin-bottom: 10px; }
 
-    /* 연금 계산기 그리드 및 세트/낱개 입력 스타일 */
-    .alchemy-grid { 
-      display: grid; 
-      grid-template-columns: repeat(5, 1fr); 
-      gap: 10px; 
-      margin-bottom: 15px; 
-    }
-    @media (max-width: 768px) {
-      .alchemy-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
-    }
-    .alchemy-input-box { 
-      background: #f8f9fa; 
-      border: 1px solid #e9ecef; 
-      border-radius: 8px; 
-      padding: 10px 6px; 
-      text-align: center; 
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .item-label { 
-      font-size: 13px; 
-      font-weight: bold; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      margin-bottom: 8px; 
-      width: 100%;
-    }
-    .item-icon { 
-      width: 26px; 
-      height: 26px; 
-      vertical-align: middle; 
-      margin-right: 4px; 
-      object-fit: contain; 
-      flex-shrink: 0;
-    }
-    .dual-input {
-      display: flex;
-      gap: 4px;
-      width: 100%;
-    }
-    .input-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .input-wrapper span {
-      font-size: 10px;
-      color: #7f8c8d;
-      margin-bottom: 2px;
-    }
-    .alchemy-input-box input { 
-      width: 100%; 
-      padding: 6px 2px; 
-      text-align: center; 
-      font-weight: bold; 
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-      font-size: 13px;
-      background: #fff;
-    }
+    .alchemy-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px; }
+    @media (max-width: 768px) { .alchemy-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); } }
     
+    .alchemy-input-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 10px 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+    .item-label { font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; width: 100%; }
+    .item-icon { width: 26px; height: 26px; vertical-align: middle; margin-right: 4px; object-fit: contain; flex-shrink: 0; }
+    .dual-input { display: flex; gap: 4px; width: 100%; }
+    .input-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; }
+    .input-wrapper span { font-size: 10px; color: #7f8c8d; margin-bottom: 2px; }
+    .alchemy-input-box input { width: 100%; padding: 6px 2px; text-align: center; font-weight: bold; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; background: #fff; }
+    
+    /* 중간 재료 입력 영역 스타일 */
+    .intermediate-box { background: #f0f7ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+    .intermediate-title { font-weight: bold; color: #0369a1; font-size: 14px; margin-bottom: 10px; }
+    .intermediate-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
     .result-section { background: #eef9f1; border: 1px solid #c3e6cb; border-radius: 8px; padding: 15px; margin-top: 15px; }
     .result-title { font-weight: bold; color: #155724; font-size: 16px; margin-bottom: 10px; border-bottom: 2px solid #c3e6cb; padding-bottom: 5px; }
     .result-list { list-style: none; padding: 0; margin: 0; }
@@ -110,14 +60,12 @@
 
   <h1>🌾 마인팜 통합 계산기</h1>
 
-  <!-- 메인 탭 -->
   <div class="tab-container">
     <button class="tab-button active" onclick="switchCategory('crop')">🌱 재배 (요리 효율)</button>
     <button class="tab-button" onclick="switchCategory('ocean')">🌊 해양 (공예품 효율)</button>
     <button class="tab-button" onclick="switchCategory('alchemy')">🧪 해양 연금 최적화</button>
   </div>
 
-  <!-- 1 & 2번 탭: 효율 계산 영역 -->
   <div id="efficiencySection">
     <div class="card">
       <h3 id="calcTitle">🌱 재배 전문가 - 요리 판매 효율 계산</h3>
@@ -149,7 +97,6 @@
     </div>
   </div>
 
-  <!-- 3번 탭: 해양 연금 최적화 영역 -->
   <div id="alchemySection" style="display: none;">
     <div class="card">
       <h3>🧪 보유한 채집물 수량 입력</h3>
@@ -158,35 +105,35 @@
       <div class="alchemy-grid">
         <!-- 1성 입력 -->
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_oyster.png" class="item-icon" alt="굴"> 굴 ★</div>
+          <div class="item-label">굴 ★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_oyster_1_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_oyster_1_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_conch.png" class="item-icon" alt="소라"> 소라 ★</div>
+          <div class="item-label">소라 ★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_conch_1_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_conch_1_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_octopus.png" class="item-icon" alt="문어"> 문어 ★</div>
+          <div class="item-label">문어 ★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_octopus_1_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_octopus_1_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_seaweed.png" class="item-icon" alt="미역"> 미역 ★</div>
+          <div class="item-label">미역 ★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_seaweed_1_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_seaweed_1_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/1star_sea_urchin.png" class="item-icon" alt="성게"> 성게 ★</div>
+          <div class="item-label">성게 ★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_urchin_1_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_urchin_1_p" value="0" min="0"></div>
@@ -195,35 +142,35 @@
         
         <!-- 2성 입력 -->
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_oyster.png" class="item-icon" alt="굴"> 굴 ★★</div>
+          <div class="item-label">굴 ★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_oyster_2_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_oyster_2_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_conch.png" class="item-icon" alt="소라"> 소라 ★★</div>
+          <div class="item-label">소라 ★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_conch_2_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_conch_2_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_octopus.png" class="item-icon" alt="문어"> 문어 ★★</div>
+          <div class="item-label">문어 ★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_octopus_2_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_octopus_2_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_seaweed.png" class="item-icon" alt="미역"> 미역 ★★</div>
+          <div class="item-label">미역 ★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_seaweed_2_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_seaweed_2_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_sea_urchin.png" class="item-icon" alt="성게"> 성게 ★★</div>
+          <div class="item-label">성게 ★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_urchin_2_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_urchin_2_p" value="0" min="0"></div>
@@ -232,35 +179,35 @@
 
         <!-- 3성 입력 -->
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_oyster.png" class="item-icon" alt="굴"> 굴 ★★★</div>
+          <div class="item-label">굴 ★★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_oyster_3_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_oyster_3_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_conch.png" class="item-icon" alt="소라"> 소라 ★★★</div>
+          <div class="item-label">소라 ★★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_conch_3_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_conch_3_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_octopus.png" class="item-icon" alt="문어"> 문어 ★★★</div>
+          <div class="item-label">문어 ★★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_octopus_3_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_octopus_3_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_seaweed.png" class="item-icon" alt="미역"> 미역 ★★★</div>
+          <div class="item-label">미역 ★★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_seaweed_3_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_seaweed_3_p" value="0" min="0"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
-          <div class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/3star_sea_urchin.png" class="item-icon" alt="성게"> 성게 ★★★</div>
+          <div class="item-label">성게 ★★★</div>
           <div class="dual-input">
             <div class="input-wrapper"><span>세트</span><input type="number" id="in_urchin_3_s" value="0" min="0"></div>
             <div class="input-wrapper"><span>낱개</span><input type="number" id="in_urchin_3_p" value="0" min="0"></div>
@@ -268,9 +215,29 @@
         </div>
       </div>
 
+      <!-- 중간 완품 보유량 입력 추가 -->
+      <div class="intermediate-box">
+        <div class="intermediate-title">✨ 이미 제작하여 보유 중인 완성품/중간재 수량</div>
+        <div class="intermediate-grid">
+          <div class="alchemy-input-box">
+            <div class="item-label">🛡️ 침식 방어의 핵 (2성)</div>
+            <div class="dual-input">
+              <div class="input-wrapper"><span>세트</span><input type="number" id="in_core_2_s" value="0" min="0"></div>
+              <div class="input-wrapper"><span>낱개</span><input type="number" id="in_core_2_p" value="0" min="0"></div>
+            </div>
+          </div>
+          <div class="alchemy-input-box">
+            <div class="item-label">🔮 방어 오염의 결정 (3성)</div>
+            <div class="dual-input">
+              <div class="input-wrapper"><span>세트</span><input type="number" id="in_crystal_3_s" value="0" min="0"></div>
+              <div class="input-wrapper"><span>낱개</span><input type="number" id="in_crystal_3_p" value="0" min="0"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <button class="btn-calc" style="width: 100%; font-size: 16px; padding: 15px;" onclick="calculateAlchemy()">연금 최적 조합 계산하기</button>
 
-      <!-- 최적 생산 결과 -->
       <div id="alchemyResult" style="display: none;">
         <div class="result-section">
           <div class="result-title">🎁 최적 연금 제작 결과</div>
@@ -278,7 +245,7 @@
         </div>
 
         <div class="buy-needed">
-          <div class="buy-title">🛒 추출된 희석액(0성) 추가 제작을 위한 부족한 구매 추천 재료</div>
+          <div class="buy-title">🛒 추출된 희석액(0성) 1개 추가 제작을 위한 부족 재료 추천</div>
           <ul class="result-list" id="resListBuy"></ul>
         </div>
       </div>
@@ -419,16 +386,13 @@
       renderResults();
     }
 
-    // 세트(64개) + 낱개 통합 개수 계산 함수
     function getTotalCount(setId, pieceId) {
       const sets = parseInt(document.getElementById(setId).value) || 0;
       const pieces = parseInt(document.getElementById(pieceId).value) || 0;
       return (sets * 64) + pieces;
     }
 
-    // --- 해양 연금 최적화 로직 ---
     function calculateAlchemy() {
-      // 1. 보유 재료 읽기 (세트 * 64 + 낱개)
       const inputs = {
         o1: getTotalCount('in_oyster_1_s', 'in_oyster_1_p'),
         c1: getTotalCount('in_conch_1_s', 'in_conch_1_p'),
@@ -446,56 +410,56 @@
         c3: getTotalCount('in_conch_3_s', 'in_conch_3_p'),
         ok3: getTotalCount('in_octopus_3_s', 'in_octopus_3_p'),
         s3: getTotalCount('in_seaweed_3_s', 'in_seaweed_3_p'),
-        u3: getTotalCount('in_urchin_3_s', 'in_urchin_3_p')
+        u3: getTotalCount('in_urchin_3_s', 'in_urchin_3_p'),
+
+        // 중간 완품 보유량
+        core2: getTotalCount('in_core_2_s', 'in_core_2_p'),
+        crystal3: getTotalCount('in_crystal_3_s', 'in_crystal_3_p')
       };
 
-      // 1성 완품
-      const sets1 = Math.min(Math.floor(inputs.o1/2), Math.floor(inputs.c1/2), Math.floor(inputs.ok1/2), Math.floor(inputs.s1/2), Math.floor(inputs.u1/2));
-      let leftoverErosion1 = sets1; 
+      // 채집물로 신규 제작 가능한 완품 개수
+      const craft1 = Math.min(Math.floor(inputs.o1/2), Math.floor(inputs.c1/2), Math.floor(inputs.ok1/2), Math.floor(inputs.s1/2), Math.floor(inputs.u1/2));
+      const craft2 = Math.min(Math.floor(inputs.o2/2), Math.floor(inputs.c2/2), Math.floor(inputs.ok2/2), Math.floor(inputs.s2/2), Math.floor(inputs.u2/2));
+      const craft3 = Math.min(inputs.o3, inputs.c3, inputs.ok3, inputs.s3, inputs.u3);
 
-      // 2성 완품
-      const sets2 = Math.min(Math.floor(inputs.o2/2), Math.floor(inputs.c2/2), Math.floor(inputs.ok2/2), Math.floor(inputs.s2/2), Math.floor(inputs.u2/2));
-      let leftoverDefense2 = sets2; 
+      // (신규 제작 완품 + 기존 보유 완품) 총 수량
+      const total1 = craft1;
+      const total2 = craft2 + inputs.core2;
+      const total3 = craft3 + inputs.crystal3;
 
-      // 3성 완품
-      const sets3 = Math.min(inputs.o3, inputs.c3, inputs.ok3, inputs.s3, inputs.u3);
-      let leftoverCorruption3 = sets3; 
+      // 0성 희석액 제작 가능 개수
+      const extractableDilution = Math.min(Math.floor(total1 / 3), Math.floor(total2 / 2), total3);
 
-      // 0성 추출된 희석액 제작 가능 개수
-      const extractableDilution = Math.min(Math.floor(leftoverErosion1 / 3), Math.floor(leftoverDefense2 / 2), leftoverCorruption3);
-
-      // 출력 렌더링
       const resCrafts = document.getElementById('resListCrafts');
       const resBuy = document.getElementById('resListBuy');
       resCrafts.innerHTML = '';
       resBuy.innerHTML = '';
 
-      // 완품 생산 결과 표시
-      resCrafts.innerHTML += `<li><span><b>1성 완품 세트</b> (영생의 아쿠티스, 크라켄의 광란체, 리바이던의 깃털)</span> <b>각 ${sets1.toLocaleString()}개</b></li>`;
-      resCrafts.innerHTML += `<li><span><b>2성 완품 세트</b> (해구 파동의 코어, 침묵의 심해 비약, 청해룡의 날개)</span> <b>각 ${sets2.toLocaleString()}개</b></li>`;
-      resCrafts.innerHTML += `<li><span><b>3성 완품 세트</b> (아쿠아 펄스 파편, 나우틸러스의 손, 무저의 척추)</span> <b>각 ${sets3.toLocaleString()}개</b></li>`;
+      resCrafts.innerHTML += `<li><span><b>1성 완품</b> (영생의 아쿠티스 등)</span> <b>새로 제작: ${craft1.toLocaleString()}개</b></li>`;
+      resCrafts.innerHTML += `<li><span><b>2성 완품</b> (침식 방어의 핵 등)</span> <b>새로 제작: ${craft2.toLocaleString()}개 / (보유 포함 총 ${total2.toLocaleString()}개)</b></li>`;
+      resCrafts.innerHTML += `<li><span><b>3성 완품</b> (방어 오염의 결정 등)</span> <b>새로 제작: ${craft3.toLocaleString()}개 / (보유 포함 총 ${total3.toLocaleString()}개)</b></li>`;
       resCrafts.innerHTML += `<li style="color:#27ae60;"><span>🧪 <b>[0성] 추출된 희석액 바로 제작 가능</b></span> <b>${extractableDilution.toLocaleString()}개</b></li>`;
 
-      // 추가 [추출된 희석액 1개]를 더 만들기 위한 부족분 구매 계산
+      // 희석액 1개 더 만들 때 부족한 완품 수량
       const targetDilution = extractableDilution + 1;
-      const needErosion1 = Math.max(0, targetDilution * 3 - leftoverErosion1);
-      const needDefense2 = Math.max(0, targetDilution * 2 - leftoverDefense2);
-      const needCorruption3 = Math.max(0, targetDilution * 1 - leftoverCorruption3);
+      const need1 = Math.max(0, targetDilution * 3 - total1);
+      const need2 = Math.max(0, targetDilution * 2 - total2);
+      const need3 = Math.max(0, targetDilution * 1 - total3);
 
-      if (needErosion1 === 0 && needDefense2 === 0 && needCorruption3 === 0) {
-        resBuy.innerHTML = `<li><span>부족한 재료 없이 연금이 완벽하게 딱 떨어집니다!</span></li>`;
+      if (need1 === 0 && need2 === 0 && need3 === 0) {
+        resBuy.innerHTML = `<li><span>부족한 재료 없이 연금이 딱 맞아떨어집니다!</span></li>`;
       } else {
-        if (needErosion1 > 0) {
-          const buySets1 = needErosion1;
-          resBuy.innerHTML += `<li><span>🦪 <b>1성 채집물 세트</b> (굴, 소라, 문어, 미역, 성게 각 2개씩)</span> <b style="color:#c0392b;">${buySets1}세트 필요</b></li>`;
+        if (need1 > 0) {
+          const buyP = need1 * 2;
+          resBuy.innerHTML += `<li><span>🦪 <b>1성 채집물</b> (굴, 소라, 문어, 미역, 성게)</span> <b style="color:#c0392b;">각 ${buyP}개씩 필요 (${need1}회 제작분)</b></li>`;
         }
-        if (needDefense2 > 0) {
-          const buySets2 = needDefense2;
-          resBuy.innerHTML += `<li><span>🦪 <b>2성 채집물 세트</b> (굴, 소라, 문어, 미역, 성게 각 2개씩)</span> <b style="color:#c0392b;">${buySets2}세트 필요</b></li>`;
+        if (need2 > 0) {
+          const buyP = need2 * 2;
+          resBuy.innerHTML += `<li><span>🦪 <b>2성 채집물</b> (굴, 소라, 문어, 미역, 성게)</span> <b style="color:#c0392b;">각 ${buyP}개씩 필요 (${need2}회 제작분)</b></li>`;
         }
-        if (needCorruption3 > 0) {
-          const buySets3 = needCorruption3;
-          resBuy.innerHTML += `<li><span>🦪 <b>3성 채집물 세트</b> (굴, 소라, 문어, 미역, 성게 각 1개씩)</span> <b style="color:#c0392b;">${buySets3}세트 필요</b></li>`;
+        if (need3 > 0) {
+          const buyP = need3 * 1;
+          resBuy.innerHTML += `<li><span>🦪 <b>3성 채집물</b> (굴, 소라, 문어, 미역, 성게)</span> <b style="color:#c0392b;">각 ${buyP}개씩 필요 (${need3}회 제작분)</b></li>`;
         }
       }
 
