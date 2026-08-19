@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>마인팜 판매 및 연금 통합 계산기</title>
+  <title>마인팜 통합 계산기</title>
   <style>
     * { box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 30px auto; padding: 20px; padding-bottom: 60px; background-color: #f4f7f6; color: #333; position: relative; min-height: 100vh; }
@@ -16,8 +16,12 @@
     .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
     .form-group { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
     .form-group input, .form-group select { flex: 1; min-width: 150px; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
-    button.btn-calc { padding: 12px 24px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    
+    .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+    button.btn-calc { flex: 3; padding: 14px 20px; background-color: #27ae60; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: background 0.2s; }
     button.btn-calc:hover { background-color: #219150; }
+    button.btn-reset { flex: 1; padding: 14px 15px; background-color: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; transition: background 0.2s; }
+    button.btn-reset:hover { background-color: #c0392b; }
     
     table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
     th, td { padding: 12px; text-align: center; border-bottom: 1px solid #ddd; }
@@ -33,8 +37,7 @@
     @media (max-width: 768px) { .alchemy-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); } }
     
     .alchemy-input-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 10px 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
-    .item-label { font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; width: 100%; }
-    .item-icon { width: 26px; height: 26px; vertical-align: middle; margin-right: 4px; object-fit: contain; flex-shrink: 0; }
+    .item-label { font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; width: 100%; text-align: center; }
     .dual-input { display: flex; gap: 4px; width: 100%; }
     .input-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; }
     .input-wrapper span { font-size: 10px; color: #7f8c8d; margin-bottom: 2px; }
@@ -43,7 +46,8 @@
     /* 중간 재료 입력 영역 스타일 */
     .intermediate-box { background: #f0f7ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
     .intermediate-title { font-weight: bold; color: #0369a1; font-size: 14px; margin-bottom: 10px; }
-    .intermediate-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .intermediate-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 768px) { .intermediate-grid { grid-template-columns: 1fr; } }
 
     .result-section { background: #eef9f1; border: 1px solid #c3e6cb; border-radius: 8px; padding: 15px; margin-top: 15px; }
     .result-title { font-weight: bold; color: #155724; font-size: 16px; margin-bottom: 10px; border-bottom: 2px solid #c3e6cb; padding-bottom: 5px; }
@@ -66,6 +70,7 @@
     <button class="tab-button" onclick="switchCategory('alchemy')">🧪 해양 연금 최적화</button>
   </div>
 
+  <!-- 요리 / 공예품 효율 섹션 -->
   <div id="efficiencySection">
     <div class="card">
       <h3 id="calcTitle">🌱 재배 전문가 - 요리 판매 효율 계산</h3>
@@ -75,7 +80,7 @@
           <option value="">-- 품목 선택 --</option>
         </select>
         <input type="number" id="currentPrice" placeholder="현재 판매가 입력 (G)">
-        <button class="btn-calc" onclick="calculateEfficiency()">효율 계산하기</button>
+        <button class="btn-calc" style="flex: initial;" onclick="calculateEfficiency()">효율 계산하기</button>
       </div>
       <div id="priceInfo" class="info-text" style="display: none; font-weight: bold; color: #2c3e50;"></div>
     </div>
@@ -97,46 +102,47 @@
     </div>
   </div>
 
+  <!-- 연금 최적화 섹션 -->
   <div id="alchemySection" style="display: none;">
     <div class="card">
       <h3>🧪 보유한 채집물 수량 입력</h3>
-      <p class="info-text">상자에 있는 <b>세트 수량(64개 단위)</b>과 <b>낱개 수량</b>을 나누어 입력해 주세요.</p>
+      <p class="info-text">상자에 있는 <b>세트 수량(64개 단위)</b>과 <b>낱개 수량</b>을 나눠서 입력하면 **자동으로 저장**됩니다.</p>
       
       <div class="alchemy-grid">
         <!-- 1성 입력 -->
         <div class="alchemy-input-box">
           <div class="item-label">굴 ★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_oyster_1_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_oyster_1_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_oyster_1_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_oyster_1_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">소라 ★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_conch_1_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_conch_1_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_conch_1_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_conch_1_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">문어 ★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_octopus_1_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_octopus_1_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_octopus_1_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_octopus_1_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">미역 ★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_seaweed_1_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_seaweed_1_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_seaweed_1_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_seaweed_1_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">성게 ★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_urchin_1_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_urchin_1_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_urchin_1_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_urchin_1_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         
@@ -144,36 +150,36 @@
         <div class="alchemy-input-box">
           <div class="item-label">굴 ★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_oyster_2_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_oyster_2_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_oyster_2_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_oyster_2_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">소라 ★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_conch_2_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_conch_2_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_conch_2_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_conch_2_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">문어 ★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_octopus_2_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_octopus_2_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_octopus_2_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_octopus_2_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">미역 ★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_seaweed_2_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_seaweed_2_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_seaweed_2_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_seaweed_2_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">성게 ★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_urchin_2_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_urchin_2_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_urchin_2_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_urchin_2_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
 
@@ -181,63 +187,75 @@
         <div class="alchemy-input-box">
           <div class="item-label">굴 ★★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_oyster_3_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_oyster_3_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_oyster_3_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_oyster_3_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">소라 ★★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_conch_3_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_conch_3_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_conch_3_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_conch_3_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">문어 ★★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_octopus_3_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_octopus_3_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_octopus_3_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_octopus_3_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">미역 ★★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_seaweed_3_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_seaweed_3_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_seaweed_3_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_seaweed_3_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
         <div class="alchemy-input-box">
           <div class="item-label">성게 ★★★</div>
           <div class="dual-input">
-            <div class="input-wrapper"><span>세트</span><input type="number" id="in_urchin_3_s" value="0" min="0"></div>
-            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_urchin_3_p" value="0" min="0"></div>
+            <div class="input-wrapper"><span>세트</span><input type="number" id="in_urchin_3_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            <div class="input-wrapper"><span>낱개</span><input type="number" id="in_urchin_3_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
           </div>
         </div>
       </div>
 
-      <!-- 중간 완품 보유량 입력 추가 -->
+      <!-- 중간 완품 보유량 입력 영역 (1성 영약 추가됨) -->
       <div class="intermediate-box">
-        <div class="intermediate-title">✨ 이미 제작하여 보유 중인 완성품/중간재 수량</div>
+        <div class="intermediate-title">✨ 이미 제작하여 보유 중인 완성품 수량</div>
         <div class="intermediate-grid">
+          <div class="alchemy-input-box">
+            <div class="item-label">🧪 타락 침식의 영약 (1성)</div>
+            <div class="dual-input">
+              <div class="input-wrapper"><span>세트</span><input type="number" id="in_elixir_1_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+              <div class="input-wrapper"><span>낱개</span><input type="number" id="in_elixir_1_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+            </div>
+          </div>
           <div class="alchemy-input-box">
             <div class="item-label">🛡️ 침식 방어의 핵 (2성)</div>
             <div class="dual-input">
-              <div class="input-wrapper"><span>세트</span><input type="number" id="in_core_2_s" value="0" min="0"></div>
-              <div class="input-wrapper"><span>낱개</span><input type="number" id="in_core_2_p" value="0" min="0"></div>
+              <div class="input-wrapper"><span>세트</span><input type="number" id="in_core_2_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+              <div class="input-wrapper"><span>낱개</span><input type="number" id="in_core_2_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
             </div>
           </div>
           <div class="alchemy-input-box">
             <div class="item-label">🔮 방어 오염의 결정 (3성)</div>
             <div class="dual-input">
-              <div class="input-wrapper"><span>세트</span><input type="number" id="in_crystal_3_s" value="0" min="0"></div>
-              <div class="input-wrapper"><span>낱개</span><input type="number" id="in_crystal_3_p" value="0" min="0"></div>
+              <div class="input-wrapper"><span>세트</span><input type="number" id="in_crystal_3_s" value="0" min="0" oninput="saveAlchemyInputs()"></div>
+              <div class="input-wrapper"><span>낱개</span><input type="number" id="in_crystal_3_p" value="0" min="0" oninput="saveAlchemyInputs()"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <button class="btn-calc" style="width: 100%; font-size: 16px; padding: 15px;" onclick="calculateAlchemy()">연금 최적 조합 계산하기</button>
+      <!-- 계산 및 초기화 버튼 영역 -->
+      <div class="btn-group">
+        <button class="btn-calc" onclick="calculateAlchemy()">연금 최적 조합 계산하기</button>
+        <button class="btn-reset" onclick="resetAlchemyInputs()">🔄 초기화</button>
+      </div>
 
+      <!-- 결과 표시 영역 -->
       <div id="alchemyResult" style="display: none;">
         <div class="result-section">
           <div class="result-title">🎁 최적 연금 제작 결과</div>
@@ -282,10 +300,20 @@
       { name: "흑진주 시계", minPrice: 0, maxPrice: 1000000 }
     ];
 
+    const alchemyInputIds = [
+      'in_oyster_1_s', 'in_oyster_1_p', 'in_conch_1_s', 'in_conch_1_p', 'in_octopus_1_s', 'in_octopus_1_p', 'in_seaweed_1_s', 'in_seaweed_1_p', 'in_urchin_1_s', 'in_urchin_1_p',
+      'in_oyster_2_s', 'in_oyster_2_p', 'in_conch_2_s', 'in_conch_2_p', 'in_octopus_2_s', 'in_octopus_2_p', 'in_seaweed_2_s', 'in_seaweed_2_p', 'in_urchin_2_s', 'in_urchin_2_p',
+      'in_oyster_3_s', 'in_oyster_3_p', 'in_conch_3_s', 'in_conch_3_p', 'in_octopus_3_s', 'in_octopus_3_p', 'in_seaweed_3_s', 'in_seaweed_3_p', 'in_urchin_3_s', 'in_urchin_3_p',
+      'in_elixir_1_s', 'in_elixir_1_p', 'in_core_2_s', 'in_core_2_p', 'in_crystal_3_s', 'in_crystal_3_p'
+    ];
+
     let currentCategory = 'crop';
     let calcResults = JSON.parse(localStorage.getItem('minefarmTabResults')) || { crop: [], ocean: [] };
 
-    function init() { switchCategory('crop'); }
+    function init() { 
+      loadAlchemyInputs();
+      switchCategory('crop'); 
+    }
 
     function switchCategory(category) {
       currentCategory = category;
@@ -386,6 +414,39 @@
       renderResults();
     }
 
+    // 연금 입력값 자동 저장 로직
+    function saveAlchemyInputs() {
+      const data = {};
+      alchemyInputIds.forEach(id => {
+        data[id] = document.getElementById(id).value;
+      });
+      localStorage.setItem('minefarmAlchemyInputs', JSON.stringify(data));
+    }
+
+    // 연금 입력값 불러오기 로직
+    function loadAlchemyInputs() {
+      const saved = localStorage.getItem('minefarmAlchemyInputs');
+      if (saved) {
+        const data = JSON.parse(saved);
+        alchemyInputIds.forEach(id => {
+          if (data[id] !== undefined) {
+            document.getElementById(id).value = data[id];
+          }
+        });
+      }
+    }
+
+    // 초기화 버튼 로직
+    function resetAlchemyInputs() {
+      if (confirm('입력된 채집물 및 완성품 수량을 모두 초기화하시겠습니까?')) {
+        alchemyInputIds.forEach(id => {
+          document.getElementById(id).value = 0;
+        });
+        localStorage.removeItem('minefarmAlchemyInputs');
+        document.getElementById('alchemyResult').style.display = 'none';
+      }
+    }
+
     function getTotalCount(setId, pieceId) {
       const sets = parseInt(document.getElementById(setId).value) || 0;
       const pieces = parseInt(document.getElementById(pieceId).value) || 0;
@@ -393,6 +454,8 @@
     }
 
     function calculateAlchemy() {
+      saveAlchemyInputs(); // 계산 시에도 최신값 저장
+
       const inputs = {
         o1: getTotalCount('in_oyster_1_s', 'in_oyster_1_p'),
         c1: getTotalCount('in_conch_1_s', 'in_conch_1_p'),
@@ -413,6 +476,7 @@
         u3: getTotalCount('in_urchin_3_s', 'in_urchin_3_p'),
 
         // 중간 완품 보유량
+        elixir1: getTotalCount('in_elixir_1_s', 'in_elixir_1_p'),
         core2: getTotalCount('in_core_2_s', 'in_core_2_p'),
         crystal3: getTotalCount('in_crystal_3_s', 'in_crystal_3_p')
       };
@@ -423,11 +487,11 @@
       const craft3 = Math.min(inputs.o3, inputs.c3, inputs.ok3, inputs.s3, inputs.u3);
 
       // (신규 제작 완품 + 기존 보유 완품) 총 수량
-      const total1 = craft1;
+      const total1 = craft1 + inputs.elixir1;
       const total2 = craft2 + inputs.core2;
       const total3 = craft3 + inputs.crystal3;
 
-      // 0성 희석액 제작 가능 개수
+      // 0성 희석액 제작 가능 개수 (요구: 1성 3개, 2성 2개, 3성 1개)
       const extractableDilution = Math.min(Math.floor(total1 / 3), Math.floor(total2 / 2), total3);
 
       const resCrafts = document.getElementById('resListCrafts');
@@ -435,7 +499,7 @@
       resCrafts.innerHTML = '';
       resBuy.innerHTML = '';
 
-      resCrafts.innerHTML += `<li><span><b>1성 완품</b> (영생의 아쿠티스 등)</span> <b>새로 제작: ${craft1.toLocaleString()}개</b></li>`;
+      resCrafts.innerHTML += `<li><span><b>1성 완품</b> (타락 침식의 영약 등)</span> <b>새로 제작: ${craft1.toLocaleString()}개 / (보유 포함 총 ${total1.toLocaleString()}개)</b></li>`;
       resCrafts.innerHTML += `<li><span><b>2성 완품</b> (침식 방어의 핵 등)</span> <b>새로 제작: ${craft2.toLocaleString()}개 / (보유 포함 총 ${total2.toLocaleString()}개)</b></li>`;
       resCrafts.innerHTML += `<li><span><b>3성 완품</b> (방어 오염의 결정 등)</span> <b>새로 제작: ${craft3.toLocaleString()}개 / (보유 포함 총 ${total3.toLocaleString()}개)</b></li>`;
       resCrafts.innerHTML += `<li style="color:#27ae60;"><span>🧪 <b>[0성] 추출된 희석액 바로 제작 가능</b></span> <b>${extractableDilution.toLocaleString()}개</b></li>`;
@@ -451,15 +515,15 @@
       } else {
         if (need1 > 0) {
           const buyP = need1 * 2;
-          resBuy.innerHTML += `<li><span>🦪 <b>1성 채집물</b> (굴, 소라, 문어, 미역, 성게)</span> <b style="color:#c0392b;">각 ${buyP}개씩 필요 (${need1}회 제작분)</b></li>`;
+          resBuy.innerHTML += `<li><span>🦪 <b>1성 채집물</b> (굴, 소라, 문어, 미역, 성게)</span> <b style="color:#c0392b;">각 ${buyP}개씩 필요 (${need1}개 완품 부족)</b></li>`;
         }
         if (need2 > 0) {
           const buyP = need2 * 2;
-          resBuy.innerHTML += `<li><span>🦪 <b>2성 채집물</b> (굴, 소라, 문어, 미역, 성게)</span> <b style="color:#c0392b;">각 ${buyP}개씩 필요 (${need2}회 제작분)</b></li>`;
+          resBuy.innerHTML += `<li><span>🦪 <b>2성 채집물</b> (굴, 소라, 문어, 미역, 성게)</span> <b style="color:#c0392b;">각 ${buyP}개씩 필요 (${need2}개 완품 부족)</b></li>`;
         }
         if (need3 > 0) {
           const buyP = need3 * 1;
-          resBuy.innerHTML += `<li><span>🦪 <b>3성 채집물</b> (굴, 소라, 문어, 미역, 성게)</span> <b style="color:#c0392b;">각 ${buyP}개씩 필요 (${need3}회 제작분)</b></li>`;
+          resBuy.innerHTML += `<li><span>🦪 <b>3성 채집물</b> (굴, 소라, 문어, 미역, 성게)</span> <b style="color:#c0392b;">각 ${buyP}개씩 필요 (${need3}개 완품 부족)</b></li>`;
         }
       }
 
