@@ -588,16 +588,18 @@
   }
 
   // --- 소진 목표 추천 (현재 보유 중인 침식 방어의 핵 inputs.core2 기준) ---
+  // --- 소진 목표 추천 섹션 수정 ---
   const maxPossibleDilution = Math.floor(inputs.core2 / 3); // 592 / 3 = 197개
   const targetCrystalNeeded = maxPossibleDilution * 2;       // 197 * 2 = 394개
   const targetElixirNeeded = maxPossibleDilution * 1;        // 197 * 1 = 197개
-
-  const diffCrystal = Math.max(0, targetCrystalNeeded - potentialCrystal);
-  const diffElixir = Math.max(0, targetElixirNeeded - potentialElixir);
-
-  let targetHtml = `<li><b>목표 희석액 제작 수량:</b> ${maxPossibleDilution.toLocaleString()}개</li>`;
-  targetHtml += `<li><b>필요한 방어 오염의 결정 총량:</b> ${targetCrystalNeeded.toLocaleString()}개 (추가 필요: <b style="color:#e74c3c;">${diffCrystal.toLocaleString()}개</b>)</li>`;
-  targetHtml += `<li><b>필요한 타락 침식의 영약 총량:</b> ${targetElixirNeeded.toLocaleString()}개 (추가 필요: <b style="color:#e74c3c;">${diffElixir.toLocaleString()}개</b>)</li>`;
+  
+  // 순수 보유 완품(inputs) 기준 부족한 개수 계산
+  const diffCrystal = Math.max(0, targetCrystalNeeded - inputs.crystal3);
+  const diffElixir = Math.max(0, targetElixirNeeded - inputs.elixir1);
+  
+  let targetHtml = `<li><span><b>목표 희석액 제작 수량</b></span> <b>${maxPossibleDilution.toLocaleString()}개</b></li>`;
+  targetHtml += `<li><span><b>필요한 방어 오염의 결정 총량</b></span> <span>${targetCrystalNeeded.toLocaleString()}개 <span style="color:#666; font-size:13px;">(추가 필요: <b style="color:#e74c3c;">${diffCrystal.toLocaleString()}개</b>)</span></span></li>`;
+  targetHtml += `<li><span><b>필요한 타락 침식의 영약 총량</b></span> <span>${targetElixirNeeded.toLocaleString()}개 <span style="color:#666; font-size:13px;">(추가 필요: <b style="color:#e74c3c;">${diffElixir.toLocaleString()}개</b>)</span></span></li>`;
   
   resTarget.innerHTML = targetHtml;
   document.getElementById('alchemyResult').style.display = 'block';
