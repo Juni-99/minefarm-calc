@@ -303,20 +303,23 @@
     </div>
   </div>
 
-  <!-- 새로 추가된 강화횃불 계산기 섹션 -->
+  <!-- 강화횃불 계산기 섹션 -->
   <div id="torchSection" style="display: none;">
     <div class="card">
       <h3>🔥 강화횃불 제작 효율 계산기</h3>
-      <p class="info-text">유저에게 구매하는 나무 가격과 강화횃불 판매가를 비교해 수익률을 계산합니다.<br>(강화횃불 1개당 나무 1.125개 소모 / 64개 구울 시 숯 64개 기준)</p>
+      <p class="info-text">
+        💡 <b>제작 공식</b>: 나무 원목 9개 = 숯 8개 + 막대기 8개 → <b>강화횃불 8개</b> (남는 원목 0개)<br>
+        나무 구매 수량을 세트 단위로 입력하면 남는 것 없이 완벽하게 분배 계산합니다.
+      </p>
       
       <div class="torch-form-group">
-        <label for="woodPrice64">🌲 나무 64개당 구매 가격 (G)</label>
-        <input type="number" id="woodPrice64" placeholder="예: 640" value="640">
+        <label for="woodSetPrice">🌲 나무 원목 1세트(64개)당 구매 가격 (G)</label>
+        <input type="number" id="woodSetPrice" placeholder="예: 640" value="640">
       </div>
 
       <div class="torch-form-group">
-        <label for="woodBuyCount">🛒 구매할 총 나무 수량 (개 단위)</label>
-        <input type="number" id="woodBuyCount" placeholder="예: 640" value="640">
+        <label for="woodSetCount">🛒 구매할 나무 원목 세트 수 (64개 단위)</label>
+        <input type="number" id="woodSetCount" placeholder="예: 10" value="10">
       </div>
 
       <div class="torch-form-group">
@@ -329,12 +332,23 @@
       <!-- 강화횃불 계산 결과 표시 -->
       <div id="torchResult" class="result-section" style="display: none; margin-top: 20px;">
         <div class="result-title">📊 강화횃불 제작 효율 분석 결과</div>
+        
+        <div class="step-box" style="margin-bottom: 12px; background:#f8fafc; border-color:#cbd5e1;">
+          <b>🛠️ 나무 분배 가이드 (딱 떨어지는 최적 비율)</b>
+          <ul style="margin: 5px 0 0 18px; padding: 0; font-size: 13px; color: #475569;">
+            <li>입력한 원목: 총 <b id="guideTotalWood">0개</b></li>
+            <li>숯 구이용 원목: <b id="guideCharcoalWood">0개</b> → 숯 <b id="guideCharcoalCount">0개</b> 제작</li>
+            <li>막대기 제작용 원목: <b id="guideStickWood">0개</b> → 막대기 <b id="guideStickCount">0개</b> 제작</li>
+            <li id="guideRemainWoodBox" style="color: #e67e22; display: none;">남은 원목 (조합 불가 잉여분): <b id="guideRemainWood">0개</b></li>
+          </ul>
+        </div>
+
         <ul class="result-list">
           <li><span>💰 총 나무 구매 비용</span> <b id="resTorchCost">0 G</b></li>
-          <li><span>🪵 예상 제작 강화횃불 수량</span> <span><b id="resTorchCount" class="highlight" style="color:#0284c7;">0 개</b> <span id="resTorchRemWood" style="font-size:12px; color:#666;">(남은 나무: 0개)</span></span></li>
+          <li><span>🔥 제작되는 강화횃불 수량</span> <b id="resTorchCount" style="color:#0284c7;">0 개</b></li>
           <li><span>💵 총 예상 매출액</span> <b id="resTorchRevenue">0 G</b></li>
           <li style="border-top: 2px solid #c3e6cb; margin-top: 5px; padding-top: 10px;">
-            <span>✨ 순이익</span> <b id="resTorchProfit" class="profit-text">0 G</b>
+            <span>✨ 순이익 (재료비 제외)</span> <b id="resTorchProfit" class="profit-text">0 G</b>
           </li>
           <li><span>📈 수익률 (ROI)</span> <b id="resTorchRoi" class="profit-text">0%</b></li>
         </ul>
@@ -646,31 +660,49 @@
       document.getElementById('alchemyResult').style.display = 'block';
     }
 
-    // 강화횃불 효율 계산 함수
+    // 개정된 강화횃불 최적화 계산 함수
     function calculateTorchEfficiency() {
-      const woodPrice64 = parseFloat(document.getElementById('woodPrice64').value) || 0;
-      const totalWood = parseFloat(document.getElementById('woodBuyCount').value) || 0;
+      const setPrice = parseFloat(document.getElementById('woodSetPrice').value) || 0;
+      const setInputCount = parseFloat(document.getElementById('woodSetCount').value) || 0;
       const torchSellPrice = parseFloat(document.getElementById('torchSellPrice').value) || 0;
 
-      if (woodPrice64 <= 0 || totalWood <= 0 || torchSellPrice <= 0) {
+      if (setPrice <= 0 || setInputCount <= 0 || torchSellPrice <= 0) {
         alert('모든 입력값을 올바르게 입력해주세요.');
         return;
       }
 
-      const singleWoodCost = woodPrice64 / 64;
-      const totalCost = totalWood * singleWoodCost;
+      const totalWood = setInputCount * 64; // 총 원목 개수
+      const totalCost = setInputCount * setPrice; // 총 구매 비용
 
-      // 강화횃불 1개당 나무 1.125개 소모 (숯 1개 + 막대기 0.125개)
-      const totalTorches = Math.floor(totalWood / 1.125);
-      const remainingWood = (totalWood - (totalTorches * 1.125)).toFixed(2);
+      // 공식: 나무 원목 9개당 횃불 8개 제작 가능 (숯용 8개, 막대기용 1개)
+      const batchCount = Math.floor(totalWood / 9); // 만들어지는 9개 단위 세트
+      const charcoalWood = batchCount * 8; // 숯 굽는 데 사용되는 원목
+      const stickWood = batchCount * 1;    // 막대기 만드는 데 사용되는 원목
+      const remainWood = totalWood % 9;    // 남은 원목 (조합 세트에 미달된 수량)
 
-      const totalRevenue = totalTorches * torchSellPrice;
-      const netProfit = totalRevenue - totalCost;
+      const totalTorches = batchCount * 8; // 만들어지는 총 강화횃불 개수
+      const totalRevenue = totalTorches * torchSellPrice; // 총 매출액
+      const netProfit = totalRevenue - totalCost; // 순이익
       const roi = totalCost > 0 ? ((netProfit / totalCost) * 100).toFixed(1) : 0;
 
+      // 가이드 UI 업데이트
+      document.getElementById('guideTotalWood').textContent = `${totalWood.toLocaleString()}개 (${setInputCount}세트)`;
+      document.getElementById('guideCharcoalWood').textContent = `${charcoalWood.toLocaleString()}개`;
+      document.getElementById('guideCharcoalCount').textContent = `${charcoalWood.toLocaleString()}개`;
+      document.getElementById('guideStickWood').textContent = `${stickWood.toLocaleString()}개`;
+      document.getElementById('guideStickCount').textContent = `${(stickWood * 8).toLocaleString()}개`;
+
+      const remainBox = document.getElementById('guideRemainWoodBox');
+      if (remainWood > 0) {
+        remainBox.style.display = 'block';
+        document.getElementById('guideRemainWood').textContent = `${remainWood}개`;
+      } else {
+        remainBox.style.display = 'none';
+      }
+
+      // 수치 결과 업데이트
       document.getElementById('resTorchCost').textContent = `${totalCost.toLocaleString()} G`;
       document.getElementById('resTorchCount').textContent = `${totalTorches.toLocaleString()} 개`;
-      document.getElementById('resTorchRemWood').textContent = `(남은 나무: ${remainingWood}개)`;
       document.getElementById('resTorchRevenue').textContent = `${totalRevenue.toLocaleString()} G`;
 
       const profitElem = document.getElementById('resTorchProfit');
