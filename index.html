@@ -10,7 +10,7 @@
     h1 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
     
     .tab-container { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-    .tab-button { flex: 1; min-width: 180px; padding: 12px 10px; font-size: 15px; font-weight: bold; border: none; background-color: #e0e6ed; color: #7f8c8d; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; }
+    .tab-button { flex: 1; min-width: 150px; padding: 12px 10px; font-size: 15px; font-weight: bold; border: none; background-color: #e0e6ed; color: #7f8c8d; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; }
     .tab-button.active { background-color: #27ae60; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     
     .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -65,6 +65,13 @@
     .step-box { background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; font-size: 14px; }
     .step-number { display: inline-block; background: #0284c7; color: #fff; font-weight: bold; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-right: 6px; }
 
+    /* 강화횃불 전용 스타일 */
+    .torch-form-group { margin-bottom: 15px; }
+    .torch-form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+    .torch-form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+    .profit-text { color: #27ae60; font-weight: bold; }
+    .loss-text { color: #e74c3c; font-weight: bold; }
+
     .creator-tag { position: fixed; bottom: 15px; right: 20px; font-size: 13px; font-weight: bold; color: #7f8c8d; background: rgba(255, 255, 255, 0.9); padding: 6px 12px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); border: 1px solid #ddd; z-index: 999; }
   </style>
 </head>
@@ -73,9 +80,10 @@
   <h1>🌾 마인팜 통합 계산기</h1>
 
   <div class="tab-container">
-    <button class="tab-button active" onclick="switchCategory('crop')">🌱 재배 (요리 효율)</button>
-    <button class="tab-button" onclick="switchCategory('ocean')">🌊 해양 (공예품 효율)</button>
-    <button class="tab-button" onclick="switchCategory('alchemy')">🧪 해양 연금 최적화</button>
+    <button class="tab-button active" onclick="switchCategory('crop')">🌱 재배 (요리)</button>
+    <button class="tab-button" onclick="switchCategory('ocean')">🌊 해양 (공예품)</button>
+    <button class="tab-button" onclick="switchCategory('alchemy')">🧪 해양 연금</button>
+    <button class="tab-button" onclick="switchCategory('torch')">🔥 강화횃불 효율</button>
   </div>
 
   <!-- 요리 / 공예품 효율 섹션 -->
@@ -295,6 +303,45 @@
     </div>
   </div>
 
+  <!-- 새로 추가된 강화횃불 계산기 섹션 -->
+  <div id="torchSection" style="display: none;">
+    <div class="card">
+      <h3>🔥 강화횃불 제작 효율 계산기</h3>
+      <p class="info-text">유저에게 구매하는 나무 가격과 강화횃불 판매가를 비교해 수익률을 계산합니다.<br>(강화횃불 1개당 나무 1.125개 소모 / 64개 구울 시 숯 64개 기준)</p>
+      
+      <div class="torch-form-group">
+        <label for="woodPrice64">🌲 나무 64개당 구매 가격 (G)</label>
+        <input type="number" id="woodPrice64" placeholder="예: 640" value="640">
+      </div>
+
+      <div class="torch-form-group">
+        <label for="woodBuyCount">🛒 구매할 총 나무 수량 (개 단위)</label>
+        <input type="number" id="woodBuyCount" placeholder="예: 640" value="640">
+      </div>
+
+      <div class="torch-form-group">
+        <label for="torchSellPrice">🔥 강화횃불 1개당 판매 가격 (G)</label>
+        <input type="number" id="torchSellPrice" placeholder="예: 25" value="25">
+      </div>
+
+      <button class="btn-calc" style="width: 100%; margin-top: 10px;" onclick="calculateTorchEfficiency()">효율 계산하기</button>
+
+      <!-- 강화횃불 계산 결과 표시 -->
+      <div id="torchResult" class="result-section" style="display: none; margin-top: 20px;">
+        <div class="result-title">📊 강화횃불 제작 효율 분석 결과</div>
+        <ul class="result-list">
+          <li><span>💰 총 나무 구매 비용</span> <b id="resTorchCost">0 G</b></li>
+          <li><span>🪵 예상 제작 강화횃불 수량</span> <span><b id="resTorchCount" class="highlight" style="color:#0284c7;">0 개</b> <span id="resTorchRemWood" style="font-size:12px; color:#666;">(남은 나무: 0개)</span></span></li>
+          <li><span>💵 총 예상 매출액</span> <b id="resTorchRevenue">0 G</b></li>
+          <li style="border-top: 2px solid #c3e6cb; margin-top: 5px; padding-top: 10px;">
+            <span>✨ 순이익</span> <b id="resTorchProfit" class="profit-text">0 G</b>
+          </li>
+          <li><span>📈 수익률 (ROI)</span> <b id="resTorchRoi" class="profit-text">0%</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <div class="creator-tag">제작자 : 우브</div>
 
   <script>
@@ -350,16 +397,22 @@
       buttons[0].classList.toggle('active', category === 'crop');
       buttons[1].classList.toggle('active', category === 'ocean');
       buttons[2].classList.toggle('active', category === 'alchemy');
+      buttons[3].classList.toggle('active', category === 'torch');
 
       const effSection = document.getElementById('efficiencySection');
       const alcSection = document.getElementById('alchemySection');
+      const torchSection = document.getElementById('torchSection');
+
+      effSection.style.display = 'none';
+      alcSection.style.display = 'none';
+      torchSection.style.display = 'none';
 
       if (category === 'alchemy') {
-        effSection.style.display = 'none';
         alcSection.style.display = 'block';
+      } else if (category === 'torch') {
+        torchSection.style.display = 'block';
       } else {
         effSection.style.display = 'block';
-        alcSection.style.display = 'none';
 
         const title = document.getElementById('calcTitle');
         title.textContent = category === 'crop' ? '🌱 재배 전문가 - 요리 판매 효율 계산' : '🌊 해양 전문가 - 공예품 판매 효율 계산';
@@ -480,130 +533,162 @@
     }
 
     function calculateAlchemy() {
-  saveAlchemyInputs();
+      saveAlchemyInputs();
 
-  const inputs = {
-    o1: getTotalCount('in_oyster_1_s', 'in_oyster_1_p'),
-    c1: getTotalCount('in_conch_1_s', 'in_conch_1_p'),
-    ok1: getTotalCount('in_octopus_1_s', 'in_octopus_1_p'),
-    s1: getTotalCount('in_seaweed_1_s', 'in_seaweed_1_p'),
-    u1: getTotalCount('in_urchin_1_s', 'in_urchin_1_p'),
-    
-    o2: getTotalCount('in_oyster_2_s', 'in_oyster_2_p'),
-    c2: getTotalCount('in_conch_2_s', 'in_conch_2_p'),
-    ok2: getTotalCount('in_octopus_2_s', 'in_octopus_2_p'),
-    s2: getTotalCount('in_seaweed_2_s', 'in_seaweed_2_p'),
-    u2: getTotalCount('in_urchin_2_s', 'in_urchin_2_p'),
+      const inputs = {
+        o1: getTotalCount('in_oyster_1_s', 'in_oyster_1_p'),
+        c1: getTotalCount('in_conch_1_s', 'in_conch_1_p'),
+        ok1: getTotalCount('in_octopus_1_s', 'in_octopus_1_p'),
+        s1: getTotalCount('in_seaweed_1_s', 'in_seaweed_1_p'),
+        u1: getTotalCount('in_urchin_1_s', 'in_urchin_1_p'),
+        
+        o2: getTotalCount('in_oyster_2_s', 'in_oyster_2_p'),
+        c2: getTotalCount('in_conch_2_s', 'in_conch_2_p'),
+        ok2: getTotalCount('in_octopus_2_s', 'in_octopus_2_p'),
+        s2: getTotalCount('in_seaweed_2_s', 'in_seaweed_2_p'),
+        u2: getTotalCount('in_urchin_2_s', 'in_urchin_2_p'),
 
-    o3: getTotalCount('in_oyster_3_s', 'in_oyster_3_p'),
-    c3: getTotalCount('in_conch_3_s', 'in_conch_3_p'),
-    ok3: getTotalCount('in_octopus_3_s', 'in_octopus_3_p'),
-    s3: getTotalCount('in_seaweed_3_s', 'in_seaweed_3_p'),
-    u3: getTotalCount('in_urchin_3_s', 'in_urchin_3_p'),
+        o3: getTotalCount('in_oyster_3_s', 'in_oyster_3_p'),
+        c3: getTotalCount('in_conch_3_s', 'in_conch_3_p'),
+        ok3: getTotalCount('in_octopus_3_s', 'in_octopus_3_p'),
+        s3: getTotalCount('in_seaweed_3_s', 'in_seaweed_3_p'),
+        u3: getTotalCount('in_urchin_3_s', 'in_urchin_3_p'),
 
-    elixir1: getTotalCount('in_elixir_1_s', 'in_elixir_1_p'),
-    core2: getTotalCount('in_core_2_s', 'in_core_2_p'),
-    crystal3: getTotalCount('in_crystal_3_s', 'in_crystal_3_p')
-  };
+        elixir1: getTotalCount('in_elixir_1_s', 'in_elixir_1_p'),
+        core2: getTotalCount('in_core_2_s', 'in_core_2_p'),
+        crystal3: getTotalCount('in_crystal_3_s', 'in_crystal_3_p')
+      };
 
-  // 1. 채집물로 최대로 만들 수 있는 완품 수량
-  const maxCraftCore = Math.min(Math.floor(inputs.o1/2), Math.floor(inputs.c1/2), Math.floor(inputs.ok1/2), Math.floor(inputs.s1/2), Math.floor(inputs.u1/2));
-  const maxCraftCrystal = Math.min(Math.floor(inputs.o2/2), Math.floor(inputs.c2/2), Math.floor(inputs.ok2/2), Math.floor(inputs.s2/2), Math.floor(inputs.u2/2));
-  const maxCraftElixir = Math.min(inputs.o3, inputs.c3, inputs.ok3, inputs.s3, inputs.u3);
+      const maxCraftCore = Math.min(Math.floor(inputs.o1/2), Math.floor(inputs.c1/2), Math.floor(inputs.ok1/2), Math.floor(inputs.s1/2), Math.floor(inputs.u1/2));
+      const maxCraftCrystal = Math.min(Math.floor(inputs.o2/2), Math.floor(inputs.c2/2), Math.floor(inputs.ok2/2), Math.floor(inputs.s2/2), Math.floor(inputs.u2/2));
+      const maxCraftElixir = Math.min(inputs.o3, inputs.c3, inputs.ok3, inputs.s3, inputs.u3);
 
-  // 2. 잠재 완품 총량 (보유 완품 + 최대 신규 제작 가능량)
-  const potentialCore = inputs.core2 + maxCraftCore;
-  const potentialCrystal = inputs.crystal3 + maxCraftCrystal;
-  const potentialElixir = inputs.elixir1 + maxCraftElixir;
+      const potentialCore = inputs.core2 + maxCraftCore;
+      const potentialCrystal = inputs.crystal3 + maxCraftCrystal;
+      const potentialElixir = inputs.elixir1 + maxCraftElixir;
 
-  // 3. 현재 재료로 최대로 제작 가능한 희석액 수량
-  const extractableDilution = Math.min(
-    Math.floor(potentialCore / 3),
-    Math.floor(potentialCrystal / 2),
-    potentialElixir
-  );
+      const extractableDilution = Math.min(
+        Math.floor(potentialCore / 3),
+        Math.floor(potentialCrystal / 2),
+        potentialElixir
+      );
 
-  // 4. 희석액 제작에 실제 '소진/사용'되는 완품 수량
-  const usedCoreTotal = extractableDilution * 3;
-  const usedCrystalTotal = extractableDilution * 2;
-  const usedElixirTotal = extractableDilution * 1;
+      const usedCoreTotal = extractableDilution * 3;
+      const usedCrystalTotal = extractableDilution * 2;
+      const usedElixirTotal = extractableDilution * 1;
 
-  // 5. 완품 사용량 중 보유분으로 모자라서 '신규 제작'해야 하는 수량
-  const needCraftCore = Math.max(0, usedCoreTotal - inputs.core2);
-  const needCraftCrystal = Math.max(0, usedCrystalTotal - inputs.crystal3);
-  const needCraftElixir = Math.max(0, usedElixirTotal - inputs.elixir1);
+      const needCraftCore = Math.max(0, usedCoreTotal - inputs.core2);
+      const needCraftCrystal = Math.max(0, usedCrystalTotal - inputs.crystal3);
+      const needCraftElixir = Math.max(0, usedElixirTotal - inputs.elixir1);
 
-  // 6. 신규 제작을 제외하고 보유분에서 실제 차감 사용되는 완품 수량
-  const existUsedCore = Math.min(inputs.core2, usedCoreTotal);
-  const existUsedCrystal = Math.min(inputs.crystal3, usedCrystalTotal);
-  const existUsedElixir = Math.min(inputs.elixir1, usedElixirTotal);
+      const existUsedCore = Math.min(inputs.core2, usedCoreTotal);
+      const existUsedCrystal = Math.min(inputs.crystal3, usedCrystalTotal);
+      const existUsedElixir = Math.min(inputs.elixir1, usedElixirTotal);
 
-  // DOM 요소
-  const resCrafts = document.getElementById('resListCrafts');
-  const resGuide = document.getElementById('resListGuide');
-  const resTarget = document.getElementById('resListTarget');
-  document.getElementById('guideCount').textContent = extractableDilution;
-  document.getElementById('coreTotalCount').textContent = inputs.core2.toLocaleString();
+      const resCrafts = document.getElementById('resListCrafts');
+      const resGuide = document.getElementById('resListGuide');
+      const resTarget = document.getElementById('resListTarget');
+      document.getElementById('guideCount').textContent = extractableDilution;
+      document.getElementById('coreTotalCount').textContent = inputs.core2.toLocaleString();
 
-  resCrafts.innerHTML = '';
-  resGuide.innerHTML = '';
-  resTarget.innerHTML = '';
+      resCrafts.innerHTML = '';
+      resGuide.innerHTML = '';
+      resTarget.innerHTML = '';
 
-  // --- 현 상태 요약 (실제 소진 수량으로 정확히 표기) ---
-  resCrafts.innerHTML += `<li><span>🧪 <b>침식 방어의 핵</b></span> <b>${usedCoreTotal.toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 보유분 ${existUsedCore}개 사용 + 신규제작 ${needCraftCore}개)</span></li>`;
-  resCrafts.innerHTML += `<li><span>🧪 <b>방어 오염의 결정</b></span> <b>${usedCrystalTotal.toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 보유분 ${existUsedCrystal}개 사용 + 신규제작 ${needCraftCrystal}개)</span></li>`;
-  resCrafts.innerHTML += `<li><span>🧪 <b>타락 침식의 영약</b></span> <b>${usedElixirTotal.toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 보유분 ${existUsedElixir}개 사용 + 신규제작 ${needCraftElixir}개)</span></li>`;
-  resCrafts.innerHTML += `<li style="color:#27ae60; font-weight:bold; font-size:15px;"><span>✨ 현재 최적 제작 가능한 [추출된 희석액]</span> <b>${extractableDilution.toLocaleString()}개</b></li>`;
+      resCrafts.innerHTML += `<li><span>🧪 <b>침식 방어의 핵</b></span> <b>${usedCoreTotal.toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 보유분 ${existUsedCore}개 사용 + 신규제작 ${needCraftCore}개)</span></li>`;
+      resCrafts.innerHTML += `<li><span>🧪 <b>방어 오염의 결정</b></span> <b>${usedCrystalTotal.toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 보유분 ${existUsedCrystal}개 사용 + 신규제작 ${needCraftCrystal}개)</span></li>`;
+      resCrafts.innerHTML += `<li><span>🧪 <b>타락 침식의 영약</b></span> <b>${usedElixirTotal.toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 보유분 ${existUsedElixir}개 사용 + 신규제작 ${needCraftElixir}개)</span></li>`;
+      resCrafts.innerHTML += `<li style="color:#27ae60; font-weight:bold; font-size:15px;"><span>✨ 현재 최적 제작 가능한 [추출된 희석액]</span> <b>${extractableDilution.toLocaleString()}개</b></li>`;
 
-  // --- 가이드 생성 ---
-  if (extractableDilution === 0) {
-    resGuide.innerHTML = `<div class="step-box">현재 보유 재료로는 희석액을 1개도 제작할 수 없습니다. 2티어 완품 및 채집물을 추가로 확보해 주세요.</div>`;
-  } else {
-    let guideHtml = '';
-    let stepNum = 1;
+      if (extractableDilution === 0) {
+        resGuide.innerHTML = `<div class="step-box">현재 보유 재료로는 희석액을 1개도 제작할 수 없습니다. 2티어 완품 및 채집물을 추가로 확보해 주세요.</div>`;
+      } else {
+        let guideHtml = '';
+        let stepNum = 1;
 
-    if (needCraftCore > 0) {
-      guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>침식 방어의 핵 제작:</b> 1성 채집물을 <b>각각 ${(needCraftCore*2).toLocaleString()}개씩</b> 넣고 <b>침식 방어의 핵 ${needCraftCore.toLocaleString()}개</b>를 조합하세요.</div>`;
+        if (needCraftCore > 0) {
+          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>침식 방어의 핵 제작:</b> 1성 채집물을 <b>각각 ${(needCraftCore*2).toLocaleString()}개씩</b> 넣고 <b>침식 방어의 핵 ${needCraftCore.toLocaleString()}개</b>를 조합하세요.</div>`;
+        }
+        if (needCraftCrystal > 0) {
+          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>방어 오염의 결정 제작:</b> 2성 채집물을 <b>각각 ${(needCraftCrystal*2).toLocaleString()}개씩</b> 넣고 <b>방어 오염의 결정 ${needCraftCrystal.toLocaleString()}개</b>를 조합하세요.</div>`;
+        }
+        if (needCraftElixir > 0) {
+          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>타락 침식의 영약 제작:</b> 3성 채집물을 <b>각각 ${needCraftElixir.toLocaleString()}개씩</b> 넣고 <b>타락 침식의 영약 ${needCraftElixir.toLocaleString()}개</b>를 조합하세요.</div>`;
+        }
+
+        guideHtml += `
+          <div class="step-box" style="background:#f0fdf4; border-color:#bbf7d0;">
+            <span class="step-number" style="background:#16a34a;">최종 STEP</span> 
+            <b>희석액 제작:</b> 만들어진/보유 중인 완품 중 아래 수량만 연금 가마에 넣고 조합하세요.
+            <ul style="margin: 5px 0 0 20px; padding: 0; font-size: 13px;">
+              <li><b>침식 방어의 핵:</b> ${usedCoreTotal.toLocaleString()}개 (3개/희석액 1개)</li>
+              <li><b>방어 오염의 결정:</b> ${usedCrystalTotal.toLocaleString()}개 (2개/희석액 1개)</li>
+              <li><b>타락 침식의 영약:</b> ${usedElixirTotal.toLocaleString()}개 (1개/희석액 1개)</li>
+            </ul>
+            <div style="margin-top:5px; color:#15803d; font-weight:bold;">👉 최종 결과: 추출된 희석액 ${extractableDilution.toLocaleString()}개 획득!</div>
+          </div>
+        `;
+        resGuide.innerHTML = guideHtml;
+      }
+
+      const maxPossibleDilution = Math.floor(inputs.core2 / 3);
+      const targetCrystalNeeded = maxPossibleDilution * 2;
+      const targetElixirNeeded = maxPossibleDilution * 1;
+      
+      const diffCrystal = Math.max(0, targetCrystalNeeded - inputs.crystal3);
+      const diffElixir = Math.max(0, targetElixirNeeded - inputs.elixir1);
+      
+      let targetHtml = `<li><span><b>목표 희석액 제작 수량</b></span> <b>${maxPossibleDilution.toLocaleString()}개</b></li>`;
+      targetHtml += `<li><span><b>필요한 방어 오염의 결정 총량</b></span> <span>${targetCrystalNeeded.toLocaleString()}개 <span style="color:#666; font-size:13px;">(추가 필요: <b style="color:#e74c3c;">${diffCrystal.toLocaleString()}개</b>)</span></span></li>`;
+      targetHtml += `<li><span><b>필요한 타락 침식의 영약 총량</b></span> <span>${targetElixirNeeded.toLocaleString()}개 <span style="color:#666; font-size:13px;">(추가 필요: <b style="color:#e74c3c;">${diffElixir.toLocaleString()}개</b>)</span></span></li>`;
+      
+      resTarget.innerHTML = targetHtml;
+      document.getElementById('alchemyResult').style.display = 'block';
     }
-    if (needCraftCrystal > 0) {
-      guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>방어 오염의 결정 제작:</b> 2성 채집물을 <b>각각 ${(needCraftCrystal*2).toLocaleString()}개씩</b> 넣고 <b>방어 오염의 결정 ${needCraftCrystal.toLocaleString()}개</b>를 조합하세요.</div>`;
-    }
-    if (needCraftElixir > 0) {
-      guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>타락 침식의 영약 제작:</b> 3성 채집물을 <b>각각 ${needCraftElixir.toLocaleString()}개씩</b> 넣고 <b>타락 침식의 영약 ${needCraftElixir.toLocaleString()}개</b>를 조합하세요.</div>`;
-    }
 
-    guideHtml += `
-      <div class="step-box" style="background:#f0fdf4; border-color:#bbf7d0;">
-        <span class="step-number" style="background:#16a34a;">최종 STEP</span> 
-        <b>희석액 제작:</b> 만들어진/보유 중인 완품 중 아래 수량만 연금 가마에 넣고 조합하세요.
-        <ul style="margin: 5px 0 0 20px; padding: 0; font-size: 13px;">
-          <li><b>침식 방어의 핵:</b> ${usedCoreTotal.toLocaleString()}개 (3개/희석액 1개)</li>
-          <li><b>방어 오염의 결정:</b> ${usedCrystalTotal.toLocaleString()}개 (2개/희석액 1개)</li>
-          <li><b>타락 침식의 영약:</b> ${usedElixirTotal.toLocaleString()}개 (1개/희석액 1개)</li>
-        </ul>
-        <div style="margin-top:5px; color:#15803d; font-weight:bold;">👉 최종 결과: 추출된 희석액 ${extractableDilution.toLocaleString()}개 획득!</div>
-      </div>
-    `;
-    resGuide.innerHTML = guideHtml;
-  }
+    // 강화횃불 효율 계산 함수
+    function calculateTorchEfficiency() {
+      const woodPrice64 = parseFloat(document.getElementById('woodPrice64').value) || 0;
+      const totalWood = parseFloat(document.getElementById('woodBuyCount').value) || 0;
+      const torchSellPrice = parseFloat(document.getElementById('torchSellPrice').value) || 0;
 
-  // --- 소진 목표 추천 (현재 보유 중인 침식 방어의 핵 inputs.core2 기준) ---
-  // --- 소진 목표 추천 섹션 수정 ---
-  const maxPossibleDilution = Math.floor(inputs.core2 / 3); // 592 / 3 = 197개
-  const targetCrystalNeeded = maxPossibleDilution * 2;       // 197 * 2 = 394개
-  const targetElixirNeeded = maxPossibleDilution * 1;        // 197 * 1 = 197개
-  
-  // 순수 보유 완품(inputs) 기준 부족한 개수 계산
-  const diffCrystal = Math.max(0, targetCrystalNeeded - inputs.crystal3);
-  const diffElixir = Math.max(0, targetElixirNeeded - inputs.elixir1);
-  
-  let targetHtml = `<li><span><b>목표 희석액 제작 수량</b></span> <b>${maxPossibleDilution.toLocaleString()}개</b></li>`;
-  targetHtml += `<li><span><b>필요한 방어 오염의 결정 총량</b></span> <span>${targetCrystalNeeded.toLocaleString()}개 <span style="color:#666; font-size:13px;">(추가 필요: <b style="color:#e74c3c;">${diffCrystal.toLocaleString()}개</b>)</span></span></li>`;
-  targetHtml += `<li><span><b>필요한 타락 침식의 영약 총량</b></span> <span>${targetElixirNeeded.toLocaleString()}개 <span style="color:#666; font-size:13px;">(추가 필요: <b style="color:#e74c3c;">${diffElixir.toLocaleString()}개</b>)</span></span></li>`;
-  
-  resTarget.innerHTML = targetHtml;
-  document.getElementById('alchemyResult').style.display = 'block';
-}
+      if (woodPrice64 <= 0 || totalWood <= 0 || torchSellPrice <= 0) {
+        alert('모든 입력값을 올바르게 입력해주세요.');
+        return;
+      }
+
+      const singleWoodCost = woodPrice64 / 64;
+      const totalCost = totalWood * singleWoodCost;
+
+      // 강화횃불 1개당 나무 1.125개 소모 (숯 1개 + 막대기 0.125개)
+      const totalTorches = Math.floor(totalWood / 1.125);
+      const remainingWood = (totalWood - (totalTorches * 1.125)).toFixed(2);
+
+      const totalRevenue = totalTorches * torchSellPrice;
+      const netProfit = totalRevenue - totalCost;
+      const roi = totalCost > 0 ? ((netProfit / totalCost) * 100).toFixed(1) : 0;
+
+      document.getElementById('resTorchCost').textContent = `${totalCost.toLocaleString()} G`;
+      document.getElementById('resTorchCount').textContent = `${totalTorches.toLocaleString()} 개`;
+      document.getElementById('resTorchRemWood').textContent = `(남은 나무: ${remainingWood}개)`;
+      document.getElementById('resTorchRevenue').textContent = `${totalRevenue.toLocaleString()} G`;
+
+      const profitElem = document.getElementById('resTorchProfit');
+      const roiElem = document.getElementById('resTorchRoi');
+
+      profitElem.textContent = `${netProfit.toLocaleString()} G`;
+      roiElem.textContent = `${roi}%`;
+
+      if (netProfit >= 0) {
+        profitElem.className = 'profit-text';
+        roiElem.className = 'profit-text';
+      } else {
+        profitElem.className = 'loss-text';
+        roiElem.className = 'loss-text';
+      }
+
+      document.getElementById('torchResult').style.display = 'block';
+    }
   </script>
 </body>
 </html>
