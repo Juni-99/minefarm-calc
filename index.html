@@ -501,56 +501,61 @@
     s3: getTotalCount('in_seaweed_3_s', 'in_seaweed_3_p'),
     u3: getTotalCount('in_urchin_3_s', 'in_urchin_3_p'),
 
-    elixir1: getTotalCount('in_elixir_1_s', 'in_elixir_1_p'), // 타락 침식의 영약 보유량
-    core2: getTotalCount('in_core_2_s', 'in_core_2_p'),     // 침식 방어의 핵 보유량
-    crystal3: getTotalCount('in_crystal_3_s', 'in_crystal_3_p') // 방어 오염의 결정 보유량
+    elixir1: getTotalCount('in_elixir_1_s', 'in_elixir_1_p'),
+    core2: getTotalCount('in_core_2_s', 'in_core_2_p'),
+    crystal3: getTotalCount('in_crystal_3_s', 'in_crystal_3_p')
   };
 
-  // 1. 각 재료로 제작 가능한 최대 완품 수
+  // 1. 채집물로 최대로 만들 수 있는 완품 수량
   const maxCraftCore = Math.min(Math.floor(inputs.o1/2), Math.floor(inputs.c1/2), Math.floor(inputs.ok1/2), Math.floor(inputs.s1/2), Math.floor(inputs.u1/2));
   const maxCraftCrystal = Math.min(Math.floor(inputs.o2/2), Math.floor(inputs.c2/2), Math.floor(inputs.ok2/2), Math.floor(inputs.s2/2), Math.floor(inputs.u2/2));
   const maxCraftElixir = Math.min(inputs.o3, inputs.c3, inputs.ok3, inputs.s3, inputs.u3);
 
-  // 2. 최대 잠재 완품 총량
+  // 2. 잠재 완품 총량 (보유 완품 + 최대 신규 제작 가능량)
   const potentialCore = inputs.core2 + maxCraftCore;
   const potentialCrystal = inputs.crystal3 + maxCraftCrystal;
   const potentialElixir = inputs.elixir1 + maxCraftElixir;
 
-  // 3. 최대로 만들 수 있는 희석액 개수 (비율 3 : 2 : 1)
+  // 3. 현재 재료로 최대로 제작 가능한 희석액 수량
   const extractableDilution = Math.min(
     Math.floor(potentialCore / 3),
     Math.floor(potentialCrystal / 2),
     potentialElixir
   );
 
-  // 4. 희석액 목표량(extractableDilution)을 위해 **실제 필요한 완품 양**
-  const reqCoreTotal = extractableDilution * 3;
-  const reqCrystalTotal = extractableDilution * 2;
-  const reqElixirTotal = extractableDilution * 1;
+  // 4. 희석액 제작에 실제 '소진/사용'되는 완품 수량
+  const usedCoreTotal = extractableDilution * 3;
+  const usedCrystalTotal = extractableDilution * 2;
+  const usedElixirTotal = extractableDilution * 1;
 
-  // 5. 보유 완품을 먼저 차감하고 **추가로 새로 만들어야 하는 완품 양**
-  const needCraftCore = Math.max(0, reqCoreTotal - inputs.core2);
-  const needCraftCrystal = Math.max(0, reqCrystalTotal - inputs.crystal3);
-  const needCraftElixir = Math.max(0, reqElixirTotal - inputs.elixir1);
+  // 5. 완품 사용량 중 보유분으로 모자라서 '신규 제작'해야 하는 수량
+  const needCraftCore = Math.max(0, usedCoreTotal - inputs.core2);
+  const needCraftCrystal = Math.max(0, usedCrystalTotal - inputs.crystal3);
+  const needCraftElixir = Math.max(0, usedElixirTotal - inputs.elixir1);
 
-  // DOM 요소 업데이트
+  // 6. 신규 제작을 제외하고 보유분에서 실제 차감 사용되는 완품 수량
+  const existUsedCore = Math.min(inputs.core2, usedCoreTotal);
+  const existUsedCrystal = Math.min(inputs.crystal3, usedCrystalTotal);
+  const existUsedElixir = Math.min(inputs.elixir1, usedElixirTotal);
+
+  // DOM 요소
   const resCrafts = document.getElementById('resListCrafts');
   const resGuide = document.getElementById('resListGuide');
   const resTarget = document.getElementById('resListTarget');
   document.getElementById('guideCount').textContent = extractableDilution;
-  document.getElementById('coreTotalCount').textContent = (inputs.core2 + needCraftCore).toLocaleString();
+  document.getElementById('coreTotalCount').textContent = inputs.core2.toLocaleString();
 
   resCrafts.innerHTML = '';
   resGuide.innerHTML = '';
   resTarget.innerHTML = '';
 
-  // --- 현 상태 요약 (실제 만들 분량만 표시) ---
-  resCrafts.innerHTML += `<li><span>🧪 <b>침식 방어의 핵</b></span> <b>${(inputs.core2 + needCraftCore).toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 ${inputs.core2}개 + 신규제작 ${needCraftCore}개)</span></li>`;
-  resCrafts.innerHTML += `<li><span>🧪 <b>방어 오염의 결정</b></span> <b>${(inputs.crystal3 + needCraftCrystal).toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 ${inputs.crystal3}개 + 신규제작 ${needCraftCrystal}개)</span></li>`;
-  resCrafts.innerHTML += `<li><span>🧪 <b>타락 침식의 영약</b></span> <b>${(inputs.elixir1 + needCraftElixir).toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 ${inputs.elixir1}개 + 신규제작 ${needCraftElixir}개)</span></li>`;
+  // --- 현 상태 요약 (실제 소진 수량으로 정확히 표기) ---
+  resCrafts.innerHTML += `<li><span>🧪 <b>침식 방어의 핵</b></span> <b>${usedCoreTotal.toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 보유분 ${existUsedCore}개 사용 + 신규제작 ${needCraftCore}개)</span></li>`;
+  resCrafts.innerHTML += `<li><span>🧪 <b>방어 오염의 결정</b></span> <b>${usedCrystalTotal.toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 보유분 ${existUsedCrystal}개 사용 + 신규제작 ${needCraftCrystal}개)</span></li>`;
+  resCrafts.innerHTML += `<li><span>🧪 <b>타락 침식의 영약</b></span> <b>${usedElixirTotal.toLocaleString()}개 사용</b> <span style="font-size:12px; color:#666;">(기존 보유분 ${existUsedElixir}개 사용 + 신규제작 ${needCraftElixir}개)</span></li>`;
   resCrafts.innerHTML += `<li style="color:#27ae60; font-weight:bold; font-size:15px;"><span>✨ 현재 최적 제작 가능한 [추출된 희석액]</span> <b>${extractableDilution.toLocaleString()}개</b></li>`;
 
-  // --- 가이드 생성 (부족한 경우에만 STEP 출력) ---
+  // --- 가이드 생성 ---
   if (extractableDilution === 0) {
     resGuide.innerHTML = `<div class="step-box">현재 보유 재료로는 희석액을 1개도 제작할 수 없습니다. 2티어 완품 및 채집물을 추가로 확보해 주세요.</div>`;
   } else {
@@ -572,9 +577,9 @@
         <span class="step-number" style="background:#16a34a;">최종 STEP</span> 
         <b>희석액 제작:</b> 만들어진/보유 중인 완품 중 아래 수량만 연금 가마에 넣고 조합하세요.
         <ul style="margin: 5px 0 0 20px; padding: 0; font-size: 13px;">
-          <li><b>침식 방어의 핵:</b> ${reqCoreTotal.toLocaleString()}개 (3개/희석액 1개)</li>
-          <li><b>방어 오염의 결정:</b> ${reqCrystalTotal.toLocaleString()}개 (2개/희석액 1개)</li>
-          <li><b>타락 침식의 영약:</b> ${reqElixirTotal.toLocaleString()}개 (1개/희석액 1개)</li>
+          <li><b>침식 방어의 핵:</b> ${usedCoreTotal.toLocaleString()}개 (3개/희석액 1개)</li>
+          <li><b>방어 오염의 결정:</b> ${usedCrystalTotal.toLocaleString()}개 (2개/희석액 1개)</li>
+          <li><b>타락 침식의 영약:</b> ${usedElixirTotal.toLocaleString()}개 (1개/희석액 1개)</li>
         </ul>
         <div style="margin-top:5px; color:#15803d; font-weight:bold;">👉 최종 결과: 추출된 희석액 ${extractableDilution.toLocaleString()}개 획득!</div>
       </div>
@@ -582,14 +587,13 @@
     resGuide.innerHTML = guideHtml;
   }
 
-  // --- 소진 목표 추천 ---
-  const totalCoreAvail = inputs.core2 + maxCraftCore;
-  const maxPossibleDilution = Math.floor(totalCoreAvail / 3);
-  const targetCrystalNeeded = maxPossibleDilution * 2;
-  const targetElixirNeeded = maxPossibleDilution * 1;
+  // --- 소진 목표 추천 (현재 보유 중인 침식 방어의 핵 inputs.core2 기준) ---
+  const maxPossibleDilution = Math.floor(inputs.core2 / 3); // 592 / 3 = 197개
+  const targetCrystalNeeded = maxPossibleDilution * 2;       // 197 * 2 = 394개
+  const targetElixirNeeded = maxPossibleDilution * 1;        // 197 * 1 = 197개
 
-  const diffCrystal = Math.max(0, targetCrystalNeeded - (inputs.crystal3 + maxCraftCrystal));
-  const diffElixir = Math.max(0, targetElixirNeeded - (inputs.elixir1 + maxCraftElixir));
+  const diffCrystal = Math.max(0, targetCrystalNeeded - potentialCrystal);
+  const diffElixir = Math.max(0, targetElixirNeeded - potentialElixir);
 
   let targetHtml = `<li><b>목표 희석액 제작 수량:</b> ${maxPossibleDilution.toLocaleString()}개</li>`;
   targetHtml += `<li><b>필요한 방어 오염의 결정 총량:</b> ${targetCrystalNeeded.toLocaleString()}개 (추가 필요: <b style="color:#e74c3c;">${diffCrystal.toLocaleString()}개</b>)</li>`;
