@@ -615,38 +615,38 @@
       resCrafts.innerHTML += `<li style="color:#27ae60; font-weight:bold; font-size:15px;"><span>✨ 현재 최적 제작 가능한 [추출된 희석액]</span> <b>${extractableDilution.toLocaleString()}개</b></li>`;
 
       if (extractableDilution === 0) {
-        resGuide.innerHTML = `<div class="step-box">현재 보유 재료로는 희석액을 1개도 제작할 수 없습니다. 2티어 완품 및 채집물을 추가로 확보해 주세요.</div>`;
-      } else {
-        let guideHtml = '';
-        let stepNum = 1;
-      
-        if (needCraftCore > 0) {
-          // 1성 채집물 2개당 1개 제작
-          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>침식 방어의 핵 제작:</b> 1성 채집물을 <b>각각 ${(needCraftCore * 2).toLocaleString()}개씩</b> 넣고 <b>침식 방어의 핵 ${needCraftCore.toLocaleString()}개</b>를 조합하세요.</div>`;
+          resGuide.innerHTML = `<div class="step-box">현재 보유 재료로는 희석액을 1개도 제작할 수 없습니다. 완품 및 채집물을 추가로 확보해 주세요.</div>`;
+        } else {
+          let guideHtml = '';
+          let stepNum = 1;
+        
+          if (needCraftCore > 0) {
+            // 1성 채집물 (1성 굴, Conch, Octopus, Seaweed, Urchin 등)
+            guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>침식 방어의 핵 제작:</b> 1성 채집물을 <b>각각 ${(needCraftCore * 2).toLocaleString()}개씩</b> 넣고 <b>침식 방어의 핵 ${needCraftCore.toLocaleString()}개</b>를 조합하세요.</div>`;
+          }
+          if (needCraftCrystal > 0) {
+            // 2성 굴 + 2성 문어 명시
+            guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>방어 오염의 결정 제작:</b> <b>2성 굴</b>과 <b>2성 문어</b>를 <b>각각 ${needCraftCrystal.toLocaleString()}개씩</b> 넣고 <b>방어 오염의 결정 ${needCraftCrystal.toLocaleString()}개</b>를 조합하세요.</div>`;
+          }
+          if (needCraftElixir > 0) {
+            // 3성 문어 + 3성 성게 명시
+            guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>타락 침식의 영약 제작:</b> <b>3성 문어</b>와 <b>3성 성게</b>를 <b>각각 ${needCraftElixir.toLocaleString()}개씩</b> 넣고 <b>타락 침식의 영약 ${needCraftElixir.toLocaleString()}개</b>를 조합하세요.</div>`;
+          }
+        
+          guideHtml += `
+            <div class="step-box" style="background:#f0fdf4; border-color:#bbf7d0;">
+              <span class="step-number" style="background:#16a34a;">최종 STEP</span> 
+              <b>희석액 제작:</b> 만들어진/보유 중인 완품 중 아래 수량만 연금 가마에 넣고 조합하세요.
+              <ul style="margin: 5px 0 0 20px; padding: 0; font-size: 13px;">
+                <li><b>침식 방어의 핵:</b> ${usedCoreTotal.toLocaleString()}개 (3개/희석액 1개)</li>
+                <li><b>방어 오염의 결정:</b> ${usedCrystalTotal.toLocaleString()}개 (2개/희석액 1개)</li>
+                <li><b>타락 침식의 영약:</b> ${usedElixirTotal.toLocaleString()}개 (1개/희석액 1개)</li>
+              </ul>
+              <div style="margin-top:5px; color:#15803d; font-weight:bold;">👉 최종 결과: 추출된 희석액 ${extractableDilution.toLocaleString()}개 획득!</div>
+            </div>
+          `;
+          resGuide.innerHTML = guideHtml;
         }
-        if (needCraftCrystal > 0) {
-          // 2성 채집물 각 1개당 에센스 1개 -> 결정 1개 완성 (수량 1:1)
-          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>방어 오염의 결정 제작:</b> 2성 채집물을 <b>각각 ${needCraftCrystal.toLocaleString()}개씩</b> 넣고 <b>방어 오염의 결정 ${needCraftCrystal.toLocaleString()}개</b>를 조합하세요.</div>`;
-        }
-        if (needCraftElixir > 0) {
-          // 3성 채집물 1:1 비율
-          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>타락 침식의 영약 제작:</b> 3성 채집물을 <b>각각 ${needCraftElixir.toLocaleString()}개씩</b> 넣고 <b>타락 침식의 영약 ${needCraftElixir.toLocaleString()}개</b>를 조합하세요.</div>`;
-        }
-      
-        guideHtml += `
-          <div class="step-box" style="background:#f0fdf4; border-color:#bbf7d0;">
-            <span class="step-number" style="background:#16a34a;">최종 STEP</span> 
-            <b>희석액 제작:</b> 만들어진/보유 중인 완품 중 아래 수량만 연금 가마에 넣고 조합하세요.
-            <ul style="margin: 5px 0 0 20px; padding: 0; font-size: 13px;">
-              <li><b>침식 방어의 핵:</b> ${usedCoreTotal.toLocaleString()}개 (3개/희석액 1개)</li>
-              <li><b>방어 오염의 결정:</b> ${usedCrystalTotal.toLocaleString()}개 (2개/희석액 1개)</li>
-              <li><b>타락 침식의 영약:</b> ${usedElixirTotal.toLocaleString()}개 (1개/희석액 1개)</li>
-            </ul>
-            <div style="margin-top:5px; color:#15803d; font-weight:bold;">👉 최종 결과: 추출된 희석액 ${extractableDilution.toLocaleString()}개 획득!</div>
-          </div>
-        `;
-        resGuide.innerHTML = guideHtml;
-      }
 
       const maxPossibleDilution = Math.floor(inputs.core2 / 3);
       const targetCrystalNeeded = maxPossibleDilution * 2;
