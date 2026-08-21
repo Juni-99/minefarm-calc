@@ -619,17 +619,20 @@
       } else {
         let guideHtml = '';
         let stepNum = 1;
-
+      
         if (needCraftCore > 0) {
-          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>침식 방어의 핵 제작:</b> 1성 채집물을 <b>각각 ${(needCraftCore*2).toLocaleString()}개씩</b> 넣고 <b>침식 방어의 핵 ${needCraftCore.toLocaleString()}개</b>를 조합하세요.</div>`;
+          // 1성 채집물 2개당 1개 제작
+          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>침식 방어의 핵 제작:</b> 1성 채집물을 <b>각각 ${(needCraftCore * 2).toLocaleString()}개씩</b> 넣고 <b>침식 방어의 핵 ${needCraftCore.toLocaleString()}개</b>를 조합하세요.</div>`;
         }
         if (needCraftCrystal > 0) {
-          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>방어 오염의 결정 제작:</b> 2성 채집물을 <b>각각 ${(needCraftCrystal*2).toLocaleString()}개씩</b> 넣고 <b>방어 오염의 결정 ${needCraftCrystal.toLocaleString()}개</b>를 조합하세요.</div>`;
+          // 2성 채집물 각 1개당 에센스 1개 -> 결정 1개 완성 (수량 1:1)
+          guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>방어 오염의 결정 제작:</b> 2성 채집물을 <b>각각 ${needCraftCrystal.toLocaleString()}개씩</b> 넣고 <b>방어 오염의 결정 ${needCraftCrystal.toLocaleString()}개</b>를 조합하세요.</div>`;
         }
         if (needCraftElixir > 0) {
+          // 3성 채집물 1:1 비율
           guideHtml += `<div class="step-box"><span class="step-number">STEP ${stepNum++}</span> <b>타락 침식의 영약 제작:</b> 3성 채집물을 <b>각각 ${needCraftElixir.toLocaleString()}개씩</b> 넣고 <b>타락 침식의 영약 ${needCraftElixir.toLocaleString()}개</b>를 조합하세요.</div>`;
         }
-
+      
         guideHtml += `
           <div class="step-box" style="background:#f0fdf4; border-color:#bbf7d0;">
             <span class="step-number" style="background:#16a34a;">최종 STEP</span> 
