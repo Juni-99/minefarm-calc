@@ -36,6 +36,9 @@
     /* 연금 계산기 스타일 */
     .alchemy-input-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
     .alchemy-input-box label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #2c3e50; }
+    .alchemy-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+    .alchemy-field { flex: 1; min-width: 140px; }
+    .alchemy-field label { font-size: 13px; color: #555; }
     .alchemy-input-box input { width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 5px; font-size: 15px; font-weight: bold; }
 
     .result-section { background: #eef9f1; border: 1px solid #c3e6cb; border-radius: 8px; padding: 15px; margin-top: 15px; }
@@ -102,15 +105,24 @@
     </div>
   </div>
 
-  <!-- 해양 연금 재료 계산 섹션 (이미지 반영) -->
+  <!-- 해양 연금 재료 계산 섹션 -->
   <div id="alchemySection" style="display: none;">
     <div class="card">
       <h3>🧪 제작 필요 재료 계산기</h3>
-      <p class="info-text">목표 <b>세트 수량(1세트 = 64개)</b>을 입력하면 필요한 기본 재료 및 해산물 재료를 계산합니다.</p>
+      <p class="info-text">목표 <b>세트 수량(1세트 = 64개)</b>과 <b>남은 낱개 수량(짝수만 가능)</b>을 입력하면 필요한 재료를 계산합니다.</p>
       
       <div class="alchemy-input-box">
-        <label for="targetSetCount">🎯 목표 제작 수량 (세트)</label>
-        <input type="number" id="targetSetCount" placeholder="예: 1 (1세트 입력 시 해당 재료 수량 산출)" min="0" oninput="saveAlchemyInputs()">
+        <label>🎯 목표 제작 수량</label>
+        <div class="alchemy-grid">
+          <div class="alchemy-field">
+            <label for="targetSetCount">세트 수량 (64개 단위)</label>
+            <input type="number" id="targetSetCount" placeholder="예: 1" min="0" oninput="saveAlchemyInputs()">
+          </div>
+          <div class="alchemy-field">
+            <label for="targetExtraCount">남은 낱개 수량 (짝수만 입력)</label>
+            <input type="number" id="targetExtraCount" placeholder="예: 32 (짝수만 가능)" min="0" step="2" oninput="saveAlchemyInputs()">
+          </div>
+        </div>
       </div>
 
       <div class="btn-group">
@@ -392,50 +404,69 @@
 
     /* === 로컬 스토리지 저장/불러오기 === */
     function saveAlchemyInputs() {
-      const val = document.getElementById('targetSetCount').value;
-      localStorage.setItem('minefarmTargetSet', val);
+      const setCount = document.getElementById('targetSetCount').value;
+      const extraCount = document.getElementById('targetExtraCount').value;
+      localStorage.setItem('minefarmTargetSet', setCount);
+      localStorage.setItem('minefarmTargetExtra', extraCount);
     }
 
     function loadAlchemyInputs() {
-      const saved = localStorage.getItem('minefarmTargetSet');
-      if (saved !== null) {
-        document.getElementById('targetSetCount').value = saved;
+      const savedSet = localStorage.getItem('minefarmTargetSet');
+      const savedExtra = localStorage.getItem('minefarmTargetExtra');
+      if (savedSet !== null) {
+        document.getElementById('targetSetCount').value = savedSet;
+      }
+      if (savedExtra !== null) {
+        document.getElementById('targetExtraCount').value = savedExtra;
       }
     }
 
     function resetAlchemyInputs() {
       if (confirm('입력 수량을 초기화하시겠습니까?')) {
         document.getElementById('targetSetCount').value = '';
+        document.getElementById('targetExtraCount').value = '';
         localStorage.removeItem('minefarmTargetSet');
+        localStorage.removeItem('minefarmTargetExtra');
         document.getElementById('alchemyResult').style.display = 'none';
       }
     }
 
-    /* === 1세트 기준 지정 재료 계산 로직 === */
+    /* === 1세트 기준 지정 재료 및 낱개(짝수) 비례 계산 로직 === */
     function calculateAlchemy() {
       const setCount = parseInt(document.getElementById('targetSetCount').value) || 0;
+      const extraCount = parseInt(document.getElementById('targetExtraCount').value) || 0;
 
-      if (setCount <= 0) {
-        alert('제작하려는 세트 수량을 1세트 이상 입력해 주세요.');
+      // 입력값 유효성 검사
+      if (setCount <= 0 && extraCount <= 0) {
+        alert('제작하려는 수량을 1개 이상 입력해 주세요.');
+        return;
+      }
+
+      // 짝수 검증 (홀수 입력 차단)
+      if (extraCount % 2 !== 0) {
+        alert('남는 낱개 수량은 짝수만 입력 가능합니다. (예: 2, 4, 32 등)');
         return;
       }
 
       saveAlchemyInputs();
 
-      // 1세트당 기준 수량
+      // 총 세트 비율 (예: 1세트 + 32개 = 1.5 세트)
+      const totalSets = setCount + (extraCount / 64);
+
+      // 1세트당 기준 수량 비례 계산
       // 기본 재료: 점토 64, 모래 128, 흙 256, 자갈 128, 화강암 64
-      const clay = setCount * 64;
-      const sand = setCount * 128;
-      const dirt = setCount * 256;
-      const gravel = setCount * 128;
-      const granite = setCount * 64;
+      const clay = Math.round(totalSets * 64);
+      const sand = Math.round(totalSets * 128);
+      const dirt = Math.round(totalSets * 256);
+      const gravel = Math.round(totalSets * 128);
+      const granite = Math.round(totalSets * 64);
 
       // 해산물 재료: 각 32개씩
-      const shrimp = setCount * 32;
-      const redSnapper = setCount * 32;
-      const herring = setCount * 32;
-      const goldfish = setCount * 32;
-      const bass = setCount * 32;
+      const shrimp = Math.round(totalSets * 32);
+      const redSnapper = Math.round(totalSets * 32);
+      const herring = Math.round(totalSets * 32);
+      const goldfish = Math.round(totalSets * 32);
+      const bass = Math.round(totalSets * 32);
 
       // 화면에 스택/세트 단위 적용하여 출력
       document.getElementById('resClay').textContent = formatStackCount(clay);
