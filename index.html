@@ -34,18 +34,17 @@
     .info-text { font-size: 13px; color: #666; margin-top: -5px; margin-bottom: 10px; }
 
     /* 연금 계산기 스타일 */
+    .alchemy-section-title { font-weight: bold; font-size: 16px; color: #2c3e50; border-left: 4px solid #27ae60; padding-left: 8px; margin-top: 15px; margin-bottom: 10px; }
     .alchemy-input-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
     .alchemy-input-box label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #2c3e50; }
-    .alchemy-grid { display: flex; gap: 10px; flex-wrap: wrap; }
-    .alchemy-field { flex: 1; min-width: 140px; }
-    .alchemy-field label { font-size: 13px; color: #555; }
-    .alchemy-input-box input { width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 5px; font-size: 15px; font-weight: bold; }
+    .input-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .input-row input { flex: 1; min-width: 130px; padding: 12px; border: 1px solid #ced4da; border-radius: 5px; font-size: 14px; font-weight: bold; }
 
     .result-section { background: #eef9f1; border: 1px solid #c3e6cb; border-radius: 8px; padding: 15px; margin-top: 15px; }
     .result-title { font-weight: bold; color: #155724; font-size: 15px; margin-bottom: 10px; border-bottom: 2px solid #c3e6cb; padding-bottom: 5px; }
 
     .result-list { list-style: none; padding: 0; margin: 0; }
-    .result-list li { padding: 9px 0; font-size: 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; }
+    .result-list li { padding: 8px 0; font-size: 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; }
     .result-list li:last-child { border-bottom: none; }
     .item-label { display: flex; align-items: center; gap: 8px; font-weight: bold; }
     .item-label img { width: 24px; height: 24px; object-fit: contain; }
@@ -105,23 +104,29 @@
     </div>
   </div>
 
-  <!-- 해양 연금 재료 계산 섹션 -->
+  <!-- 해양 연금 재료 계산 섹션 (1성 & 2성 입력 분리) -->
   <div id="alchemySection" style="display: none;">
     <div class="card">
       <h3>🧪 제작 필요 재료 계산기</h3>
-      <p class="info-text">목표 <b>세트 수량(1세트 = 64개)</b>과 <b>남은 낱개 수량(짝수만 가능)</b>을 입력하면 필요한 재료를 계산합니다.</p>
+      <p class="info-text">목표 제작 수량을 입력하면 연금에 필요한 모든 하위 재료를 계산합니다.<br>⚠️ <b>낱개 수량은 짝수(2, 4, 6...)만 입력 가능합니다.</b></p>
       
+      <!-- 1성 연금 입력 -->
+      <div class="alchemy-section-title">⭐ 1성 연금 목표 수량</div>
       <div class="alchemy-input-box">
-        <label>🎯 목표 제작 수량</label>
-        <div class="alchemy-grid">
-          <div class="alchemy-field">
-            <label for="targetSetCount">세트 수량 (64개 단위)</label>
-            <input type="number" id="targetSetCount" placeholder="예: 1" min="0" oninput="saveAlchemyInputs()">
-          </div>
-          <div class="alchemy-field">
-            <label for="targetExtraCount">남은 낱개 수량 (짝수만 입력)</label>
-            <input type="number" id="targetExtraCount" placeholder="예: 32 (짝수만 가능)" min="0" step="2" oninput="saveAlchemyInputs()">
-          </div>
+        <label for="targetSetCount1">🎯 1성 제작 목표 수량</label>
+        <div class="input-row">
+          <input type="number" id="targetSetCount1" placeholder="세트 수 (64개 단위)" min="0" oninput="saveAlchemyInputs()">
+          <input type="number" id="targetPieceCount1" placeholder="남은 낱개 수 (짝수)" min="0" step="2" oninput="saveAlchemyInputs()">
+        </div>
+      </div>
+
+      <!-- 2성 연금 입력 -->
+      <div class="alchemy-section-title">⭐⭐ 2성 연금 목표 수량 (결정 5종 각 N개 세트)</div>
+      <div class="alchemy-input-box">
+        <label for="targetSetCount2">🎯 2성 결정 제작 목표 수량 (5종 공통)</label>
+        <div class="input-row">
+          <input type="number" id="targetSetCount2" placeholder="세트 수 (64개 단위)" min="0" oninput="saveAlchemyInputs()">
+          <input type="number" id="targetPieceCount2" placeholder="남은 낱개 수 (짝수)" min="0" step="2" oninput="saveAlchemyInputs()">
         </div>
       </div>
 
@@ -133,55 +138,58 @@
       <!-- 연금 계산 결과 표시 -->
       <div id="alchemyResult" class="result-section" style="display: none;">
         
-        <!-- 기본 재료 목록 -->
-        <div class="result-title">🧱 필요 기본 재료 목록</div>
-        <ul class="result-list" style="margin-bottom: 20px;">
-          <li>
-            <span class="item-label"><img id="imgClay" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Clay.png" alt="점토"> 점토</span>
-            <b id="resClay">0개</b>
-          </li>
-          <li>
-            <span class="item-label"><img id="imgSand" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Sand.png" alt="모래"> 모래</span>
-            <b id="resSand">0개</b>
-          </li>
-          <li>
-            <span class="item-label"><img id="imgDirt" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dirt.png" alt="흙"> 흙</span>
-            <b id="resDirt">0개</b>
-          </li>
-          <li>
-            <span class="item-label"><img id="imgGravel" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Gravel.png" alt="자갈"> 자갈</span>
-            <b id="resGravel">0개</b>
-          </li>
-          <li>
-            <span class="item-label"><img id="imgGranite" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Granite.png" alt="화강암"> 화강암</span>
-            <b id="resGranite">0개</b>
-          </li>
-        </ul>
+        <!-- 1성 연금 결과 -->
+        <div id="res1StarBox">
+          <div class="result-title">🧱 1성 연금 기본 재료 목록</div>
+          <ul class="result-list" style="margin-bottom: 15px;">
+            <li><span class="item-label"><img id="imgClay" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Clay.png" alt="점토"> 점토</span><b id="resClay">0개</b></li>
+            <li><span class="item-label"><img id="imgSand" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Sand.png" alt="모래"> 모래</span><b id="resSand">0개</b></li>
+            <li><span class="item-label"><img id="imgDirt" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dirt.png" alt="흙"> 흙</span><b id="resDirt">0개</b></li>
+            <li><span class="item-label"><img id="imgGravel" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Gravel.png" alt="자갈"> 자갈</span><b id="resGravel">0개</b></li>
+            <li><span class="item-label"><img id="imgGranite" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Granite.png" alt="화강암"> 화강암</span><b id="resGranite">0개</b></li>
+          </ul>
 
-        <!-- 해산물 재료 목록 -->
-        <div class="result-title">🐟 필요 해산물 재료 목록</div>
-        <ul class="result-list">
-          <li>
-            <span class="item-label"><img id="imgShrimp" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/shrimp.png" alt="깐새우"> 깐새우</span>
-            <b id="resShrimp">0개</b>
-          </li>
-          <li>
-            <span class="item-label"><img id="imgRedSnapper" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bream.png" alt="도미회"> 도미회</span>
-            <b id="resRedSnapper">0개</b>
-          </li>
-          <li>
-            <span class="item-label"><img id="imgHerring" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/herring.png" alt="청어회"> 청어회</span>
-            <b id="resHerring">0개</b>
-          </li>
-          <li>
-            <span class="item-label"><img id="imgGoldfish" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Goldfish.png" alt="금붕어회"> 금붕어회</span>
-            <b id="resGoldfish">0개</b>
-          </li>
-          <li>
-            <span class="item-label"><img id="imgBass" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bass.png" alt="농어회"> 농어회</span>
-            <b id="resBass">0개</b>
-          </li>
-        </ul>
+          <div class="result-title">🐟 1성 연금 필요 해산물 재료 목록</div>
+          <ul class="result-list" style="margin-bottom: 25px;">
+            <li><span class="item-label"><img id="imgShrimp" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/shrimp.png" alt="깐새우"> 깐새우</span><b id="resShrimp">0개</b></li>
+            <li><span class="item-label"><img id="imgRedSnapper" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bream.png" alt="도미회"> 도미회</span><b id="resRedSnapper">0개</b></li>
+            <li><span class="item-label"><img id="imgHerring" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/herring.png" alt="청어회"> 청어회</span><b id="resHerring">0개</b></li>
+            <li><span class="item-label"><img id="imgGoldfish" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Goldfish.png" alt="금붕어회"> 금붕어회</span><b id="resGoldfish">0개</b></li>
+            <li><span class="item-label"><img id="imgBass" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bass.png" alt="농어회"> 농어회</span><b id="resBass">0개</b></li>
+          </ul>
+        </div>
+
+        <!-- 2성 연금 결과 -->
+        <div id="res2StarBox">
+          <div class="result-title">🐙 2성 필요 어패류 목록</div>
+          <ul class="result-list" style="margin-bottom: 15px;">
+            <li><span class="item-label"><img id="img2Oyster" src="" alt="2성 굴"> 2성 굴</span><b id="res2Oyster">0개</b></li>
+            <li><span class="item-label"><img id="img2Conch" src="" alt="2성 소라"> 2성 소라</span><b id="res2Conch">0개</b></li>
+            <li><span class="item-label"><img id="img2Octopus" src="" alt="2성 문어"> 2성 문어</span><b id="res2Octopus">0개</b></li>
+            <li><span class="item-label"><img id="img2Seaweed" src="" alt="2성 미역"> 2성 미역</span><b id="res2Seaweed">0개</b></li>
+            <li><span class="item-label"><img id="img2SeaUrchin" src="" alt="2성 성게"> 2성 성게</span><b id="res2SeaUrchin">0개</b></li>
+          </ul>
+
+          <div class="result-title">🌿 2성 연금 필요 식물 (해초 & 나뭇잎) 목록</div>
+          <ul class="result-list" style="margin-bottom: 15px;">
+            <li><span class="item-label"><img id="imgSeaweedItem" src="" alt="해초"> 해초</span><b id="resSeaweedItem">0개</b></li>
+            <li><span class="item-label"><img id="imgOakLeaf" src="" alt="참나무 잎"> 참나무 잎</span><b id="resOakLeaf">0개</b></li>
+            <li><span class="item-label"><img id="imgSpruceLeaf" src="" alt="가문비나무 잎"> 가문비나무 잎</span><b id="resSpruceLeaf">0개</b></li>
+            <li><span class="item-label"><img id="imgBirchLeaf" src="" alt="자작나무 잎"> 자작나무 잎</span><b id="resBirchLeaf">0개</b></li>
+            <li><span class="item-label"><img id="imgCherryLeaf" src="" alt="벚나무 잎"> 벚나무 잎</span><b id="resCherryLeaf">0개</b></li>
+            <li><span class="item-label"><img id="imgDarkOakLeaf" src="" alt="짙은참나무 잎"> 짙은참나무 잎</span><b id="resDarkOakLeaf">0개</b></li>
+          </ul>
+
+          <div class="result-title">💎 2성 연금 필요 광물 및 켈프 목록</div>
+          <ul class="result-list">
+            <li><span class="item-label"><img id="imgKelp" src="" alt="켈프 더미"> 켈프 더미</span><b id="resKelp">0개</b></li>
+            <li><span class="item-label"><img id="imgLapis" src="" alt="청금석 블록"> 청금석 블록</span><b id="resLapis">0개</b></li>
+            <li><span class="item-label"><img id="imgRedstone" src="" alt="레드스톤 블록"> 레드스톤 블록</span><b id="resRedstone">0개</b></li>
+            <li><span class="item-label"><img id="imgIron" src="" alt="철 주괴"> 철 주괴</span><b id="resIron">0개</b></li>
+            <li><span class="item-label"><img id="imgGold" src="" alt="금 주괴"> 금 주괴</span><b id="resGold">0개</b></li>
+            <li><span class="item-label"><img id="imgDiamond" src="" alt="다이아몬드"> 다이아몬드</span><b id="resDiamond">0개</b></li>
+          </ul>
+        </div>
 
       </div>
     </div>
@@ -243,7 +251,6 @@
   <div class="creator-tag">제작자 : 우브</div>
 
   <script>
-    // 64개 단위로 세트와 낱개를 표시해주는 도우미 함수
     function formatStackCount(total) {
       if (total < 64) {
         return `${total.toLocaleString()}개`;
@@ -404,82 +411,125 @@
 
     /* === 로컬 스토리지 저장/불러오기 === */
     function saveAlchemyInputs() {
-      const setCount = document.getElementById('targetSetCount').value;
-      const extraCount = document.getElementById('targetExtraCount').value;
-      localStorage.setItem('minefarmTargetSet', setCount);
-      localStorage.setItem('minefarmTargetExtra', extraCount);
+      localStorage.setItem('minefarmTargetSet1', document.getElementById('targetSetCount1').value);
+      localStorage.setItem('minefarmTargetPiece1', document.getElementById('targetPieceCount1').value);
+      localStorage.setItem('minefarmTargetSet2', document.getElementById('targetSetCount2').value);
+      localStorage.setItem('minefarmTargetPiece2', document.getElementById('targetPieceCount2').value);
     }
 
     function loadAlchemyInputs() {
-      const savedSet = localStorage.getItem('minefarmTargetSet');
-      const savedExtra = localStorage.getItem('minefarmTargetExtra');
-      if (savedSet !== null) {
-        document.getElementById('targetSetCount').value = savedSet;
-      }
-      if (savedExtra !== null) {
-        document.getElementById('targetExtraCount').value = savedExtra;
-      }
+      if (localStorage.getItem('minefarmTargetSet1') !== null) document.getElementById('targetSetCount1').value = localStorage.getItem('minefarmTargetSet1');
+      if (localStorage.getItem('minefarmTargetPiece1') !== null) document.getElementById('targetPieceCount1').value = localStorage.getItem('minefarmTargetPiece1');
+      if (localStorage.getItem('minefarmTargetSet2') !== null) document.getElementById('targetSetCount2').value = localStorage.getItem('minefarmTargetSet2');
+      if (localStorage.getItem('minefarmTargetPiece2') !== null) document.getElementById('targetPieceCount2').value = localStorage.getItem('minefarmTargetPiece2');
     }
 
     function resetAlchemyInputs() {
-      if (confirm('입력 수량을 초기화하시겠습니까?')) {
-        document.getElementById('targetSetCount').value = '';
-        document.getElementById('targetExtraCount').value = '';
-        localStorage.removeItem('minefarmTargetSet');
-        localStorage.removeItem('minefarmTargetExtra');
+      if (confirm('모든 연금 입력 수량을 초기화하시겠습니까?')) {
+        document.getElementById('targetSetCount1').value = '';
+        document.getElementById('targetPieceCount1').value = '';
+        document.getElementById('targetSetCount2').value = '';
+        document.getElementById('targetPieceCount2').value = '';
+        localStorage.removeItem('minefarmTargetSet1');
+        localStorage.removeItem('minefarmTargetPiece1');
+        localStorage.removeItem('minefarmTargetSet2');
+        localStorage.removeItem('minefarmTargetPiece2');
         document.getElementById('alchemyResult').style.display = 'none';
       }
     }
 
-    /* === 1세트 기준 지정 재료 및 낱개(짝수) 비례 계산 로직 === */
+    /* === 연금 통합 재료 계산 로직 (정정된 비율 반영) === */
     function calculateAlchemy() {
-      const setCount = parseInt(document.getElementById('targetSetCount').value) || 0;
-      const extraCount = parseInt(document.getElementById('targetExtraCount').value) || 0;
+      const setCount1 = parseInt(document.getElementById('targetSetCount1').value) || 0;
+      const pieceCount1 = parseInt(document.getElementById('targetPieceCount1').value) || 0;
+      const setCount2 = parseInt(document.getElementById('targetSetCount2').value) || 0;
+      const pieceCount2 = parseInt(document.getElementById('targetPieceCount2').value) || 0;
 
-      // 입력값 유효성 검사
-      if (setCount <= 0 && extraCount <= 0) {
-        alert('제작하려는 수량을 1개 이상 입력해 주세요.');
+      if ((pieceCount1 % 2 !== 0) || (pieceCount2 % 2 !== 0)) {
+        alert('낱개 수량은 짝수(2, 4, 6...)로만 입력 가능합니다.');
         return;
       }
 
-      // 짝수 검증 (홀수 입력 차단)
-      if (extraCount % 2 !== 0) {
-        alert('남는 낱개 수량은 짝수만 입력 가능합니다. (예: 2, 4, 32 등)');
+      const totalItems1 = (setCount1 * 64) + pieceCount1;
+      const totalItems2 = (setCount2 * 64) + pieceCount2;
+
+      if (totalItems1 <= 0 && totalItems2 <= 0) {
+        alert('1성 또는 2성 연금 목표 수량을 1개 이상 입력해 주세요.');
         return;
       }
 
       saveAlchemyInputs();
 
-      // 총 세트 비율 (예: 1세트 + 32개 = 1.5 세트)
-      const totalSets = setCount + (extraCount / 64);
+      // --- 1성 연금 계산 ---
+      const res1Box = document.getElementById('res1StarBox');
+      if (totalItems1 > 0) {
+        res1Box.style.display = 'block';
+        const mult1 = totalItems1 / 64;
+        document.getElementById('resClay').textContent = formatStackCount(mult1 * 64);
+        document.getElementById('resSand').textContent = formatStackCount(mult1 * 128);
+        document.getElementById('resDirt').textContent = formatStackCount(mult1 * 256);
+        document.getElementById('resGravel').textContent = formatStackCount(mult1 * 128);
+        document.getElementById('resGranite').textContent = formatStackCount(mult1 * 64);
 
-      // 1세트당 기준 수량 비례 계산
-      // 기본 재료: 점토 64, 모래 128, 흙 256, 자갈 128, 화강암 64
-      const clay = Math.round(totalSets * 64);
-      const sand = Math.round(totalSets * 128);
-      const dirt = Math.round(totalSets * 256);
-      const gravel = Math.round(totalSets * 128);
-      const granite = Math.round(totalSets * 64);
+        document.getElementById('resShrimp').textContent = formatStackCount(mult1 * 32);
+        document.getElementById('resRedSnapper').textContent = formatStackCount(mult1 * 32);
+        document.getElementById('resHerring').textContent = formatStackCount(mult1 * 32);
+        document.getElementById('resGoldfish').textContent = formatStackCount(mult1 * 32);
+        document.getElementById('resBass').textContent = formatStackCount(mult1 * 32);
+      } else {
+        res1Box.style.display = 'none';
+      }
 
-      // 해산물 재료: 각 32개씩
-      const shrimp = Math.round(totalSets * 32);
-      const redSnapper = Math.round(totalSets * 32);
-      const herring = Math.round(totalSets * 32);
-      const goldfish = Math.round(totalSets * 32);
-      const bass = Math.round(totalSets * 32);
+      // --- 2성 연금 계산 (결정 5종 각 N개 기준 정정 반영) ---
+      const res2Box = document.getElementById('res2StarBox');
+      if (totalItems2 > 0) {
+        res2Box.style.display = 'block';
+        
+        // 1) 어패류: 어패류2개로 에센스 2개가 나옴 -> 에센스 1개당 어패류 1개
+        // 결정 5종을 각 1개씩(총 5개) 만들면 각 에센스가 2개씩 필요하므로, 어패류는 종류별로 총 2개 필요 (1 * totalItems2)
+        const oysterCount = totalItems2 * 2;
+        const conchCount = totalItems2 * 2;
+        const octopusCount = totalItems2 * 2;
+        const seaweed2Count = totalItems2 * 2;
+        const seaUrchinCount = totalItems2 * 2;
 
-      // 화면에 스택/세트 단위 적용하여 출력
-      document.getElementById('resClay').textContent = formatStackCount(clay);
-      document.getElementById('resSand').textContent = formatStackCount(sand);
-      document.getElementById('resDirt').textContent = formatStackCount(dirt);
-      document.getElementById('resGravel').textContent = formatStackCount(gravel);
-      document.getElementById('resGranite').textContent = formatStackCount(granite);
+        // 2) 식물 (해초 & 나뭇잎)
+        // 해초: 에센스 1개당 3개 -> 결정 5종(각 1개) 제작 시 총 12개 필요 (12 * totalItems2)
+        const seaweedItemCount = totalItems2 * 12;
+        // 나뭇잎: 에센스 1개당 3개 -> 각 나뭇잎별로 총 6개 필요 (6 * totalItems2)
+        const leafCount = totalItems2 * 6;
 
-      document.getElementById('resShrimp').textContent = formatStackCount(shrimp);
-      document.getElementById('resRedSnapper').textContent = formatStackCount(redSnapper);
-      document.getElementById('resHerring').textContent = formatStackCount(herring);
-      document.getElementById('resGoldfish').textContent = formatStackCount(goldfish);
-      document.getElementById('resBass').textContent = formatStackCount(bass);
+        // 3) 광물 & 켈프 (결정 1개당 필요 개수 × N)
+        const kelpCount = totalItems2 * 10;      // 켈프 더미: 2개 × 5종 = 10개
+        const lapisCount = totalItems2 * 1;     // 청금석 블록: 1개 (활기 보존)
+        const redstoneCount = totalItems2 * 1;  // 레드스톤 블록: 1개 (파도 침식)
+        const ironCount = totalItems2 * 3;      // 철 주괴: 3개 (방어 오염)
+        const goldCount = totalItems2 * 2;      // 금 주괴: 2개 (격류 재생)
+        const diamondCount = totalItems2 * 1;   // 다이아몬드: 1개 (맹독 혼란)
+
+        // 2성 결과 출력
+        document.getElementById('res2Oyster').textContent = formatStackCount(oysterCount);
+        document.getElementById('res2Conch').textContent = formatStackCount(conchCount);
+        document.getElementById('res2Octopus').textContent = formatStackCount(octopusCount);
+        document.getElementById('res2Seaweed').textContent = formatStackCount(seaweed2Count);
+        document.getElementById('res2SeaUrchin').textContent = formatStackCount(seaUrchinCount);
+
+        document.getElementById('resSeaweedItem').textContent = formatStackCount(seaweedItemCount);
+        document.getElementById('resOakLeaf').textContent = formatStackCount(leafCount);
+        document.getElementById('resSpruceLeaf').textContent = formatStackCount(leafCount);
+        document.getElementById('resBirchLeaf').textContent = formatStackCount(leafCount);
+        document.getElementById('resCherryLeaf').textContent = formatStackCount(leafCount);
+        document.getElementById('resDarkOakLeaf').textContent = formatStackCount(leafCount);
+
+        document.getElementById('resKelp').textContent = formatStackCount(kelpCount);
+        document.getElementById('resLapis').textContent = formatStackCount(lapisCount);
+        document.getElementById('resRedstone').textContent = formatStackCount(redstoneCount);
+        document.getElementById('resIron').textContent = formatStackCount(ironCount);
+        document.getElementById('resGold').textContent = formatStackCount(goldCount);
+        document.getElementById('resDiamond').textContent = formatStackCount(diamondCount);
+      } else {
+        res2Box.style.display = 'none';
+      }
 
       document.getElementById('alchemyResult').style.display = 'block';
     }
