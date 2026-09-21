@@ -438,7 +438,7 @@
       }
     }
 
-    /* === 연금 통합 재료 계산 로직 (1성 동일 기준 단순화) === */
+    /* === 연금 통합 재료 계산 로직 (수량 최종 정정 반영) === */
     function calculateAlchemy() {
       const setCount1 = parseInt(document.getElementById('targetSetCount1').value) || 0;
       const pieceCount1 = parseInt(document.getElementById('targetPieceCount1').value) || 0;
@@ -480,24 +480,24 @@
         res1Box.style.display = 'none';
       }
 
-      // --- 2성 연금 계산 (1성과 동일한 직관적 기준) ---
+      // --- 2성 연금 계산 (정확한 비례 정정) ---
       const res2Box = document.getElementById('res2StarBox');
       if (totalItems2 > 0) {
         res2Box.style.display = 'block';
         
-        // 입력 수량(2성 어패류 수량) 기준
+        // 1) 2성 어패류 수량
         const oysterCount = totalItems2;
         const conchCount = totalItems2;
         const octopusCount = totalItems2;
         const seaweed2Count = totalItems2;
         const seaUrchinCount = totalItems2;
 
-        // 식물 (어패류 개수의 3배)
-        const seaweedItemCount = totalItems2 * 3;
+        // 2) 식물 (해초 15배 = 1세트당 960개, 나뭇잎 3배 = 1세트당 192개)
+        const seaweedItemCount = totalItems2 * 15;
         const leafCount = totalItems2 * 3;
 
-        // 광물 & 켈프 (어패류 개수 기준 비례)
-        const kelpCount = totalItems2 * 2;
+        // 3) 광물 & 켈프 (켈프 2.5배 = 1세트당 160개)
+        const kelpCount = Math.floor(totalItems2 * 2.5);
         const lapisCount = Math.floor(totalItems2 / 2);
         const redstoneCount = Math.floor(totalItems2 / 2);
         const ironCount = Math.floor((totalItems2 / 2) * 3);
