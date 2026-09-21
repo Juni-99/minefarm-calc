@@ -121,9 +121,9 @@
       </div>
 
       <!-- 2성 연금 입력 -->
-      <div class="alchemy-section-title">⭐⭐ 2성 연금 목표 수량 (결정 5종 각 N개 세트)</div>
+      <div class="alchemy-section-title">⭐⭐ 2성 연금 목표 수량</div>
       <div class="alchemy-input-box">
-        <label for="targetSetCount2">🎯 2성 결정 제작 목표 수량 (5종 공통)</label>
+        <label for="targetSetCount2">🎯 2성 제작 목표 수량</label>
         <div class="input-row">
           <input type="number" id="targetSetCount2" placeholder="세트 수 (64개 단위)" min="0" oninput="saveAlchemyInputs()">
           <input type="number" id="targetPieceCount2" placeholder="남은 낱개 수 (짝수)" min="0" step="2" oninput="saveAlchemyInputs()">
@@ -438,7 +438,7 @@
       }
     }
 
-    /* === 연금 통합 재료 계산 로직 (정정된 비율 반영) === */
+    /* === 연금 통합 재료 계산 로직 (1성 동일 기준 단순화) === */
     function calculateAlchemy() {
       const setCount1 = parseInt(document.getElementById('targetSetCount1').value) || 0;
       const pieceCount1 = parseInt(document.getElementById('targetPieceCount1').value) || 0;
@@ -480,32 +480,29 @@
         res1Box.style.display = 'none';
       }
 
-      // --- 2성 연금 계산 (결정 5종 각 N개 기준 정정 반영) ---
+      // --- 2성 연금 계산 (1성과 동일한 직관적 기준) ---
       const res2Box = document.getElementById('res2StarBox');
       if (totalItems2 > 0) {
         res2Box.style.display = 'block';
         
-        // 1) 어패류: 어패류2개로 에센스 2개가 나옴 -> 에센스 1개당 어패류 1개
-        // 결정 5종을 각 1개씩(총 5개) 만들면 각 에센스가 2개씩 필요하므로, 어패류는 종류별로 총 2개 필요 (1 * totalItems2)
-        const oysterCount = totalItems2 * 2;
-        const conchCount = totalItems2 * 2;
-        const octopusCount = totalItems2 * 2;
-        const seaweed2Count = totalItems2 * 2;
-        const seaUrchinCount = totalItems2 * 2;
+        // 입력 수량(2성 어패류 수량) 기준
+        const oysterCount = totalItems2;
+        const conchCount = totalItems2;
+        const octopusCount = totalItems2;
+        const seaweed2Count = totalItems2;
+        const seaUrchinCount = totalItems2;
 
-        // 2) 식물 (해초 & 나뭇잎)
-        // 해초: 에센스 1개당 3개 -> 결정 5종(각 1개) 제작 시 총 12개 필요 (12 * totalItems2)
-        const seaweedItemCount = totalItems2 * 12;
-        // 나뭇잎: 에센스 1개당 3개 -> 각 나뭇잎별로 총 6개 필요 (6 * totalItems2)
-        const leafCount = totalItems2 * 6;
+        // 식물 (어패류 개수의 3배)
+        const seaweedItemCount = totalItems2 * 3;
+        const leafCount = totalItems2 * 3;
 
-        // 3) 광물 & 켈프 (결정 1개당 필요 개수 × N)
-        const kelpCount = totalItems2 * 10;      // 켈프 더미: 2개 × 5종 = 10개
-        const lapisCount = totalItems2 * 1;     // 청금석 블록: 1개 (활기 보존)
-        const redstoneCount = totalItems2 * 1;  // 레드스톤 블록: 1개 (파도 침식)
-        const ironCount = totalItems2 * 3;      // 철 주괴: 3개 (방어 오염)
-        const goldCount = totalItems2 * 2;      // 금 주괴: 2개 (격류 재생)
-        const diamondCount = totalItems2 * 1;   // 다이아몬드: 1개 (맹독 혼란)
+        // 광물 & 켈프 (어패류 개수 기준 비례)
+        const kelpCount = totalItems2 * 2;
+        const lapisCount = Math.floor(totalItems2 / 2);
+        const redstoneCount = Math.floor(totalItems2 / 2);
+        const ironCount = Math.floor((totalItems2 / 2) * 3);
+        const goldCount = totalItems2;
+        const diamondCount = Math.floor(totalItems2 / 2);
 
         // 2성 결과 출력
         document.getElementById('res2Oyster').textContent = formatStackCount(oysterCount);
