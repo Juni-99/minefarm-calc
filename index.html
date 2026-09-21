@@ -45,7 +45,7 @@
     .result-list li { padding: 9px 0; font-size: 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; }
     .result-list li:last-child { border-bottom: none; }
     .item-label { display: flex; align-items: center; gap: 8px; font-weight: bold; }
-    .item-label img { width: 22px; height: 22px; object-fit: contain; background-color: #eee; border-radius: 4px; }
+    .item-label img { width: 24px; height: 24px; object-fit: contain; }
 
     /* 강화횃불 전용 스타일 */
     .torch-form-group { margin-bottom: 15px; }
@@ -102,7 +102,7 @@
     </div>
   </div>
 
-  <!-- 해양 연금 재료 계산 섹션 (세트 단위 입력) -->
+  <!-- 해양 연금 재료 계산 섹션 (이미지 반영) -->
   <div id="alchemySection" style="display: none;">
     <div class="card">
       <h3>🧪 제작 필요 재료 계산기</h3>
@@ -125,23 +125,23 @@
         <div class="result-title">🧱 필요 기본 재료 목록</div>
         <ul class="result-list" style="margin-bottom: 20px;">
           <li>
-            <span class="item-label"><img id="imgClay" src="" alt="점토"> 점토</span>
+            <span class="item-label"><img id="imgClay" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Clay.png" alt="점토"> 점토</span>
             <b id="resClay">0개</b>
           </li>
           <li>
-            <span class="item-label"><img id="imgSand" src="" alt="모래"> 모래</span>
+            <span class="item-label"><img id="imgSand" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Sand.png" alt="모래"> 모래</span>
             <b id="resSand">0개</b>
           </li>
           <li>
-            <span class="item-label"><img id="imgDirt" src="" alt="흙"> 흙</span>
+            <span class="item-label"><img id="imgDirt" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dirt.png" alt="흙"> 흙</span>
             <b id="resDirt">0개</b>
           </li>
           <li>
-            <span class="item-label"><img id="imgGravel" src="" alt="자갈"> 자갈</span>
+            <span class="item-label"><img id="imgGravel" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Gravel.png" alt="자갈"> 자갈</span>
             <b id="resGravel">0개</b>
           </li>
           <li>
-            <span class="item-label"><img id="imgGranite" src="" alt="화강암"> 화강암</span>
+            <span class="item-label"><img id="imgGranite" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Granite.png" alt="화강암"> 화강암</span>
             <b id="resGranite">0개</b>
           </li>
         </ul>
@@ -150,23 +150,23 @@
         <div class="result-title">🐟 필요 해산물 재료 목록</div>
         <ul class="result-list">
           <li>
-            <span class="item-label"><img id="imgShrimp" src="" alt="깐새우"> 깐새우</span>
+            <span class="item-label"><img id="imgShrimp" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/shrimp.png" alt="깐새우"> 깐새우</span>
             <b id="resShrimp">0개</b>
           </li>
           <li>
-            <span class="item-label"><img id="imgRedSnapper" src="" alt="도미회"> 도미회</span>
+            <span class="item-label"><img id="imgRedSnapper" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bream.png" alt="도미회"> 도미회</span>
             <b id="resRedSnapper">0개</b>
           </li>
           <li>
-            <span class="item-label"><img id="imgHerring" src="" alt="청어회"> 청어회</span>
+            <span class="item-label"><img id="imgHerring" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/herring.png" alt="청어회"> 청어회</span>
             <b id="resHerring">0개</b>
           </li>
           <li>
-            <span class="item-label"><img id="imgGoldfish" src="" alt="금붕어회"> 금붕어회</span>
+            <span class="item-label"><img id="imgGoldfish" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Goldfish.png" alt="금붕어회"> 금붕어회</span>
             <b id="resGoldfish">0개</b>
           </li>
           <li>
-            <span class="item-label"><img id="imgBass" src="" alt="농어회"> 농어회</span>
+            <span class="item-label"><img id="imgBass" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bass.png" alt="농어회"> 농어회</span>
             <b id="resBass">0개</b>
           </li>
         </ul>
