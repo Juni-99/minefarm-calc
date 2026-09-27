@@ -27,12 +27,22 @@
     table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #0f172a; border-radius: 6px; overflow: hidden; }
     th, td { padding: 12px; text-align: center; border-bottom: 1px solid #1e293b; color: #e2e8f0; }
     th { background-color: #334155; color: #f8fafc; font-size: 14px; }
-    .badge { padding: 5px 10px; border-radius: 15px; font-weight: bold; color: white; display: inline-block; font-size: 13px; }
-    .high { background-color: #10b981; }
-    .medium { background-color: #f59e0b; }
-    .low { background-color: #ef4444; }
     .btn-delete { background-color: #ef4444; padding: 5px 10px; font-size: 12px; color: white; border: none; border-radius: 3px; cursor: pointer; }
     .info-text { font-size: 13px; color: #94a3b8; margin-top: -5px; margin-bottom: 10px; }
+
+    /* 게이지 바 전용 스타일 */
+    .gauge-wrapper { display: inline-flex; align-items: center; gap: 8px; justify-content: center; min-width: 140px; }
+    .gauge-bg { width: 80px; height: 12px; background-color: #1e293b; border-radius: 6px; overflow: hidden; border: 1px solid #334155; position: relative; }
+    .gauge-fill { height: 100%; border-radius: 6px; transition: width 0.3s ease; }
+    .gauge-text { font-weight: bold; font-size: 13px; min-width: 42px; text-align: right; }
+    
+    .gauge-high { background-color: #10b981; }
+    .gauge-medium { background-color: #f59e0b; }
+    .gauge-low { background-color: #ef4444; }
+
+    .text-high { color: #34d399; }
+    .text-medium { color: #fbbf24; }
+    .text-low { color: #f87171; }
 
     /* 연금 계산기 스타일 */
     .alchemy-section-title { font-weight: bold; font-size: 16px; color: #f1f5f9; border-left: 4px solid #10b981; padding-left: 8px; margin-top: 15px; margin-bottom: 10px; }
@@ -111,7 +121,7 @@
           <tr>
             <th>품목 이름</th>
             <th>최고가</th>
-            <th>현재 시세</th>
+            <th>관리자 지정 시세</th>
             <th>추천 판매 효율</th>
           </tr>
         </thead>
@@ -648,21 +658,21 @@
     }
 
     const cropDishes = [
-      { name: "토마토 스파게티", minPrice: 171, maxPrice: 570 },
-      { name: "어니언 링", minPrice: 203, maxPrice: 677 },
-      { name: "갈릭 케이크", minPrice: 149, maxPrice: 499 },
-      { name: "삼겹살 토마토 찌개", minPrice: 403, maxPrice: 1346 },
-      { name: "삼색 아이스크림", minPrice: 598, maxPrice: 1995 },
-      { name: "마늘 양갈비 핫도그", minPrice: 339, maxPrice: 1131 },
-      { name: "달콤 시리얼", minPrice: 510, maxPrice: 1701 },
-      { name: "로스트 치킨 파이", minPrice: 422, maxPrice: 1408 },
-      { name: "스윗 치킨 햄버거", minPrice: 640, maxPrice: 2134 },
-      { name: "토마토 파인애플 피자", minPrice: 609, maxPrice: 2031 },
-      { name: "양파 수프", minPrice: 752, maxPrice: 2506 },
-      { name: "허브 삼겹살 찜", minPrice: 590, maxPrice: 1968 },
-      { name: "토마토 라자냐", minPrice: 827, maxPrice: 2757 },
-      { name: "딥 크림 빠네", minPrice: 760, maxPrice: 2532 },
-      { name: "트리플 소갈비 꼬치", minPrice: 852, maxPrice: 2843 }
+      { name: "토마토 스파게티", minPrice: 155, maxPrice: 518 },
+      { name: "어니언 링", minPrice: 184, maxPrice: 616 },
+      { name: "갈릭 케이크", minPrice: 136, maxPrice: 454 },
+      { name: "삼겹살 토마토 찌개", minPrice: 367, maxPrice: 1223 },
+      { name: "삼색 아이스크림", minPrice: 544, maxPrice: 1813 },
+      { name: "마늘 양갈비 핫도그", minPrice: 308, maxPrice: 1028 },
+      { name: "달콤 시리얼", minPrice: 464, maxPrice: 1547 },
+      { name: "로스트 치킨 파이", minPrice: 384, maxPrice: 1280 },
+      { name: "스윗 치킨 햄버거", minPrice: 582, maxPrice: 1940 },
+      { name: "토마토 파인애플 피자", minPrice: 553, maxPrice: 1846 },
+      { name: "양파 수프", minPrice: 683, maxPrice: 2278 },
+      { name: "허브 삼겹살 찜", minPrice: 536, maxPrice: 1789 },
+      { name: "토마토 라자냐", minPrice: 752, maxPrice: 2506 },
+      { name: "딥 크림 빠네", minPrice: 691, maxPrice: 2302 },
+      { name: "트리플 소갈비 꼬치", minPrice: 775, maxPrice: 2584 }
     ];
 
     const oceanCrafts = [
@@ -677,7 +687,7 @@
     let currentCategory = 'crop';
     let calcResults = JSON.parse(localStorage.getItem('minefarmTabResults')) || { crop: [], ocean: [] };
     
-    // 관리자 가격 데이터 로드 (없으면 기본 최고가의 80%로 초기설정)
+    // 관리자 가격 데이터 로드
     let adminPrices = JSON.parse(localStorage.getItem('minefarmAdminPrices')) || {};
 
     window.onload = function() {
@@ -723,6 +733,22 @@
       }
     }
 
+    /* 게이지 바 HTML 생성 함수 */
+    function renderGaugeHTML(percent) {
+      const capPercent = Math.min(Math.max(percent, 0), 100);
+      let gaugeClass = capPercent >= 80 ? 'gauge-high' : capPercent >= 50 ? 'gauge-medium' : 'gauge-low';
+      let textClass = capPercent >= 80 ? 'text-high' : capPercent >= 50 ? 'text-medium' : 'text-low';
+
+      return `
+        <div class="gauge-wrapper">
+          <div class="gauge-bg">
+            <div class="gauge-fill ${gaugeClass}" style="width: ${capPercent}%;"></div>
+          </div>
+          <span class="gauge-text ${textClass}">${percent}%</span>
+        </div>
+      `;
+    }
+
     /* 관리자 시세 테이블 렌더링 */
     function renderAdminPriceTable() {
       const tbody = document.getElementById('adminPriceTableBody');
@@ -731,21 +757,20 @@
 
       list.forEach((item) => {
         const savedPrice = adminPrices[item.name] || Math.floor(item.maxPrice * 0.8);
-        const eff = item.maxPrice > 0 ? ((savedPrice / item.maxPrice) * 100).toFixed(1) : 0;
-        let badgeClass = eff >= 80 ? 'high' : eff >= 50 ? 'medium' : 'low';
+        const eff = item.maxPrice > 0 ? parseFloat(((savedPrice / item.maxPrice) * 100).toFixed(1)) : 0;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${item.name}</strong></td>
           <td>${item.maxPrice.toLocaleString()} G</td>
           <td style="color:#38bdf8; font-weight:bold;">${savedPrice.toLocaleString()} G</td>
-          <td><span class="badge ${badgeClass}">${eff}%</span></td>
+          <td>${renderGaugeHTML(eff)}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    /* 관리자 설정 창 모달 (암호: 1234) */
+    /* 관리자 설정 창 모달 */
     function openAdminModal() {
       const password = prompt("관리자 암호를 입력하세요:");
       if (password !== "1234") {
@@ -808,11 +833,11 @@
       }
 
       const item = list[selectIndex];
-      const efficiency = item.maxPrice > 0 ? ((currentPrice / item.maxPrice) * 100).toFixed(1) : 0;
+      const efficiency = item.maxPrice > 0 ? parseFloat(((currentPrice / item.maxPrice) * 100).toFixed(1)) : 0;
 
       calcResults[currentCategory].unshift({
         name: item.name, minPrice: item.minPrice, maxPrice: item.maxPrice,
-        currentPrice: currentPrice, efficiency: parseFloat(efficiency)
+        currentPrice: currentPrice, efficiency: efficiency
       });
 
       localStorage.setItem('minefarmTabResults', JSON.stringify(calcResults));
@@ -826,13 +851,12 @@
       const currentResults = calcResults[currentCategory] || [];
 
       currentResults.forEach((item, index) => {
-        let badgeClass = item.efficiency >= 80 ? 'high' : item.efficiency >= 50 ? 'medium' : 'low';
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${item.name}</strong></td>
           <td>${item.minPrice.toLocaleString()} G / ${item.maxPrice.toLocaleString()} G</td>
           <td>${item.currentPrice.toLocaleString()} G</td>
-          <td><span class="badge ${badgeClass}">${item.efficiency}%</span></td>
+          <td>${renderGaugeHTML(item.efficiency)}</td>
           <td><button class="btn-delete" onclick="deleteResult(${index})">삭제</button></td>
         `;
         tbody.appendChild(tr);
@@ -928,11 +952,11 @@
         const seaweed2Count = totalItems2;
         const seaUrchinCount = totalItems2;
 
-        // 2) 식물 (해초 15배 = 1세트당 960개, 나뭇잎 3배 = 1세트당 192개)
+        // 2) 식물
         const seaweedItemCount = totalItems2 * 15;
         const leafCount = totalItems2 * 3;
 
-        // 3) 광물 & 켈프 (켈프 2.5배 = 1세트당 160개)
+        // 3) 광물 & 켈프
         const kelpCount = Math.floor(totalItems2 * 2.5);
         const lapisCount = Math.floor(totalItems2 / 2);
         const redstoneCount = Math.floor(totalItems2 / 2);
