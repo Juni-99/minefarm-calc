@@ -49,13 +49,20 @@
     .item-label { display: flex; align-items: center; gap: 8px; font-weight: bold; }
     .item-label img { width: 24px; height: 24px; object-fit: contain; }
 
-    /* 조합 레시피 토글 스타일 */
-    .recipe-toggle-btn { width: 100%; padding: 10px; background-color: #2980b9; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 15px; transition: background 0.2s; text-align: center; }
-    .recipe-toggle-btn:hover { background-color: #1f6391; }
-    .recipe-guide-box { background: #f0f4f8; border: 1px solid #d9e2ec; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-    .recipe-item { font-size: 13px; color: #334e68; padding: 4px 0; border-bottom: 1px dotted #bccadc; }
-    .recipe-item:last-child { border-bottom: none; }
-    .recipe-item b { color: #102a43; }
+    /* 시각적 이미지 레시피 전용 스타일 */
+    .recipe-toggle-btn { width: 100%; padding: 12px; background: #34495e; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; margin-bottom: 15px; transition: background 0.2s; }
+    .recipe-toggle-btn:hover { background: #2c3e50; }
+    
+    .visual-recipe-container { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+    .visual-recipe-title { font-size: 15px; font-weight: bold; color: #2c3e50; margin-bottom: 12px; border-bottom: 2px solid #cbd5e1; padding-bottom: 5px; }
+    
+    .recipe-row { display: flex; align-items: center; gap: 6px; background: white; padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 8px; flex-wrap: wrap; }
+    .recipe-row-title { font-size: 12px; font-weight: bold; color: #64748b; width: 100%; margin-bottom: 4px; }
+    
+    .recipe-item { display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; }
+    .recipe-item img { width: 22px; height: 22px; object-fit: contain; }
+    .recipe-item .count { font-weight: bold; font-size: 13px; color: #0f172a; }
+    .recipe-operator { font-weight: bold; color: #94a3b8; font-size: 14px; padding: 0 2px; }
 
     /* 강화횃불 전용 스타일 */
     .torch-form-group { margin-bottom: 15px; }
@@ -117,6 +124,42 @@
     <div class="card">
       <h3>🧪 제작 필요 재료 계산기</h3>
       <p class="info-text">목표 제작 수량을 입력하면 연금에 필요한 모든 하위 재료를 계산합니다.<br>⚠️ <b>낱개 수량은 짝수(2, 4, 6...)만 입력 가능합니다.</b></p>
+
+      <!-- 레시피 도감 버튼 -->
+      <button class="recipe-toggle-btn" onclick="toggleVisualRecipe()">🖼️ 연금 이미지 레시피 도감 보기 / 접기</button>
+
+      <!-- 시각적 레시피 박스 -->
+      <div id="visualRecipeBox" class="visual-recipe-container" style="display: none;">
+        <div class="visual-recipe-title">⭐ 1성 정수 레시피 (기본재료 2 + 어패류 1)</div>
+        <div class="recipe-row">
+          <div class="recipe-row-title">흙정수</div>
+          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dirt.png" alt="흙"><span class="count">2</span></div>
+          <span class="recipe-operator">+</span>
+          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/shrimp.png" alt="깐새우"><span class="count">1</span></div>
+        </div>
+
+        <div class="visual-recipe-title" style="margin-top: 15px;">⭐⭐ 2성 에센스 레시피 (어패류 2 + 해초 6 + 나뭇잎 6)</div>
+        <div class="recipe-row">
+          <div class="recipe-row-title">수호 에센스</div>
+          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_oyster.png" alt="2성 굴"><span class="count">2</span></div>
+          <span class="recipe-operator">+</span>
+          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/BlockSprite_seagrass.png" alt="해초"><span class="count">6</span></div>
+          <span class="recipe-operator">+</span>
+          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Oak_Leaves.png" alt="참나무 잎"><span class="count">6</span></div>
+        </div>
+
+        <div class="visual-recipe-title" style="margin-top: 15px;">💎 2성 결정 조합 레시피</div>
+        <div class="recipe-row">
+          <div class="recipe-row-title">활기 보존의 결정</div>
+          <div class="recipe-item"><span class="count">수호 에센스 1</span></div>
+          <span class="recipe-operator">+</span>
+          <div class="recipe-item"><span class="count">생명 에센스 1</span></div>
+          <span class="recipe-operator">+</span>
+          <div class="recipe-item"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAABrUlEQVR4nN2Xv0oDQRCHv0QlRBGiRhMMQbGyFXwD38BGbOx9Dgs7W0vtgo1vYG1hYamVKCHBP9EIoiEQEwvz83K7d7kLJLL6q2642WXmm9mdu0Sr1WKU+nh9XojySYw6CGlrd6XTax/tX+T0nPyVCCI0PqqNd/bWfZmnFmcBaFZfAJjMzD3qnVskzJqdHN4k4mxgZix9rrZ99th1eL5ukZBUu7AMTZkZmxKBH7+q7eMmCWmQmvZ7b+5Te3izfNwkocjNWobVPi6B+1IZgLPTJ+vUuUVCtcqTAWwipqIITZw3ACjf1oBgApITJKwpurE53wHIbxf7LjQJRRE5Prj6IyQ0O9LpFODVUopLJux+0fQMmklOkAi9MbO5acCbJZXSHQCFtSXAzli2eqA9MxU7CLdJSMn6O+ARqFx2ieAnotqLgNbJVq+p93p7w00SjUYT8CKXlFlxOQtAuUukWP+2zR6QrVNh7ufbe/C4hy9rduhUmBIh+WkW6IYtGCRELo7cImFmBvYXUK+fqbDM1QsiGbg2TqSj1tD+RUVQPWWehrCegv9GQvJ6KljOfmN+ATa/wfsI9vpCAAAAAElFTkSuQmCC" alt="켈프"><span class="count">2</span></div>
+          <span class="recipe-operator">+</span>
+          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Block_of_Lapis_Lazuli.png" alt="청금석"><span class="count">1</span></div>
+        </div>
+      </div>
       
       <!-- 1성 연금 입력 -->
       <div class="alchemy-section-title">⭐ 1성 연금 목표 수량</div>
@@ -146,36 +189,6 @@
       <!-- 연금 계산 결과 표시 -->
       <div id="alchemyResult" class="result-section" style="display: none;">
         
-        <!-- 기본 조합 레시피 보기 토글 버튼 및 영구 박스 -->
-        <button class="recipe-toggle-btn" onclick="toggleRecipeGuide()">📖 성별 기본 연금 조합 레시피 보기 / 접기</button>
-        
-        <div id="recipeGuideBox" class="recipe-guide-box" style="display: none;">
-          <div class="result-title" style="color: #102a43; border-color: #bccadc;">📜 1회 제작당 기본 조합 공식</div>
-          
-          <div style="margin-bottom: 12px;">
-            <b>⭐ 1성 연금 레시피 (1회 제작 = 2정수)</b>
-            <div class="recipe-item">• <b>어패류 1성 정수</b>: 굴 2개 + 점토 2개 = 1성 굴 정수 2개</div>
-            <div class="recipe-item">• <b>소라 1성 정수</b>: 소라 2개 + 모래 4개 = 1성 소라 정수 2개</div>
-            <div class="recipe-item">• <b>문어 1성 정수</b>: 문어 2개 + 흙 8개 = 1성 문어 정수 2개</div>
-            <div class="recipe-item">• <b>미역 1성 정수</b>: 미역 2개 + 자갈 4개 = 1성 미역 정수 2개</div>
-            <div class="recipe-item">• <b>성게 1성 정수</b>: 성게 2개 + 화강암 2개 = 1성 성게 정수 2개</div>
-          </div>
-
-          <div style="margin-bottom: 12px;">
-            <b>⭐⭐ 2성 연금 레시피 (1회 제작 = 2정수)</b>
-            <div class="recipe-item">• <b>굴 2성 정수</b>: 2성 굴 2개 + 해초 30개 + 켈프 5개 = 2성 굴 정수 2개</div>
-            <div class="recipe-item">• <b>소라 2성 정수</b>: 2성 소라 2개 + 참나무 잎 6개 + 청금석 블록 1개 = 2성 소라 정수 2개</div>
-            <div class="recipe-item">• <b>문어 2성 정수</b>: 2성 문어 2개 + 가문비나무 잎 6개 + 레드스톤 블록 1개 = 2성 문어 정수 2개</div>
-            <div class="recipe-item">• <b>미역 2성 정수</b>: 2성 미역 2개 + 자작나무/벚나무/짙은참나무 잎 각 6개 + 철 주괴 3개 = 2성 미역 정수 2개</div>
-            <div class="recipe-item">• <b>성게 2성 정수</b>: 2성 성게 2개 + 금 주괴 2개 + 다이아몬드 1개 = 2성 성게 정수 2개</div>
-          </div>
-
-          <div>
-            <b>⭐⭐⭐ 3성 연금 레시피 (상위 조합)</b>
-            <div class="recipe-item">• <b>3성 정수 기본 공식</b>: 2성 정수 상위 재료 + 특정 연금 촉매 조합</div>
-          </div>
-        </div>
-
         <!-- 1성 연금 결과 -->
         <div id="res1StarBox">
           <div class="result-title">🧱 1성 연금 기본 재료 목록</div>
@@ -289,6 +302,11 @@
   <div class="creator-tag">제작자 : 우브</div>
 
   <script>
+    function toggleVisualRecipe() {
+      const box = document.getElementById('visualRecipeBox');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
     function formatStackCount(total) {
       if (total < 64) {
         return `${total.toLocaleString()}개`;
@@ -473,15 +491,6 @@
         localStorage.removeItem('minefarmTargetSet2');
         localStorage.removeItem('minefarmTargetPiece2');
         document.getElementById('alchemyResult').style.display = 'none';
-      }
-    }
-
-    function toggleRecipeGuide() {
-      const box = document.getElementById('recipeGuideBox');
-      if (box.style.display === 'none' || box.style.display === '') {
-        box.style.display = 'block';
-      } else {
-        box.style.display = 'none';
       }
     }
 
