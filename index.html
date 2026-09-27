@@ -49,6 +49,14 @@
     .item-label { display: flex; align-items: center; gap: 8px; font-weight: bold; }
     .item-label img { width: 24px; height: 24px; object-fit: contain; }
 
+    /* 조합 레시피 토글 스타일 */
+    .recipe-toggle-btn { width: 100%; padding: 10px; background-color: #2980b9; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 15px; transition: background 0.2s; text-align: center; }
+    .recipe-toggle-btn:hover { background-color: #1f6391; }
+    .recipe-guide-box { background: #f0f4f8; border: 1px solid #d9e2ec; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+    .recipe-item { font-size: 13px; color: #334e68; padding: 4px 0; border-bottom: 1px dotted #bccadc; }
+    .recipe-item:last-child { border-bottom: none; }
+    .recipe-item b { color: #102a43; }
+
     /* 강화횃불 전용 스타일 */
     .torch-form-group { margin-bottom: 15px; }
     .torch-form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
@@ -138,6 +146,36 @@
       <!-- 연금 계산 결과 표시 -->
       <div id="alchemyResult" class="result-section" style="display: none;">
         
+        <!-- 기본 조합 레시피 보기 토글 버튼 및 영구 박스 -->
+        <button class="recipe-toggle-btn" onclick="toggleRecipeGuide()">📖 성별 기본 연금 조합 레시피 보기 / 접기</button>
+        
+        <div id="recipeGuideBox" class="recipe-guide-box" style="display: none;">
+          <div class="result-title" style="color: #102a43; border-color: #bccadc;">📜 1회 제작당 기본 조합 공식</div>
+          
+          <div style="margin-bottom: 12px;">
+            <b>⭐ 1성 연금 레시피 (1회 제작 = 2정수)</b>
+            <div class="recipe-item">• <b>어패류 1성 정수</b>: 굴 2개 + 점토 2개 = 1성 굴 정수 2개</div>
+            <div class="recipe-item">• <b>소라 1성 정수</b>: 소라 2개 + 모래 4개 = 1성 소라 정수 2개</div>
+            <div class="recipe-item">• <b>문어 1성 정수</b>: 문어 2개 + 흙 8개 = 1성 문어 정수 2개</div>
+            <div class="recipe-item">• <b>미역 1성 정수</b>: 미역 2개 + 자갈 4개 = 1성 미역 정수 2개</div>
+            <div class="recipe-item">• <b>성게 1성 정수</b>: 성게 2개 + 화강암 2개 = 1성 성게 정수 2개</div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <b>⭐⭐ 2성 연금 레시피 (1회 제작 = 2정수)</b>
+            <div class="recipe-item">• <b>굴 2성 정수</b>: 2성 굴 2개 + 해초 30개 + 켈프 5개 = 2성 굴 정수 2개</div>
+            <div class="recipe-item">• <b>소라 2성 정수</b>: 2성 소라 2개 + 참나무 잎 6개 + 청금석 블록 1개 = 2성 소라 정수 2개</div>
+            <div class="recipe-item">• <b>문어 2성 정수</b>: 2성 문어 2개 + 가문비나무 잎 6개 + 레드스톤 블록 1개 = 2성 문어 정수 2개</div>
+            <div class="recipe-item">• <b>미역 2성 정수</b>: 2성 미역 2개 + 자작나무/벚나무/짙은참나무 잎 각 6개 + 철 주괴 3개 = 2성 미역 정수 2개</div>
+            <div class="recipe-item">• <b>성게 2성 정수</b>: 2성 성게 2개 + 금 주괴 2개 + 다이아몬드 1개 = 2성 성게 정수 2개</div>
+          </div>
+
+          <div>
+            <b>⭐⭐⭐ 3성 연금 레시피 (상위 조합)</b>
+            <div class="recipe-item">• <b>3성 정수 기본 공식</b>: 2성 정수 상위 재료 + 특정 연금 촉매 조합</div>
+          </div>
+        </div>
+
         <!-- 1성 연금 결과 -->
         <div id="res1StarBox">
           <div class="result-title">🧱 1성 연금 기본 재료 목록</div>
@@ -438,6 +476,15 @@
       }
     }
 
+    function toggleRecipeGuide() {
+      const box = document.getElementById('recipeGuideBox');
+      if (box.style.display === 'none' || box.style.display === '') {
+        box.style.display = 'block';
+      } else {
+        box.style.display = 'none';
+      }
+    }
+
     /* === 연금 통합 재료 계산 로직 === */
     function calculateAlchemy() {
       const setCount1 = parseInt(document.getElementById('targetSetCount1').value) || 0;
@@ -497,7 +544,7 @@
         const leafCount = totalItems2 * 3;
 
         // 3) 광물 & 켈프 (켈프 2.5배 = 1세트당 160개)
-        const kelpCount = Math.floor(totalItems2 * 5);
+        const kelpCount = Math.floor(totalItems2 * 2.5);
         const lapisCount = Math.floor(totalItems2 / 2);
         const redstoneCount = Math.floor(totalItems2 / 2);
         const ironCount = Math.floor((totalItems2 / 2) * 3);
