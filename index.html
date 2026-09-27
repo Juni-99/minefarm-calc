@@ -1,85 +1,91 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" style="background-color: #121826;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>마인팜 통합 계산기</title>
+  <title>마인팜 통합 계산기 (다크모드)</title>
   <style>
     * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 850px; margin: 30px auto; padding: 20px; padding-bottom: 60px; background-color: #f4f7f6; color: #333; position: relative; min-height: 100vh; }
-    h1 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+    html, body { background-color: #121826 !important; color: #e2e8f0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; padding-bottom: 60px; min-height: 100vh; }
+    h1 { text-align: center; color: #f1f5f9; margin-bottom: 20px; }
     
     .tab-container { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-    .tab-button { flex: 1; min-width: 150px; padding: 12px 10px; font-size: 15px; font-weight: bold; border: none; background-color: #e0e6ed; color: #7f8c8d; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; }
-    .tab-button.active { background-color: #27ae60; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .tab-button { flex: 1; min-width: 140px; padding: 12px 10px; font-size: 15px; font-weight: bold; border: none; background-color: #1e293b; color: #94a3b8; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; }
+    .tab-button.active { background-color: #10b981; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
     
-    .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .card { background: #1e293b; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-bottom: 20px; border: 1px solid #334155; }
     .form-group { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-    .form-group input, .form-group select { flex: 1; min-width: 150px; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+    .form-group input, .form-group select { flex: 1; min-width: 150px; padding: 12px; background-color: #0f172a; border: 1px solid #334155; color: #f8fafc; border-radius: 5px; font-size: 14px; }
     
     .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-    button.btn-calc { flex: 3; padding: 14px 20px; background-color: #27ae60; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: background 0.2s; }
-    button.btn-calc:hover { background-color: #219150; }
-    button.btn-reset { flex: 1; padding: 14px 15px; background-color: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; transition: background 0.2s; }
-    button.btn-reset:hover { background-color: #c0392b; }
+    button.btn-calc { flex: 3; padding: 14px 20px; background-color: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: background 0.2s; }
+    button.btn-calc:hover { background-color: #059669; }
+    button.btn-reset { flex: 1; padding: 14px 15px; background-color: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; transition: background 0.2s; }
+    button.btn-reset:hover { background-color: #dc2626; }
     
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
-    th, td { padding: 12px; text-align: center; border-bottom: 1px solid #ddd; }
-    th { background-color: #34495e; color: white; }
-    .badge { padding: 5px 10px; border-radius: 15px; font-weight: bold; color: white; display: inline-block; }
-    .high { background-color: #27ae60; }
-    .medium { background-color: #f39c12; }
-    .low { background-color: #e74c3c; }
-    .btn-delete { background-color: #e74c3c; padding: 5px 10px; font-size: 12px; color: white; border: none; border-radius: 3px; cursor: pointer; }
-    .info-text { font-size: 13px; color: #666; margin-top: -5px; margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #0f172a; border-radius: 6px; overflow: hidden; }
+    th, td { padding: 12px; text-align: center; border-bottom: 1px solid #1e293b; color: #e2e8f0; }
+    th { background-color: #334155; color: #f8fafc; font-size: 14px; }
+    .badge { padding: 5px 10px; border-radius: 15px; font-weight: bold; color: white; display: inline-block; font-size: 13px; }
+    .high { background-color: #10b981; }
+    .medium { background-color: #f59e0b; }
+    .low { background-color: #ef4444; }
+    .btn-delete { background-color: #ef4444; padding: 5px 10px; font-size: 12px; color: white; border: none; border-radius: 3px; cursor: pointer; }
+    .info-text { font-size: 13px; color: #94a3b8; margin-top: -5px; margin-bottom: 10px; }
 
     /* 연금 계산기 스타일 */
-    .alchemy-section-title { font-weight: bold; font-size: 16px; color: #2c3e50; border-left: 4px solid #27ae60; padding-left: 8px; margin-top: 15px; margin-bottom: 10px; }
-    .alchemy-input-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-    .alchemy-input-box label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #2c3e50; }
+    .alchemy-section-title { font-weight: bold; font-size: 16px; color: #f1f5f9; border-left: 4px solid #10b981; padding-left: 8px; margin-top: 15px; margin-bottom: 10px; }
+    .alchemy-input-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+    .alchemy-input-box label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #cbd5e1; }
     .input-row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .input-row input { flex: 1; min-width: 130px; padding: 12px; border: 1px solid #ced4da; border-radius: 5px; font-size: 14px; font-weight: bold; }
+    .input-row input { flex: 1; min-width: 130px; padding: 12px; background: #1e293b; border: 1px solid #334155; color: #fff; border-radius: 5px; font-size: 14px; font-weight: bold; }
 
-    .result-section { background: #eef9f1; border: 1px solid #c3e6cb; border-radius: 8px; padding: 15px; margin-top: 15px; }
-    .result-title { font-weight: bold; color: #155724; font-size: 15px; margin-bottom: 10px; border-bottom: 2px solid #c3e6cb; padding-bottom: 5px; }
+    .result-section { background: #064e3b; border: 1px solid #059669; border-radius: 8px; padding: 15px; margin-top: 15px; color: #ecfdf5; }
+    .result-title { font-weight: bold; color: #a7f3d0; font-size: 15px; margin-bottom: 10px; border-bottom: 2px solid #059669; padding-bottom: 5px; }
 
     .result-list { list-style: none; padding: 0; margin: 0; }
-    .result-list li { padding: 8px 0; font-size: 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; }
+    .result-list li { padding: 8px 0; font-size: 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #047857; }
     .result-list li:last-child { border-bottom: none; }
     .item-label { display: flex; align-items: center; gap: 8px; font-weight: bold; }
     .item-label img { width: 24px; height: 24px; object-fit: contain; }
 
-    /* --- 게임 UI 스타일 조합대 가이드 --- */
-    .recipe-toggle-btn { width: 100%; padding: 12px; background: #34495e; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; margin-bottom: 15px; transition: background 0.2s; }
-    .recipe-toggle-btn:hover { background: #2c3e50; }
+    /* --- 게임 UI 스타일 조합대 가이드 (다크) --- */
+    .recipe-toggle-btn { width: 100%; padding: 12px; background: #334155; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; margin-bottom: 15px; transition: background 0.2s; }
+    .recipe-toggle-btn:hover { background: #475569; }
 
-    .mc-crafting-panel { background: #fbf6ec; border: 2px solid #dcd1be; border-radius: 8px; padding: 15px; margin-bottom: 20px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
-    .mc-sec-title { font-size: 14px; font-weight: bold; color: #5a4b3c; margin-bottom: 8px; border-bottom: 1px solid #e8decb; padding-bottom: 4px; }
+    .mc-crafting-panel { background: #1e293b; border: 2px solid #334155; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+    .mc-sec-title { font-size: 14px; font-weight: bold; color: #cbd5e1; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px; }
 
-    .mc-crafting-grid-row { display: flex; align-items: center; gap: 4px; background: #f3ebd9; border: 1px solid #e0d5be; border-radius: 6px; padding: 6px 8px; margin-bottom: 6px; overflow-x: auto; }
+    .mc-crafting-grid-row { display: flex; align-items: center; gap: 4px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 6px 8px; margin-bottom: 6px; overflow-x: auto; }
     .mc-slots-group { display: flex; gap: 3px; }
 
-    .mc-slot { width: 44px; height: 44px; background: #eedfc8; border: 2px solid #b8a68d; border-radius: 5px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .mc-slot.empty { background: #f5ebd8; border-color: #d6caaf; }
+    .mc-slot { width: 44px; height: 44px; background: #1e293b; border: 2px solid #475569; border-radius: 5px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .mc-slot.empty { background: #0f172a; border-color: #334155; }
     .mc-slot img { width: 28px; height: 28px; object-fit: contain; }
-    .mc-slot .count { position: absolute; bottom: 1px; right: 3px; font-size: 11px; font-weight: 800; color: #111; text-shadow: 1px 1px 0px #fff; }
-    .mc-slot .text-label { font-size: 10px; font-weight: bold; color: #2c3e50; text-align: center; line-height: 1.1; word-break: keep-all; padding: 2px; }
+    .mc-slot .count { position: absolute; bottom: 1px; right: 3px; font-size: 11px; font-weight: 800; color: #fff; text-shadow: 1px 1px 2px #000; }
+    .mc-slot .text-label { font-size: 10px; font-weight: bold; color: #cbd5e1; text-align: center; line-height: 1.1; word-break: keep-all; padding: 2px; }
 
-    .mc-arrow { font-size: 18px; font-weight: bold; color: #b8a68d; padding: 0 4px; flex-shrink: 0; }
+    .mc-arrow { font-size: 18px; font-weight: bold; color: #64748b; padding: 0 4px; flex-shrink: 0; }
+
+    /* 관리자 설정 및 추천 효율 대시보드 */
+    .admin-bar { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #334155; }
+    .btn-admin { background: #8b5cf6; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+    .btn-admin:hover { background: #7c3aed; }
 
     /* 강화횃불 전용 스타일 */
     .torch-form-group { margin-bottom: 15px; }
-    .torch-form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
-    .torch-form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
-    .profit-text { color: #27ae60; font-weight: bold; }
-    .loss-text { color: #e74c3c; font-weight: bold; }
+    .torch-form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; color: #cbd5e1; }
+    .torch-form-group input { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 5px; font-size: 14px; }
+    .profit-text { color: #34d399; font-weight: bold; }
+    .loss-text { color: #f87171; font-weight: bold; }
 
-    .step-box { background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; font-size: 14px; }
+    .step-box { background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; font-size: 14px; color: #cbd5e1; }
 
-    .creator-tag { position: fixed; bottom: 15px; right: 20px; font-size: 13px; font-weight: bold; color: #7f8c8d; background: rgba(255, 255, 255, 0.9); padding: 6px 12px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); border: 1px solid #ddd; z-index: 999; }
+    .creator-tag { position: fixed; bottom: 15px; right: 20px; font-size: 13px; font-weight: bold; color: #94a3b8; background: rgba(30, 41, 59, 0.9); padding: 6px 12px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); border: 1px solid #334155; z-index: 999; }
   </style>
 </head>
-<body>
+<body style="background-color: #121826;">
 
   <h1>🌾 마인팜 통합 계산기</h1>
 
@@ -92,9 +98,30 @@
 
   <!-- 요리 / 공예품 효율 섹션 -->
   <div id="efficiencySection">
+    
+    <!-- 관리자 추천 판매가 대시보드 -->
     <div class="card">
-      <h3 id="calcTitle">🌱 재배 전문가 - 요리 판매 효율 계산</h3>
-      <p class="info-text">품목을 선택한 후 현재 판매가를 입력하면 효율이 자동 계산됩니다.</p>
+      <div class="admin-bar">
+        <span style="font-weight: bold; font-size: 14px; color: #a7f3d0;">📢 관리자 지정 현재 시장 추천 효율 현황</span>
+        <button class="btn-admin" onclick="openAdminModal()">👑 관리자 시세 설정</button>
+      </div>
+      <p class="info-text">서버 관리자가 등록한 최신 시세 기준 효율입니다.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>품목 이름</th>
+            <th>최고가</th>
+            <th>관리자 지정 시세</th>
+            <th>추천 판매 효율</th>
+          </tr>
+        </thead>
+        <tbody id="adminPriceTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3 id="calcTitle">🌱 재배 전문가 - 요리 수동 판매 효율 계산</h3>
+      <p class="info-text">품목을 선택한 후 현재 판매가를 직접 입력하면 효율이 자동 계산됩니다.</p>
       <div class="form-group">
         <select id="selectItem" onchange="updateMinMaxDisplay()">
           <option value="">-- 품목 선택 --</option>
@@ -102,17 +129,17 @@
         <input type="number" id="currentPrice" placeholder="현재 판매가 입력 (G)">
         <button class="btn-calc" style="flex: initial;" onclick="calculateEfficiency()">효율 계산하기</button>
       </div>
-      <div id="priceInfo" class="info-text" style="display: none; font-weight: bold; color: #2c3e50;"></div>
+      <div id="priceInfo" class="info-text" style="display: none; font-weight: bold; color: #38bdf8;"></div>
     </div>
 
     <div class="card">
-      <h3>📋 효율 계산 결과 목록</h3>
+      <h3>📋 수동 효율 계산 결과 목록</h3>
       <table>
         <thead>
           <tr>
             <th>품목 이름</th>
             <th>최저가 / 최고가</th>
-            <th>현재가</th>
+            <th>내가 입력한 가격</th>
             <th>판매 효율</th>
             <th>관리</th>
           </tr>
@@ -269,7 +296,7 @@
             <div class="mc-slot empty"></div>
           </div>
           <div class="mc-arrow">➔</div>
-          <div class="mc-slot"><span class="text-label" style="color:#d35400; font-weight:800;">영생의<br>아쿠티스</span></div>
+          <div class="mc-slot"><span class="text-label" style="color:#fb923c; font-weight:800;">영생의<br>아쿠티스</span></div>
         </div>
 
         <div class="mc-crafting-grid-row">
@@ -281,7 +308,7 @@
             <div class="mc-slot empty"></div>
           </div>
           <div class="mc-arrow">➔</div>
-          <div class="mc-slot"><span class="text-label" style="color:#d35400; font-weight:800;">크라켄의<br>광란체</span></div>
+          <div class="mc-slot"><span class="text-label" style="color:#fb923c; font-weight:800;">크라켄의<br>광란체</span></div>
         </div>
 
         <div class="mc-crafting-grid-row">
@@ -293,7 +320,7 @@
             <div class="mc-slot empty"></div>
           </div>
           <div class="mc-arrow">➔</div>
-          <div class="mc-slot"><span class="text-label" style="color:#d35400; font-weight:800;">리바이던<br>깃털</span></div>
+          <div class="mc-slot"><span class="text-label" style="color:#fb923c; font-weight:800;">리바이던<br>깃털</span></div>
         </div>
 
         <!-- 2성 연금 - 에센스 -->
@@ -431,7 +458,7 @@
             <div class="mc-slot empty"></div>
           </div>
           <div class="mc-arrow">➔</div>
-          <div class="mc-slot"><span class="text-label" style="color:#2980b9; font-weight:800;">해구의<br>파동코어</span></div>
+          <div class="mc-slot"><span class="text-label" style="color:#60a5fa; font-weight:800;">해구의<br>파동코어</span></div>
         </div>
 
         <div class="mc-crafting-grid-row">
@@ -443,7 +470,7 @@
             <div class="mc-slot empty"></div>
           </div>
           <div class="mc-arrow">➔</div>
-          <div class="mc-slot"><span class="text-label" style="color:#2980b9; font-weight:800;">침묵의<br>심해비약</span></div>
+          <div class="mc-slot"><span class="text-label" style="color:#60a5fa; font-weight:800;">침묵의<br>심해비약</span></div>
         </div>
 
         <div class="mc-crafting-grid-row">
@@ -455,7 +482,7 @@
             <div class="mc-slot empty"></div>
           </div>
           <div class="mc-arrow">➔</div>
-          <div class="mc-slot"><span class="text-label" style="color:#2980b9; font-weight:800;">청해룡의<br>날개</span></div>
+          <div class="mc-slot"><span class="text-label" style="color:#60a5fa; font-weight:800;">청해룡의<br>날개</span></div>
         </div>
 
       </div>
@@ -575,21 +602,21 @@
       <div id="torchResult" class="result-section" style="display: none; margin-top: 20px;">
         <div class="result-title">📊 강화횃불 제작 효율 분석 결과</div>
         
-        <div class="step-box" style="margin-bottom: 12px; background:#f8fafc; border-color:#cbd5e1;">
-          <b>🛠️ 나무 분배 가이드 (딱 떨어지는 최적 비율)</b>
-          <ul style="margin: 5px 0 0 18px; padding: 0; font-size: 13px; color: #475569;">
+        <div class="step-box" style="margin-bottom: 12px; background:#0f172a; border-color:#334155;">
+          <b style="color:#a7f3d0;">🛠️ 나무 분배 가이드 (딱 떨어지는 최적 비율)</b>
+          <ul style="margin: 5px 0 0 18px; padding: 0; font-size: 13px; color: #cbd5e1;">
             <li>입력한 원목: 총 <b id="guideTotalWood">0개</b></li>
             <li>숯 구이용 원목: <b id="guideCharcoalWood">0개</b> → 숯 <b id="guideCharcoalCount">0개</b> 제작</li>
             <li>막대기 제작용 원목: <b id="guideStickWood">0개</b> → 막대기 <b id="guideStickCount">0개</b> 제작</li>
-            <li id="guideRemainWoodBox" style="color: #e67e22; display: none;">남은 원목 (조합 불가 잉여분): <b id="guideRemainWood">0개</b></li>
+            <li id="guideRemainWoodBox" style="color: #fb923c; display: none;">남은 원목 (조합 불가 잉여분): <b id="guideRemainWood">0개</b></li>
           </ul>
         </div>
 
         <ul class="result-list">
           <li><span>💰 총 나무 구매 비용</span> <b id="resTorchCost">0 G</b></li>
-          <li><span>🔥 제작되는 강화횃불 수량</span> <span><b id="resTorchCount" style="color:#0284c7;">0 개</b> <span id="resTorchSetCount" style="font-size:12px; color:#666;">(0세트)</span></span></li>
+          <li><span>🔥 제작되는 강화횃불 수량</span> <span><b id="resTorchCount" style="color:#38bdf8;">0 개</b> <span id="resTorchSetCount" style="font-size:12px; color:#94a3b8;">(0세트)</span></span></li>
           <li><span>💵 총 예상 매출액</span> <b id="resTorchRevenue">0 G</b></li>
-          <li style="border-top: 2px solid #c3e6cb; margin-top: 5px; padding-top: 10px;">
+          <li style="border-top: 2px solid #059669; margin-top: 5px; padding-top: 10px;">
             <span>✨ 순이익 (재료비 제외)</span> <b id="resTorchProfit" class="profit-text">0 G</b>
           </li>
           <li><span>📈 수익률 (ROI)</span> <b id="resTorchRoi" class="profit-text">0%</b></li>
@@ -649,6 +676,9 @@
 
     let currentCategory = 'crop';
     let calcResults = JSON.parse(localStorage.getItem('minefarmTabResults')) || { crop: [], ocean: [] };
+    
+    // 관리자 가격 데이터 로드 (없으면 기본 최고가의 80%로 초기설정)
+    let adminPrices = JSON.parse(localStorage.getItem('minefarmAdminPrices')) || {};
 
     window.onload = function() {
       init();
@@ -683,12 +713,63 @@
         effSection.style.display = 'block';
 
         const title = document.getElementById('calcTitle');
-        title.textContent = category === 'crop' ? '🌱 재배 전문가 - 요리 판매 효율 계산' : '🌊 해양 전문가 - 공예품 판매 효율 계산';
+        title.textContent = category === 'crop' ? '🌱 재배 전문가 - 요리 수동 판매 효율 계산' : '🌊 해양 전문가 - 공예품 수동 판매 효율 계산';
 
         document.getElementById('priceInfo').style.display = 'none';
         document.getElementById('currentPrice').value = '';
         updateSelectOptions();
+        renderAdminPriceTable();
         renderResults();
+      }
+    }
+
+    /* 관리자 시세 테이블 렌더링 */
+    function renderAdminPriceTable() {
+      const tbody = document.getElementById('adminPriceTableBody');
+      tbody.innerHTML = '';
+      const list = currentCategory === 'crop' ? cropDishes : oceanCrafts;
+
+      list.forEach((item) => {
+        const savedPrice = adminPrices[item.name] || Math.floor(item.maxPrice * 0.8);
+        const eff = item.maxPrice > 0 ? ((savedPrice / item.maxPrice) * 100).toFixed(1) : 0;
+        let badgeClass = eff >= 80 ? 'high' : eff >= 50 ? 'medium' : 'low';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${item.name}</strong></td>
+          <td>${item.maxPrice.toLocaleString()} G</td>
+          <td style="color:#38bdf8; font-weight:bold;">${savedPrice.toLocaleString()} G</td>
+          <td><span class="badge ${badgeClass}">${eff}%</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* 관리자 설정 창 모달 (암호: 1234) */
+    function openAdminModal() {
+      const password = prompt("관리자 암호를 입력하세요:");
+      if (password !== "1234") {
+        alert("암호가 올바르지 않습니다.");
+        return;
+      }
+
+      const list = currentCategory === 'crop' ? cropDishes : oceanCrafts;
+      let updateCount = 0;
+
+      list.forEach((item) => {
+        const currentVal = adminPrices[item.name] || Math.floor(item.maxPrice * 0.8);
+        const newVal = prompt(`[${item.name}] 기준 고정 시세를 입력하세요 (최고가: ${item.maxPrice.toLocaleString()}G):`, currentVal);
+        
+        if (newVal !== null && !isNaN(parseFloat(newVal)) && parseFloat(newVal) >= 0) {
+          adminPrices[item.name] = parseFloat(newVal);
+          updateCount++;
+        }
+      });
+
+      if (updateCount > 0) {
+        localStorage.setItem('minefarmAdminPrices', JSON.stringify(adminPrices));
+        alert("관리자 공용 시세가 성공적으로 저장되었습니다!");
+        renderAdminPriceTable();
       }
     }
 
