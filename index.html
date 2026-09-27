@@ -49,20 +49,23 @@
     .item-label { display: flex; align-items: center; gap: 8px; font-weight: bold; }
     .item-label img { width: 24px; height: 24px; object-fit: contain; }
 
-    /* 시각적 이미지 레시피 전용 스타일 */
+    /* --- 게임 UI 스타일 조합대 가이드 --- */
     .recipe-toggle-btn { width: 100%; padding: 12px; background: #34495e; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; margin-bottom: 15px; transition: background 0.2s; }
     .recipe-toggle-btn:hover { background: #2c3e50; }
-    
-    .visual-recipe-container { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
-    .visual-recipe-title { font-size: 15px; font-weight: bold; color: #2c3e50; margin-bottom: 12px; border-bottom: 2px solid #cbd5e1; padding-bottom: 5px; }
-    
-    .recipe-row { display: flex; align-items: center; gap: 6px; background: white; padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 8px; flex-wrap: wrap; }
-    .recipe-row-title { font-size: 12px; font-weight: bold; color: #64748b; width: 100%; margin-bottom: 4px; }
-    
-    .recipe-item { display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; }
-    .recipe-item img { width: 22px; height: 22px; object-fit: contain; }
-    .recipe-item .count { font-weight: bold; font-size: 13px; color: #0f172a; }
-    .recipe-operator { font-weight: bold; color: #94a3b8; font-size: 14px; padding: 0 2px; }
+
+    .mc-crafting-panel { background: #fbf6ec; border: 2px solid #dcd1be; border-radius: 8px; padding: 15px; margin-bottom: 20px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
+    .mc-sec-title { font-size: 14px; font-weight: bold; color: #5a4b3c; margin-bottom: 8px; border-bottom: 1px solid #e8decb; padding-bottom: 4px; }
+
+    .mc-crafting-grid-row { display: flex; align-items: center; gap: 4px; background: #f3ebd9; border: 1px solid #e0d5be; border-radius: 6px; padding: 6px 8px; margin-bottom: 6px; overflow-x: auto; }
+    .mc-slots-group { display: flex; gap: 3px; }
+
+    .mc-slot { width: 44px; height: 44px; background: #eedfc8; border: 2px solid #b8a68d; border-radius: 5px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .mc-slot.empty { background: #f5ebd8; border-color: #d6caaf; }
+    .mc-slot img { width: 28px; height: 28px; object-fit: contain; }
+    .mc-slot .count { position: absolute; bottom: 1px; right: 3px; font-size: 11px; font-weight: 800; color: #111; text-shadow: 1px 1px 0px #fff; }
+    .mc-slot .text-label { font-size: 10px; font-weight: bold; color: #2c3e50; text-align: center; line-height: 1.1; word-break: keep-all; padding: 2px; }
+
+    .mc-arrow { font-size: 18px; font-weight: bold; color: #b8a68d; padding: 0 4px; flex-shrink: 0; }
 
     /* 강화횃불 전용 스타일 */
     .torch-form-group { margin-bottom: 15px; }
@@ -125,40 +128,336 @@
       <h3>🧪 제작 필요 재료 계산기</h3>
       <p class="info-text">목표 제작 수량을 입력하면 연금에 필요한 모든 하위 재료를 계산합니다.<br>⚠️ <b>낱개 수량은 짝수(2, 4, 6...)만 입력 가능합니다.</b></p>
 
-      <!-- 레시피 도감 버튼 -->
-      <button class="recipe-toggle-btn" onclick="toggleVisualRecipe()">🖼️ 연금 이미지 레시피 도감 보기 / 접기</button>
+      <!-- 조합 가이드 펼치기/접기 버튼 -->
+      <button class="recipe-toggle-btn" onclick="toggleVisualRecipe()">🎨 마인팜 연금 전체 조합 레시피 가이드 보기 / 접기</button>
 
-      <!-- 시각적 레시피 박스 -->
-      <div id="visualRecipeBox" class="visual-recipe-container" style="display: none;">
-        <div class="visual-recipe-title">⭐ 1성 정수 레시피 (기본재료 2 + 어패류 1)</div>
-        <div class="recipe-row">
-          <div class="recipe-row-title">흙정수</div>
-          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dirt.png" alt="흙"><span class="count">2</span></div>
-          <span class="recipe-operator">+</span>
-          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/shrimp.png" alt="깐새우"><span class="count">1</span></div>
+      <!-- 게임 UI 슬롯 스타일 전체 조합 가이드 -->
+      <div id="visualRecipeBox" class="mc-crafting-panel" style="display: none;">
+        
+        <!-- 1성 연금 - 정수 -->
+        <div class="mc-sec-title">⭐ 1성 정수 조합 레시피</div>
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_oyster.png" alt="1성 굴"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Clay.png" alt="점토"><span class="count">2</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">수호의<br>정수</span><span class="count">2</span></div>
         </div>
 
-        <div class="visual-recipe-title" style="margin-top: 15px;">⭐⭐ 2성 에센스 레시피 (어패류 2 + 해초 6 + 나뭇잎 6)</div>
-        <div class="recipe-row">
-          <div class="recipe-row-title">수호 에센스</div>
-          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_oyster.png" alt="2성 굴"><span class="count">2</span></div>
-          <span class="recipe-operator">+</span>
-          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/BlockSprite_seagrass.png" alt="해초"><span class="count">6</span></div>
-          <span class="recipe-operator">+</span>
-          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Oak_Leaves.png" alt="참나무 잎"><span class="count">6</span></div>
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_conch.png" alt="1성 소라"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Sand.png" alt="모래"><span class="count">4</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">파동의<br>정수</span><span class="count">2</span></div>
         </div>
 
-        <div class="visual-recipe-title" style="margin-top: 15px;">💎 2성 결정 조합 레시피</div>
-        <div class="recipe-row">
-          <div class="recipe-row-title">활기 보존의 결정</div>
-          <div class="recipe-item"><span class="count">수호 에센스 1</span></div>
-          <span class="recipe-operator">+</span>
-          <div class="recipe-item"><span class="count">생명 에센스 1</span></div>
-          <span class="recipe-operator">+</span>
-          <div class="recipe-item"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAABrUlEQVR4nN2Xv0oDQRCHv0QlRBGiRhMMQbGyFXwD38BGbOx9Dgs7W0vtgo1vYG1hYamVKCHBP9EIoiEQEwvz83K7d7kLJLL6q2642WXmm9mdu0Sr1WKU+nh9XojySYw6CGlrd6XTax/tX+T0nPyVCCI0PqqNd/bWfZmnFmcBaFZfAJjMzD3qnVskzJqdHN4k4mxgZix9rrZ99th1eL5ukZBUu7AMTZkZmxKBH7+q7eMmCWmQmvZ7b+5Te3izfNwkocjNWobVPi6B+1IZgLPTJ+vUuUVCtcqTAWwipqIITZw3ACjf1oBgApITJKwpurE53wHIbxf7LjQJRRE5Prj6IyQ0O9LpFODVUopLJux+0fQMmklOkAi9MbO5acCbJZXSHQCFtSXAzli2eqA9MxU7CLdJSMn6O+ARqFx2ieAnotqLgNbJVq+p93p7w00SjUYT8CKXlFlxOQtAuUukWP+2zR6QrVNh7ufbe/C4hy9rduhUmBIh+WkW6IYtGCRELo7cImFmBvYXUK+fqbDM1QsiGbg2TqSj1tD+RUVQPWWehrCegv9GQvJ6KljOfmN+ATa/wfsI9vpCAAAAAElFTkSuQmCC" alt="켈프"><span class="count">2</span></div>
-          <span class="recipe-operator">+</span>
-          <div class="recipe-item"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Block_of_Lapis_Lazuli.png" alt="청금석"><span class="count">1</span></div>
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_octopus.png" alt="1성 문어"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dirt.png" alt="흙"><span class="count">8</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">혼란의<br>정수</span><span class="count">2</span></div>
         </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_seaweed.png" alt="1성 미역"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Gravel.png" alt="자갈"><span class="count">4</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">생명의<br>정수</span><span class="count">2</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_sea_urchin.png" alt="1성 성게"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Granite.png" alt="화강암"><span class="count">2</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">부식의<br>정수</span><span class="count">2</span></div>
+        </div>
+
+        <!-- 1성 연금 - 핵 -->
+        <div class="mc-sec-title" style="margin-top: 15px;">⚛️ 1성 핵 조합 레시피</div>
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">수호</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">파동</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/shrimp.png" alt="깐새우"><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">물결수호<br>핵</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">파동</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">혼란</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bream.png" alt="도미회"><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">파동오염<br>핵</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">혼란</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">생명</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/herring.png" alt="청어회"><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">질서파괴<br>핵</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">생명</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">부식</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Goldfish.png" alt="금붕어회"><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">활력붕괴<br>핵</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">부식</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">수호</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bass.png" alt="농어회"><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">침식방어<br>핵</span><span class="count">1</span></div>
+        </div>
+
+        <!-- 1성 연금 - 최종 산물 -->
+        <div class="mc-sec-title" style="margin-top: 15px;">🏆 1성 최종 산물 조합 레시피</div>
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">물결수호</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">질서파괴</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">활력붕괴</span><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label" style="color:#d35400; font-weight:800;">영생의<br>아쿠티스</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">질서파괴</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">활력붕괴</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">파동오염</span><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label" style="color:#d35400; font-weight:800;">크라켄의<br>광란체</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">침식방어</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">파동오염</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">물결수호</span><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label" style="color:#d35400; font-weight:800;">리바이던<br>깃털</span></div>
+        </div>
+
+        <!-- 2성 연금 - 에센스 -->
+        <div class="mc-sec-title" style="margin-top: 20px;">⭐⭐ 2성 에센스 조합 레시피</div>
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_oyster.png" alt="2성 굴"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/BlockSprite_seagrass.png" alt="해초"><span class="count">6</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Oak_Leaves.png" alt="참나무 잎"><span class="count">6</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">수호<br>에센스</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_conch.png" alt="2성 소라"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/BlockSprite_seagrass.png" alt="해초"><span class="count">6</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Spruce_Leaves.png" alt="가문비 잎"><span class="count">6</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">파동<br>에센스</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_octopus.png" alt="2성 문어"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/BlockSprite_seagrass.png" alt="해초"><span class="count">6</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Birch_Leaves.png" alt="자작 잎"><span class="count">6</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">혼란<br>에센스</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_seaweed.png" alt="2성 미역"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/BlockSprite_seagrass.png" alt="해초"><span class="count">6</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Cherry_Leaves.png" alt="벚나무 잎"><span class="count">6</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">생명<br>에센스</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_sea_urchin.png" alt="2성 성게"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/BlockSprite_seagrass.png" alt="해초"><span class="count">6</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dark_Oak_Leaves.png" alt="짙은참나무 잎"><span class="count">6</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">부식<br>에센스</span><span class="count">1</span></div>
+        </div>
+
+        <!-- 2성 연금 - 결정 -->
+        <div class="mc-sec-title" style="margin-top: 15px;">💎 2성 결정 조합 레시피</div>
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">수호</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">생명</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAABrUlEQVR4nN2Xv0oDQRCHv0QlRBGiRhMMQbGyFXwD38BGbOx9Dgs7W0vtgo1vYG1hYamVKCHBP9EIoiEQEwvz83K7d7kLJLL6q2642WXmm9mdu0Sr1WKU+nh9XojySYw6CGlrd6XTax/tX+T0nPyVCCI0PqqNd/bWfZmnFmcBaFZfAJjMzD3qnVskzJqdHN4k4mxgZix9rrZ99th1eL5ukZBUu7AMTZkZmxKBH7+q7eMmCWmQmvZ7b+5Te3izfNwkocjNWobVPi6B+1IZgLPTJ+vUuUVCtcqTAWwipqIITZw3ACjf1oBgApITJKwpurE53wHIbxf7LjQJRRE5Prj6IyQ0O9LpFODVUopLJux+0fQMmklOkAi9MbO5acCbJZXSHQCFtSXAzli2eqA9MxU7CLdJSMn6O+ARqFx2ieAnotqLgNbJVq+p93p7w00SjUYT8CKXlFlxOQtAuUukWP+2zR6QrVNh7ufbe/C4hy9rduhUmBIh+WkW6IYtGCRELo7cImFmBvYXUK+fqbDM1QsiGbg2TqSj1tD+RUVQPWWehrCegv9GQvJ6KljOfmN+ATa/wfsI9vpCAAAAAElFTkSuQmCC" alt="켈프"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Block_of_Lapis_Lazuli.png" alt="청금석"><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">활기보존<br>결정</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">파동</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">부식</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAABrUlEQVR4nN2Xv0oDQRCHv0QlRBGiRhMMQbGyFXwD38BGbOx9Dgs7W0vtgo1vYG1hYamVKCHBP9EIoiEQEwvz83K7d7kLJLL6q2642WXmm9mdu0Sr1WKU+nh9XojySYw6CGlrd6XTax/tX+T0nPyVCCI0PqqNd/bWfZmnFmcBaFZfAJjMzD3qnVskzJqdHN4k4mxgZix9rrZ99th1eL5ukZBUu7AMTZkZmxKBH7+q7eMmCWmQmvZ7b+5Te3izfNwkocjNWobVPi6B+1IZgLPTJ+vUuUVCtcqTAWwipqIITZw3ACjf1oBgApITJKwpurE53wHIbxf7LjQJRRE5Prj6IyQ0O9LpFODVUopLJux+0fQMmklOkAi9MbO5acCbJZXSHQCFtSXAzli2eqA9MxU7CLdJSMn6O+ARqFx2ieAnotqLgNbJVq+p93p7w00SjUYT8CKXlFlxOQtAuUukWP+2zR6QrVNh7ufbe/C4hy9rduhUmBIh+WkW6IYtGCRELo7cImFmBvYXUK+fqbDM1QsiGbg2TqSj1tD+RUVQPWWehrCegv9GQvJ6KljOfmN+ATa/wfsI9vpCAAAAAElFTkSuQmCC" alt="켈프"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Block_of_Redstone.png" alt="레드스톤"><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">파도침식<br>결정</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">혼란</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">수호</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAABrUlEQVR4nN2Xv0oDQRCHv0QlRBGiRhMMQbGyFXwD38BGbOx9Dgs7W0vtgo1vYG1hYamVKCHBP9EIoiEQEwvz83K7d7kLJLL6q2642WXmm9mdu0Sr1WKU+nh9XojySYw6CGlrd6XTax/tX+T0nPyVCCI0PqqNd/bWfZmnFmcBaFZfAJjMzD3qnVskzJqdHN4k4mxgZix9rrZ99th1eL5ukZBUu7AMTZkZmxKBH7+q7eMmCWmQmvZ7b+5Te3izfNwkocjNWobVPi6B+1IZgLPTJ+vUuUVCtcqTAWwipqIITZw3ACjf1oBgApITJKwpurE53wHIbxf7LjQJRRE5Prj6IyQ0O9LpFODVUopLJux+0fQMmklOkAi9MbO5acCbJZXSHQCFtSXAzli2eqA9MxU7CLdJSMn6O+ARqFx2ieAnotqLgNbJVq+p93p7w00SjUYT8CKXlFlxOQtAuUukWP+2zR6QrVNh7ufbe/C4hy9rduhUmBIh+WkW6IYtGCRELo7cImFmBvYXUK+fqbDM1QsiGbg2TqSj1tD+RUVQPWWehrCegv9GQvJ6KljOfmN+ATa/wfsI9vpCAAAAAElFTkSuQmCC" alt="켈프"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Iron_Ingot.png" alt="철 주괴"><span class="count">3</span></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">방어오염<br>결정</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">생명</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">파동</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAABrUlEQVR4nN2Xv0oDQRCHv0QlRBGiRhMMQbGyFXwD38BGbOx9Dgs7W0vtgo1vYG1hYamVKCHBP9EIoiEQEwvz83K7d7kLJLL6q2642WXmm9mdu0Sr1WKU+nh9XojySYw6CGlrd6XTax/tX+T0nPyVCCI0PqqNd/bWfZmnFmcBaFZfAJjMzD3qnVskzJqdHN4k4mxgZix9rrZ99th1eL5ukZBUu7AMTZkZmxKBH7+q7eMmCWmQmvZ7b+5Te3izfNwkocjNWobVPi6B+1IZgLPTJ+vUuUVCtcqTAWwipqIITZw3ACjf1oBgApITJKwpurE53wHIbxf7LjQJRRE5Prj6IyQ0O9LpFODVUopLJux+0fQMmklOkAi9MbO5acCbJZXSHQCFtSXAzli2eqA9MxU7CLdJSMn6O+ARqFx2ieAnotqLgNbJVq+p93p7w00SjUYT8CKXlFlxOQtAuUukWP+2zR6QrVNh7ufbe/C4hy9rduhUmBIh+WkW6IYtGCRELo7cImFmBvYXUK+fqbDM1QsiGbg2TqSj1tD+RUVQPWWehrCegv9GQvJ6KljOfmN+ATa/wfsI9vpCAAAAAElFTkSuQmCC" alt="켈프"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Gold_Ingot.png" alt="금 주괴"><span class="count">2</span></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">격류재생<br>결정</span><span class="count">1</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">부식</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">혼란</span><span class="count">1</span></div>
+            <div class="mc-slot"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAABrUlEQVR4nN2Xv0oDQRCHv0QlRBGiRhMMQbGyFXwD38BGbOx9Dgs7W0vtgo1vYG1hYamVKCHBP9EIoiEQEwvz83K7d7kLJLL6q2642WXmm9mdu0Sr1WKU+nh9XojySYw6CGlrd6XTax/tX+T0nPyVCCI0PqqNd/bWfZmnFmcBaFZfAJjMzD3qnVskzJqdHN4k4mxgZix9rrZ99th1eL5ukZBUu7AMTZkZmxKBH7+q7eMmCWmQmvZ7b+5Te3izfNwkocjNWobVPi6B+1IZgLPTJ+vUuUVCtcqTAWwipqIITZw3ACjf1oBgApITJKwpurE53wHIbxf7LjQJRRE5Prj6IyQ0O9LpFODVUopLJux+0fQMmklOkAi9MbO5acCbJZXSHQCFtSXAzli2eqA9MxU7CLdJSMn6O+ARqFx2ieAnotqLgNbJVq+p93p7w00SjUYT8CKXlFlxOQtAuUukWP+2zR6QrVNh7ufbe/C4hy9rduhUmBIh+WkW6IYtGCRELo7cImFmBvYXUK+fqbDM1QsiGbg2TqSj1tD+RUVQPWWehrCegv9GQvJ6KljOfmN+ATa/wfsI9vpCAAAAAElFTkSuQmCC" alt="켈프"><span class="count">2</span></div>
+            <div class="mc-slot"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Diamond.png" alt="다이아"><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label">맹독혼란<br>결정</span><span class="count">1</span></div>
+        </div>
+
+        <!-- 2성 연금 - 최종 산물 -->
+        <div class="mc-sec-title" style="margin-top: 15px;">👑 2성 최종 산물 조합 레시피</div>
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">활기보존</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">파도침식</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">격류재생</span><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label" style="color:#2980b9; font-weight:800;">해구의<br>파동코어</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">파도침식</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">격류재생</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">맹독혼란</span><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label" style="color:#2980b9; font-weight:800;">침묵의<br>심해비약</span></div>
+        </div>
+
+        <div class="mc-crafting-grid-row">
+          <div class="mc-slots-group">
+            <div class="mc-slot"><span class="text-label">방어오염</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">맹독혼란</span><span class="count">1</span></div>
+            <div class="mc-slot"><span class="text-label">활기보존</span><span class="count">1</span></div>
+            <div class="mc-slot empty"></div>
+            <div class="mc-slot empty"></div>
+          </div>
+          <div class="mc-arrow">➔</div>
+          <div class="mc-slot"><span class="text-label" style="color:#2980b9; font-weight:800;">청해룡의<br>날개</span></div>
+        </div>
+
       </div>
       
       <!-- 1성 연금 입력 -->
