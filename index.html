@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>마인팜 연금 및 판매 효율 계산기</title>
   <style>
-    /* 기본 스타일 및 마인크래프트 슬롯 UI */
+    /* 마인크래프트 테마 스타일 */
     body {
       background-color: #121212;
       color: #e0e0e0;
@@ -14,7 +14,7 @@
       padding: 20px;
     }
     .container {
-      max-width: 900px;
+      max-width: 950px;
       margin: 0 auto;
       background: #1e1e1e;
       padding: 20px;
@@ -58,7 +58,7 @@
       font-size: 1.1rem;
       font-weight: bold;
       color: #facc15;
-      margin: 15px 0 10px 0;
+      margin: 20px 0 10px 0;
       border-bottom: 1px solid #333;
       padding-bottom: 5px;
     }
@@ -76,6 +76,7 @@
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
+      align-items: center;
     }
     .mc-slot {
       width: 64px;
@@ -90,16 +91,24 @@
       position: relative;
       text-align: center;
       box-sizing: border-box;
+      padding: 2px;
     }
     .mc-slot.empty {
       background: #222;
       border-color: #333;
     }
+    .mc-slot img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
     .mc-slot .text-label {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: #ddd;
       line-height: 1.1;
       word-break: keep-all;
+      margin-top: 2px;
     }
     .mc-slot .count {
       position: absolute;
@@ -108,15 +117,23 @@
       font-size: 0.75rem;
       font-weight: bold;
       color: #facc15;
+      text-shadow: 1px 1px 2px #000;
     }
     .mc-arrow {
       font-size: 1.5rem;
       color: #888;
+      font-weight: bold;
+      margin: 0 4px;
+    }
+    .mc-plus {
+      font-size: 1.2rem;
+      color: #aaa;
+      font-weight: bold;
     }
 
     /* 입력 상자 및 버튼 */
     .alchemy-section-title {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       color: #38bdf8;
       margin-top: 25px;
@@ -192,6 +209,7 @@
     .result-list li {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 6px 0;
       border-bottom: 1px solid #2e3e4e;
     }
@@ -260,7 +278,7 @@
     <div class="tab-button" onclick="switchCategory('torch')">🔥 강화횃불 계산</div>
   </div>
 
-  <!-- 1. 판매 효율 계산 섹션 (농사/해양 공용) -->
+  <!-- 1. 판매 효율 계산 섹션 (농사/해양) -->
   <div id="efficiencySection">
     <h3 id="calcTitle" style="color:#38bdf8;">🌱 재배 전문가 - 요리 수동 판매 효율 계산</h3>
     <div class="alchemy-input-box">
@@ -305,14 +323,217 @@
   <div id="alchemySection" style="display: none;">
     <button class="btn-action" style="background:#6366f1; margin-bottom:15px;" onclick="toggleVisualRecipe()">📜 연금 조합 레시피 접기/열기</button>
     
-    <div id="visualRecipeBox" style="display:none;">
-      <!-- 1성 / 2성 레시피는 생략 가능 / 필요 시 유지 -->
-      <div class="mc-sec-title">🌟 3성 최종 연금품 및 조합 레시피 요약</div>
-      <p style="font-size:0.85rem; color:#aaa; margin-bottom:10px;">
-        • <b>아쿠아 펄스 파편 ★★★</b>: 불멸 재생의 영약 + 파동 장벽의 영약 + 맹독 파동의 영약<br>
-        • <b>나우틸러스의 손 ★★★</b>: 파동 장벽의 영약 + 생명 광란의 영약 + 불멸 재생의 영약<br>
-        • <b>무저의 척추 ★★★</b>: 타락 침식의 영약 + 맹독 파동의 영약 + 생명 광란의 영약
-      </p>
+    <div id="visualRecipeBox" style="display:block;">
+      
+      <!-- 1성 연금 레시피 UI -->
+      <div class="mc-sec-title">🌟 1성 연금 조합 레시피 (결과물 2개)</div>
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/clay.png" alt="점토"><span class="text-label">점토</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/sand.png" alt="모래"><span class="text-label">모래</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/dirt.png" alt="흙"><span class="text-label">흙</span><span class="count">4</span></div>
+          <div class="mc-slot"><img src="images/gravel.png" alt="자갈"><span class="text-label">자갈</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/granite.png" alt="화강암"><span class="text-label">화강암</span><span class="count">1</span></div>
+        </div>
+        <div class="mc-plus">+</div>
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/shrimp.png" alt="생새우"><span class="text-label">생새우</span><span class="count">0.5</span></div>
+          <div class="mc-slot"><img src="images/red_snapper.png" alt="붉은돔"><span class="text-label">붉은돔</span><span class="count">0.5</span></div>
+          <div class="mc-slot"><img src="images/herring.png" alt="청어"><span class="text-label">청어</span><span class="count">0.5</span></div>
+          <div class="mc-slot"><img src="images/goldfish.png" alt="금붕어"><span class="text-label">금붕어</span><span class="count">0.5</span></div>
+          <div class="mc-slot"><img src="images/bass.png" alt="배스"><span class="text-label">배스</span><span class="count">0.5</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#38bdf8;"><img src="images/alchemy1.png" alt="1성 연금"><span class="text-label">1성 연금</span><span class="count">2</span></div>
+      </div>
+
+      <!-- 2성 연금 레시피 UI -->
+      <div class="mc-sec-title">🌟🌟 2성 연금 조합 레시피 (결과물 2개)</div>
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/oyster.png" alt="굴"><span class="text-label">굴</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/sora.png" alt="소라"><span class="text-label">소라</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/octopus.png" alt="문어"><span class="text-label">문어</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/miyeok.png" alt="미역"><span class="text-label">미역</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/sea_urchin.png" alt="성게"><span class="text-label">성게</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/seaweed.png" alt="해초"><span class="text-label">해초</span><span class="count">15</span></div>
+        </div>
+        <div class="mc-plus">+</div>
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/leaves.png" alt="나뭇잎"><span class="text-label">나뭇잎 5종</span><span class="count">각3</span></div>
+          <div class="mc-slot"><img src="images/dried_kelp_block.png" alt="켈프블록"><span class="text-label">켈프블록</span><span class="count">5</span></div>
+          <div class="mc-slot"><img src="images/lapis.png" alt="라피스"><span class="text-label">라피스</span><span class="count">0.5</span></div>
+          <div class="mc-slot"><img src="images/redstone.png" alt="레드스톤"><span class="text-label">레드스톤</span><span class="count">0.5</span></div>
+          <div class="mc-slot"><img src="images/iron.png" alt="철괴"><span class="text-label">철괴</span><span class="count">1.5</span></div>
+          <div class="mc-slot"><img src="images/gold.png" alt="금괴"><span class="text-label">금괴</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/diamond.png" alt="다이아"><span class="text-label">다이아</span><span class="count">0.5</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#facc15;"><img src="images/alchemy2.png" alt="2성 연금"><span class="text-label">2성 연금</span><span class="count">2</span></div>
+      </div>
+
+      <!-- 3성 연금 레시피 UI (엘릭서 5종) -->
+      <div class="mc-sec-title">🌟🌟🌟 3성 엘릭서 레시피 (결과물 각 1개)</div>
+      
+      <!-- 수호의 엘릭서 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/sea_squirt.png" alt="불우렁쉥이"><span class="text-label">불우렁쉥이</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/glass_bottle.png" alt="유리병"><span class="text-label">유리병</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/netherrack.png" alt="네더랙"><span class="text-label">네더랙</span><span class="count">8</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#a855f7;"><img src="images/elixir1.png" alt="수호의 엘릭서"><span class="text-label">수호의 엘릭서</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 파동의 엘릭서 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/sea_squirt.png" alt="불우렁쉥이"><span class="text-label">불우렁쉥이</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/glass_bottle.png" alt="유리병"><span class="text-label">유리병</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/magma_block.png" alt="마그마 블록"><span class="text-label">마그마 블록</span><span class="count">4</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#a855f7;"><img src="images/elixir2.png" alt="파동의 엘릭서"><span class="text-label">파동의 엘릭서</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 혼란의 엘릭서 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/sea_squirt.png" alt="불우렁쉥이"><span class="text-label">불우렁쉥이</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/glass_bottle.png" alt="유리병"><span class="text-label">유리병</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/soul_soil.png" alt="영혼 흙"><span class="text-label">영혼 흙</span><span class="count">4</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#a855f7;"><img src="images/elixir3.png" alt="혼란의 엘릭서"><span class="text-label">혼란의 엘릭서</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 생명의 엘릭서 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/sea_squirt.png" alt="불우렁쉥이"><span class="text-label">불우렁쉥이</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/glass_bottle.png" alt="유리병"><span class="text-label">유리병</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/crimson_stem.png" alt="진홍빛 자루"><span class="text-label">진홍빛 자루</span><span class="count">4</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#a855f7;"><img src="images/elixir4.png" alt="생명의 엘릭서"><span class="text-label">생명의 엘릭서</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 부식의 엘릭서 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/sea_squirt.png" alt="불우렁쉥이"><span class="text-label">불우렁쉥이</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/glass_bottle.png" alt="유리병"><span class="text-label">유리병</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/warped_stem.png" alt="뒤틀린 자루"><span class="text-label">뒤틀린 자루</span><span class="count">4</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#a855f7;"><img src="images/elixir5.png" alt="부식의 엘릭서"><span class="text-label">부식의 엘릭서</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 3성 영약 레시피 UI (영약 5종) -->
+      <div class="mc-sec-title">🌟🌟🌟 3성 영약 레시피 (결과물 각 1개)</div>
+
+      <!-- 불멸 재생의 영약 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/elixir1.png" alt="수호의 엘릭서"><span class="text-label">수호 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/elixir4.png" alt="생명의 엘릭서"><span class="text-label">생명 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/dead_pipe_coral.png" alt="죽은 관 산호"><span class="text-label">죽은 관 산호</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/kelp_pile.png" alt="켈프 더미"><span class="text-label">켈프 더미</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/glow_berry.png" alt="발광 열매"><span class="text-label">발광 열매</span><span class="count">4</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#ef4444;"><img src="images/potion1.png" alt="불멸 재생의 영약"><span class="text-label">불멸 재생 영약</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 파동 장벽의 영약 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/elixir1.png" alt="수호의 엘릭서"><span class="text-label">수호 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/elixir2.png" alt="파동의 엘릭서"><span class="text-label">파동 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/dead_tube_coral.png" alt="죽은 사방 산호"><span class="text-label">죽은 사방 산호</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/kelp_pile.png" alt="켈프 더미"><span class="text-label">켈프 더미</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/glow_berry.png" alt="발광 열매"><span class="text-label">발광 열매</span><span class="count">4</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#ef4444;"><img src="images/potion2.png" alt="파동 장벽의 영약"><span class="text-label">파동 장벽 영약</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 타락 침식의 영약 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/elixir3.png" alt="혼란의 엘릭서"><span class="text-label">혼란 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/elixir5.png" alt="부식의 엘릭서"><span class="text-label">부식 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/dead_bubble_coral.png" alt="죽은 거품 산호"><span class="text-label">죽은 거품 산호</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/kelp_pile.png" alt="켈프 더미"><span class="text-label">켈프 더미</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/glow_berry.png" alt="발광 열매"><span class="text-label">발광 열매</span><span class="count">4</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#ef4444;"><img src="images/potion3.png" alt="타락 침식의 영약"><span class="text-label">타락 침식 영약</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 생명 광란의 영약 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/elixir3.png" alt="혼란의 엘릭서"><span class="text-label">혼란 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/elixir4.png" alt="생명의 엘릭서"><span class="text-label">생명 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/dead_fire_coral.png" alt="죽은 불 산호"><span class="text-label">죽은 불 산호</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/kelp_pile.png" alt="켈프 더미"><span class="text-label">켈프 더미</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/glow_berry.png" alt="발광 열매"><span class="text-label">발광 열매</span><span class="count">4</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#ef4444;"><img src="images/potion4.png" alt="생명 광란의 영약"><span class="text-label">생명 광란 영약</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 맹독 파동의 영약 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/elixir2.png" alt="파동의 엘릭서"><span class="text-label">파동 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/elixir5.png" alt="부식의 엘릭서"><span class="text-label">부식 엘릭서</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/dead_brain_coral.png" alt="죽은 뇌 산호"><span class="text-label">죽은 뇌 산호</span><span class="count">2</span></div>
+          <div class="mc-slot"><img src="images/kelp_pile.png" alt="켈프 더미"><span class="text-label">켈프 더미</span><span class="count">3</span></div>
+          <div class="mc-slot"><img src="images/glow_berry.png" alt="발광 열매"><span class="text-label">발광 열매</span><span class="count">4</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#ef4444;"><img src="images/potion5.png" alt="맹독 파동의 영약"><span class="text-label">맹독 파동 영약</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 3성 최종 연금품 레시피 UI -->
+      <div class="mc-sec-title">🌟🌟🌟 3성 최종 연금품 조합 레시피</div>
+      
+      <!-- 아쿠아 펄스 파편 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/potion1.png" alt="불멸 재생 영약"><span class="text-label">불멸 재생</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/potion2.png" alt="파동 장벽 영약"><span class="text-label">파동 장벽</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/potion5.png" alt="맹독 파동 영약"><span class="text-label">맹독 파동</span><span class="count">1</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#10b981;"><img src="images/aqua_pulse.png" alt="아쿠아 펄스 파편"><span class="text-label">아쿠아 펄스</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 나우틸러스의 손 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/potion2.png" alt="파동 장벽 영약"><span class="text-label">파동 장벽</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/potion4.png" alt="생명 광란 영약"><span class="text-label">생명 광란</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/potion1.png" alt="불멸 재생 영약"><span class="text-label">불멸 재생</span><span class="count">1</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#10b981;"><img src="images/nautilus_hand.png" alt="나우틸러스 손"><span class="text-label">나우틸러스 손</span><span class="count">1</span></div>
+      </div>
+
+      <!-- 무저의 척추 -->
+      <div class="mc-crafting-grid-row">
+        <div class="mc-slots-group">
+          <div class="mc-slot"><img src="images/potion3.png" alt="타락 침식 영약"><span class="text-label">타락 침식</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/potion5.png" alt="맹독 파동 영약"><span class="text-label">맹독 파동</span><span class="count">1</span></div>
+          <div class="mc-slot"><img src="images/potion4.png" alt="생명 광란 영약"><span class="text-label">생명 광란</span><span class="count">1</span></div>
+        </div>
+        <div class="mc-arrow">➔</div>
+        <div class="mc-slot" style="border-color:#10b981;"><img src="images/bottomless_spine.png" alt="무저의 척추"><span class="text-label">무저의 척추</span><span class="count">1</span></div>
+      </div>
+
     </div>
 
     <!-- 1성 연금 목표 입력 -->
@@ -389,7 +610,7 @@
           <!-- 엘릭서 필요 수량 -->
           <li style="margin-top:10px; border-top:1px dashed #444; padding-top:6px;"><span>⚗️ 수호의 엘릭서</span><b id="res3SubElixir1">0개</b></li>
           <li><span>⚗️ 파동의 엘릭서</span><b id="res3SubElixir2">0개</b></li>
-          <li><span>⚗️ 혼란의 엘릭서</span><b id="res3SubElixir3">0개</b></li>
+          <li><span>⚗️️ 혼란의 엘릭서</span><b id="res3SubElixir3">0개</b></li>
           <li><span>⚗️ 생명의 엘릭서</span><b id="res3SubElixir4">0개</b></li>
           <li><span>⚗️ 부식의 엘릭서</span><b id="res3SubElixir5">0개</b></li>
 
@@ -726,7 +947,7 @@
     }
   }
 
-  /* === 연금 통합 재료 계산 로직 (새 레시피) === */
+  /* === 연금 통합 재료 계산 로직 === */
   function calculateAlchemy() {
     const setCount1 = parseInt(document.getElementById('targetSetCount1')?.value) || 0;
     const pieceCount1 = parseInt(document.getElementById('targetPieceCount1')?.value) || 0;
@@ -761,12 +982,7 @@
       document.getElementById('resDirt').textContent = formatStackCount(mult1 * 256);
       document.getElementById('resGravel').textContent = formatStackCount(mult1 * 128);
       document.getElementById('resGranite').textContent = formatStackCount(mult1 * 64);
-
       document.getElementById('resShrimp').textContent = formatStackCount(mult1 * 32);
-      document.getElementById('resRedSnapper').textContent = formatStackCount(mult1 * 32);
-      document.getElementById('resHerring').textContent = formatStackCount(mult1 * 32);
-      document.getElementById('resGoldfish').textContent = formatStackCount(mult1 * 32);
-      document.getElementById('resBass').textContent = formatStackCount(mult1 * 32);
     } else {
       res1Box.style.display = 'none';
     }
@@ -775,7 +991,6 @@
     const res2Box = document.getElementById('res2StarBox');
     if (totalItems2 > 0) {
       res2Box.style.display = 'block';
-      
       document.getElementById('res2Oyster').textContent = formatStackCount(totalItems2);
       document.getElementById('resSeaweedItem').textContent = formatStackCount(totalItems2 * 15);
       document.getElementById('resOakLeaf').textContent = formatStackCount(totalItems2 * 3);
@@ -788,7 +1003,7 @@
       res2Box.style.display = 'none';
     }
 
-    // --- 3성 연금 계산 (신규 레시피) ---
+    // --- 3성 연금 계산 ---
     const res3Box = document.getElementById('res3StarBox');
     if (res3Box) {
       if (totalItems3 > 0) {
