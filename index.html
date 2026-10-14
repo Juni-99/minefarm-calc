@@ -685,100 +685,77 @@
       <!-- 연금 계산 결과 표시 -->
       <div id="alchemyResult" class="result-section" style="display: none;">
         
-        <!-- 1성 연금 결과 -->
+        <!-- 1성 연금 결과 (단계별 세분화) -->
         <div id="res1StarBox" style="display: none;">
-          <div class="result-title">🧱 1성 연금 기본 재료 목록</div>
+          <div class="result-title">🧪 1성 [정수 제작] 단계별 건축 재료 목록</div>
           <ul class="result-list" style="margin-bottom: 15px;">
-            <li><span class="item-label"><img id="imgClay" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Clay.png" alt="점토"> 점토</span><b id="resClay">0개</b></li>
-            <li><span class="item-label"><img id="imgSand" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Sand.png" alt="모래"> 모래</span><b id="resSand">0개</b></li>
-            <li><span class="item-label"><img id="imgDirt" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dirt.png" alt="흙"> 흙</span><b id="resDirt">0개</b></li>
-            <li><span class="item-label"><img id="imgGravel" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Gravel.png" alt="자갈"> 자갈</span><b id="resGravel">0개</b></li>
-            <li><span class="item-label"><img id="imgGranite" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Granite.png" alt="화강암"> 화강암</span><b id="resGranite">0개</b></li>
+            <li><span class="item-label"><img id="imgClay" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Clay.png" alt="점토"> [수호의 정수] 점토</span><b id="resClay">0개</b></li>
+            <li><span class="item-label"><img id="imgSand" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Sand.png" alt="모래"> [파동의 정수] 모래</span><b id="resSand">0개</b></li>
+            <li><span class="item-label"><img id="imgDirt" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dirt.png" alt="흙"> [혼란의 정수] 흙</span><b id="resDirt">0개</b></li>
+            <li><span class="item-label"><img id="imgGravel" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Gravel.png" alt="자갈"> [생명의 정수] 자갈</span><b id="resGravel">0개</b></li>
+            <li><span class="item-label"><img id="imgGranite" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Granite.png" alt="화강암"> [부식의 정수] 화강암</span><b id="resGranite">0개</b></li>
           </ul>
 
-          <div class="result-title">🐟 1성 연금 필요 해산물 재료 목록</div>
+          <div class="result-title">⚛️ 1성 [핵 제작] 투입 생선 재료 목록</div>
           <ul class="result-list" style="margin-bottom: 25px;">
-            <li><span class="item-label"><img id="imgShrimp" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/shrimp.png" alt="깐새우"> 깐새우</span><b id="resShrimp">0개</b></li>
-            <li><span class="item-label"><img id="imgRedSnapper" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bream.png" alt="도미회"> 도미회</span><b id="resRedSnapper">0개</b></li>
-            <li><span class="item-label"><img id="imgHerring" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/herring.png" alt="청어회"> 청어회</span><b id="resHerring">0개</b></li>
-            <li><span class="item-label"><img id="imgGoldfish" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Goldfish.png" alt="금붕어회"> 금붕어회</span><b id="resGoldfish">0개</b></li>
-            <li><span class="item-label"><img id="imgBass" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bass.png" alt="농어회"> 농어회</span><b id="resBass">0개</b></li>
+            <li><span class="item-label"><img id="imgShrimp" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/shrimp.png" alt="깐새우"> [물결수호 핵] 깐새우</span><b id="resShrimp">0개</b></li>
+            <li><span class="item-label"><img id="imgRedSnapper" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bream.png" alt="도미회"> [파동오염 핵] 도미회</span><b id="resRedSnapper">0개</b></li>
+            <li><span class="item-label"><img id="imgHerring" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/herring.png" alt="청어회"> [질서파괴 핵] 청어회</span><b id="resHerring">0개</b></li>
+            <li><span class="item-label"><img id="imgGoldfish" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Goldfish.png" alt="금붕어회"> [활력붕괴 핵] 금붕어회</span><b id="resGoldfish">0개</b></li>
+            <li><span class="item-label"><img id="imgBass" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/f1/Sea%20bass.png" alt="농어회"> [침식방어 핵] 농어회</span><b id="resBass">0개</b></li>
           </ul>
         </div>
 
-        <!-- 2성 연금 결과 -->
+        <!-- 2성 연금 결과 (단계별 세분화) -->
         <div id="res2StarBox" style="display: none;">
-          <div class="result-title">🐙 2성 필요 어패류 목록</div>
+          <div class="result-title">🌿 2성 [에센스 제작] 필요 식물 (해초 & 나뭇잎) 목록</div>
           <ul class="result-list" style="margin-bottom: 15px;">
-            <li><span class="item-label"><img id="img2Oyster" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_oyster.png" alt="2성 굴"> 2성 굴</span><b id="res2Oyster">0개</b></li>
-            <li><span class="item-label"><img id="img2Conch" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_conch.png" alt="2성 소라"> 2성 소라</span><b id="res2Conch">0개</b></li>
-            <li><span class="item-label"><img id="img2Octopus" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_octopus.png" alt="2성 문어"> 2성 문어</span><b id="res2Octopus">0개</b></li>
-            <li><span class="item-label"><img id="img2Seaweed" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_seaweed.png" alt="2성 미역"> 2성 미역</span><b id="res2Seaweed">0개</b></li>
-            <li><span class="item-label"><img id="img2SeaUrchin" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_sea_urchin.png" alt="2성 성게"> 2성 성게</span><b id="res2SeaUrchin">0개</b></li>
+            <li><span class="item-label"><img id="imgSeaweedItem" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/BlockSprite_seagrass.png" alt="해초"> 해초 (총합)</span><b id="resSeaweedItem">0개</b></li>
+            <li><span class="item-label"><img id="imgOakLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Oak_Leaves.png" alt="참나무 잎"> [수호 에센스] 참나무 잎</span><b id="resOakLeaf">0개</b></li>
+            <li><span class="item-label"><img id="imgSpruceLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Spruce_Leaves.png" alt="가문비나무 잎"> [파동 에센스] 가문비나무 잎</span><b id="resSpruceLeaf">0개</b></li>
+            <li><span class="item-label"><img id="imgBirchLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Birch_Leaves.png" alt="자작나무 잎"> [혼란 에센스] 자작나무 잎</span><b id="resBirchLeaf">0개</b></li>
+            <li><span class="item-label"><img id="imgCherryLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Cherry_Leaves.png" alt="벚나무 잎"> [생명 에센스] 벚나무 잎</span><b id="resCherryLeaf">0개</b></li>
+            <li><span class="item-label"><img id="imgDarkOakLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dark_Oak_Leaves.png" alt="짙은참나무 잎"> [부식 에센스] 짙은참나무 잎</span><b id="resDarkOakLeaf">0개</b></li>
           </ul>
 
-          <div class="result-title">🌿 2성 연금 필요 식물 (해초 & 나뭇잎) 목록</div>
-          <ul class="result-list" style="margin-bottom: 15px;">
-            <li><span class="item-label"><img id="imgSeaweedItem" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/BlockSprite_seagrass.png" alt="해초"> 해초</span><b id="resSeaweedItem">0개</b></li>
-            <li><span class="item-label"><img id="imgOakLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Oak_Leaves.png" alt="참나무 잎"> 참나무 잎</span><b id="resOakLeaf">0개</b></li>
-            <li><span class="item-label"><img id="imgSpruceLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Spruce_Leaves.png" alt="가문비나무 잎"> 가문비나무 잎</span><b id="resSpruceLeaf">0개</b></li>
-            <li><span class="item-label"><img id="imgBirchLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Birch_Leaves.png" alt="자작나무 잎"> 자작나무 잎</span><b id="resBirchLeaf">0개</b></li>
-            <li><span class="item-label"><img id="imgCherryLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Cherry_Leaves.png" alt="벚나무 잎"> 벚나무 잎</span><b id="resCherryLeaf">0개</b></li>
-            <li><span class="item-label"><img id="imgDarkOakLeaf" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Dark_Oak_Leaves.png" alt="짙은참나무 잎"> 짙은참나무 잎</span><b id="resDarkOakLeaf">0개</b></li>
-          </ul>
-
-          <div class="result-title">💎 2성 연금 필요 광물 및 켈프 목록</div>
+          <div class="result-title">💎 2성 [결정 제작] 필요 광물 및 켈프 목록</div>
           <ul class="result-list" style="margin-bottom: 15px;">
             <li><span class="item-label"><img id="imgKelp" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAABrUlEQVR4nN2Xv0oDQRCHv0QlRBGiRhMMQbGyFXwD38BGbOx9Dgs7W0vtgo1vYG1hYamVKCHBP9EIoiEQEwvz83K7d7kLJLL6q2642WXmm9mdu0Sr1WKU+nh9XojySYw6CGlrd6XTax/tX+T0nPyVCCI0PqqNd/bWfZmnFmcBaFZfAJjMzD3qnVskzJqdHN4k4mxgZix9rrZ99th1eL5ukZBUu7AMTZkZmxKBH7+q7eMmCWmQmvZ7b+5Te3izfNwkocjNWobVPi6B+1IZgLPTJ+vUuUVCtcqTAWwipqIITZw3ACjf1oBgApITJKwpurE53wHIbxf7LjQJRRE5Prj6IyQ0O9LpFODVUopLJux+0fQMmklOkAi9MbO5acCbJZXSHQCFtSXAzli2eqA9MxU7CLdJSMn6O+ARqFx2ieAnotqLgNbJVq+p93p7w00SjUYT8CKXlFlxOQtAuUukWP+2zR6QrVNh7ufbe/C4hy9rduhUmBIh+WkW6IYtGCRELo7cImFmBvYXUK+fqbDM1QsiGbg2TqSj1tD+RUVQPWWehrCegv9GQvJ6KljOfmN+ATa/wfsI9vpCAAAAAElFTkSuQmCC" alt="켈프 더미"> 켈프 더미</span><b id="resKelp">0개</b></li>
-            <li><span class="item-label"><img id="imgLapis" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Block_of_Lapis_Lazuli.png" alt="청금석 블록"> 청금석 블록</span><b id="resLapis">0개</b></li>
-            <li><span class="item-label"><img id="imgRedstone" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Block_of_Redstone.png" alt="레드스톤 블록"> 레드스톤 블록</span><b id="resRedstone">0개</b></li>
-            <li><span class="item-label"><img id="imgIron" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Iron_Ingot.png" alt="철 주괴"> 철 주괴</span><b id="resIron">0개</b></li>
-            <li><span class="item-label"><img id="imgGold" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Gold_Ingot.png" alt="금 주괴"> 금 주괴</span><b id="resGold">0개</b></li>
-            <li><span class="item-label"><img id="imgDiamond" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Diamond.png" alt="다이아몬드"> 다이아몬드</span><b id="resDiamond">0개</b></li>
+            <li><span class="item-label"><img id="imgLapis" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Block_of_Lapis_Lazuli.png" alt="청금석 블록"> [활기보존] 청금석 블록</span><b id="resLapis">0개</b></li>
+            <li><span class="item-label"><img id="imgRedstone" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Block_of_Redstone.png" alt="레드스톤 블록"> [파도침식] 레드스톤 블록</span><b id="resRedstone">0개</b></li>
+            <li><span class="item-label"><img id="imgIron" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Iron_Ingot.png" alt="철 주괴"> [방어오염] 철 주괴</span><b id="resIron">0개</b></li>
+            <li><span class="item-label"><img id="imgGold" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Gold_Ingot.png" alt="금 주괴"> [격류재생] 금 주괴</span><b id="resGold">0개</b></li>
+            <li><span class="item-label"><img id="imgDiamond" src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/Diamond.png" alt="다이아몬드"> [맹독혼란] 다이아몬드</span><b id="resDiamond">0개</b></li>
           </ul>
         </div>
 
-        <!-- 3성 연금 결과 -->
+        <!-- 3성 연금 결과 (2개 카테고리 분리: 엘릭서 재료 / 영약 재료) -->
         <div id="res3StarBox" style="display: none;">
-          <div class="result-title">🧪 3성 연금 중간 영약 필요 수량</div>
-          <ul class="result-list" style="margin-bottom: 15px;">
-            <li><span class="item-label">🧪 불멸 재생의 영약</span><b id="res3Elixir1">0개</b></li>
-            <li><span class="item-label">🧪 파동 장벽의 영약</span><b id="res3Elixir2">0개</b></li>
-            <li><span class="item-label">🧪 타락 침식의 영약</span><b id="res3Elixir3">0개</b></li>
-            <li><span class="item-label">🧪 생명 광란의 영약</span><b id="res3Elixir4">0개</b></li>
-            <li><span class="item-label">🧪 맹독 파동의 영약</span><b id="res3Elixir5">0개</b></li>
-          </ul>
-
-          <div class="result-title">⚗️ 3성 연금 하위 엘릭서 필요 수량</div>
-          <ul class="result-list" style="margin-bottom: 15px;">
-            <li><span class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_oyster.png" alt="굴"> 수호의 엘릭서 (굴 1)</span><b id="res3SubElixir1">0개</b></li>
-            <li><span class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_conch.png" alt="소라"> 파동의 엘릭서 (소라 1)</span><b id="res3SubElixir2">0개</b></li>
-            <li><span class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_octopus.png" alt="문어"> 혼란의 엘릭서 (문어 1)</span><b id="res3SubElixir3">0개</b></li>
-            <li><span class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_seaweed.png" alt="미역"> 생명의 엘릭서 (미역 1)</span><b id="res3SubElixir4">0개</b></li>
-            <li><span class="item-label"><img src="https://cdn.jsdelivr.net/gh/yyj0522/alldding-assets@main/ocean_items/2star_sea_urchin.png" alt="성게"> 부식의 엘릭서 (성게 1)</span><b id="res3SubElixir5">0개</b></li>
-          </ul>
-
-          <div class="result-title">🦑 3성 연금 기초 재료 목록</div>
-          <ul class="result-list" style="margin-bottom: 15px;">
+          
+          <!-- 3성 카테고리 1: 3성 엘릭서 필요 재료 -->
+          <div class="result-title">⚗️ 3성 엘릭서 필요 재료 목록 (하위 조합분)</div>
+          <ul class="result-list" style="margin-bottom: 20px;">
             <li><span class="item-label">🦑 불우렁쉥이</span><b id="res3SeaSquirt">0개</b></li>
             <li><span class="item-label">🧪 유리병</span><b id="res3GlassBottle">0개</b></li>
-            <li><span class="item-label">🌿 켈프 더미</span><b id="res3KelpPile">0개</b></li>
-            <li><span class="item-label">💡 발광 열매</span><b id="res3GlowBerry">0개</b></li>
+            <li><span class="item-label">🧱 네더랙 (수호의 엘릭서)</span><b id="res3Netherrack">0개</b></li>
+            <li><span class="item-label">🔥 마그마 블록 (파동의 엘릭서)</span><b id="res3Magma">0개</b></li>
+            <li><span class="item-label">👻 영혼 흙 (혼란의 엘릭서)</span><b id="res3SoulSoil">0개</b></li>
+            <li><span class="item-label">🪵 진홍빛 자루 (생명의 엘릭서)</span><b id="res3Crimson">0개</b></li>
+            <li><span class="item-label">🪵 뒤틀린 자루 (부식의 엘릭서)</span><b id="res3Warped">0개</b></li>
           </ul>
 
-          <div class="result-title">🌋 3성 연금 네더 및 산호 재료 목록</div>
+          <!-- 3성 카테고리 2: 3성 영약 필요 재료 -->
+          <div class="result-title">🧪 3성 영약 필요 재료 목록 (상위 조합분)</div>
           <ul class="result-list">
-            <li><span class="item-label">🧱 네더랙 (수호 전용)</span><b id="res3Netherrack">0개</b></li>
-            <li><span class="item-label">🔥 마그마 블록 (파동 전용)</span><b id="res3Magma">0개</b></li>
-            <li><span class="item-label">👻 영혼 흙 (혼란 전용)</span><b id="res3SoulSoil">0개</b></li>
-            <li><span class="item-label">🪵 진홍빛 자루 (생명 전용)</span><b id="res3Crimson">0개</b></li>
-            <li><span class="item-label">🪵 뒤틀린 자루 (부식 전용)</span><b id="res3Warped">0개</b></li>
-            <li><span class="item-label">🪸 죽은 관 산호 블록</span><b id="res3CoralPipe">0개</b></li>
-            <li><span class="item-label">🪸 죽은 사방 산호 블록</span><b id="res3CoralTube">0개</b></li>
-            <li><span class="item-label">🪸 죽은 거품 산호 블록</span><b id="res3CoralBubble">0개</b></li>
-            <li><span class="item-label">🪸 죽은 불 산호 블록</span><b id="res3CoralFire">0개</b></li>
-            <li><span class="item-label">🪸 죽은 뇌 산호 블록</span><b id="res3CoralBrain">0개</b></li>
+            <li><span class="item-label">🌿 켈프 더미</span><b id="res3KelpPile">0개</b></li>
+            <li><span class="item-label">💡 발광 열매</span><b id="res3GlowBerry">0개</b></li>
+            <li><span class="item-label">🪸 죽은 관 산호 블록 (불멸 재생)</span><b id="res3CoralPipe">0개</b></li>
+            <li><span class="item-label">🪸 죽은 사방 산호 블록 (파동 장벽)</span><b id="res3CoralTube">0개</b></li>
+            <li><span class="item-label">🪸 죽은 거품 산호 블록 (타락 침식)</span><b id="res3CoralBubble">0개</b></li>
+            <li><span class="item-label">🪸 죽은 불 산호 블록 (생명 광란)</span><b id="res3CoralFire">0개</b></li>
+            <li><span class="item-label">🪸 죽은 뇌 산호 블록 (맹독 파동)</span><b id="res3CoralBrain">0개</b></li>
           </ul>
+
         </div>
 
       </div>
@@ -1072,7 +1049,7 @@
       renderResults();
     }
 
-    /* === 로컬 스토리지 저장/불러오기 (3성 지원 추가) === */
+    /* === 로컬 스토리지 저장/불러오기 === */
     function saveAlchemyInputs() {
       localStorage.setItem('minefarmTargetSet1', document.getElementById('targetSetCount1')?.value || '');
       localStorage.setItem('minefarmTargetPiece1', document.getElementById('targetPieceCount1')?.value || '');
@@ -1119,7 +1096,7 @@
       }
     }
 
-    /* === 연금 통합 재료 계산 로직 (1성 + 2성 + 신규 3성 통합) === */
+    /* === 연금 통합 재료 계산 로직 (세분화 적용) === */
     function calculateAlchemy() {
       const setCount1 = parseInt(document.getElementById('targetSetCount1')?.value) || 0;
       const pieceCount1 = parseInt(document.getElementById('targetPieceCount1')?.value) || 0;
@@ -1149,12 +1126,15 @@
       if (totalItems1 > 0) {
         res1Box.style.display = 'block';
         const mult1 = totalItems1 / 64;
+        
+        // 정수 조합 재료 세분화
         document.getElementById('resClay').textContent = formatStackCount(mult1 * 64);
         document.getElementById('resSand').textContent = formatStackCount(mult1 * 128);
         document.getElementById('resDirt').textContent = formatStackCount(mult1 * 256);
         document.getElementById('resGravel').textContent = formatStackCount(mult1 * 128);
         document.getElementById('resGranite').textContent = formatStackCount(mult1 * 64);
 
+        // 핵 조합 투입 생선 세분화
         document.getElementById('resShrimp').textContent = formatStackCount(mult1 * 32);
         document.getElementById('resRedSnapper').textContent = formatStackCount(mult1 * 32);
         document.getElementById('resHerring').textContent = formatStackCount(mult1 * 32);
@@ -1169,123 +1149,66 @@
       if (totalItems2 > 0) {
         res2Box.style.display = 'block';
         
-        // 1) 2성 어패류 수량
-        const oysterCount = totalItems2;
-        const conchCount = totalItems2;
-        const octopusCount = totalItems2;
-        const seaweed2Count = totalItems2;
-        const seaUrchinCount = totalItems2;
+        // 식물 세분화
+        document.getElementById('resSeaweedItem').textContent = formatStackCount(totalItems2 * 15);
+        document.getElementById('resOakLeaf').textContent = formatStackCount(totalItems2 * 3);
+        document.getElementById('resSpruceLeaf').textContent = formatStackCount(totalItems2 * 3);
+        document.getElementById('resBirchLeaf').textContent = formatStackCount(totalItems2 * 3);
+        document.getElementById('resCherryLeaf').textContent = formatStackCount(totalItems2 * 3);
+        document.getElementById('resDarkOakLeaf').textContent = formatStackCount(totalItems2 * 3);
 
-        // 2) 식물
-        const seaweedItemCount = totalItems2 * 15;
-        const leafCount = totalItems2 * 3;
-
-        // 3) 광물 & 켈프
-        const kelpCount = Math.floor(totalItems2 * 5);
-        const lapisCount = Math.floor(totalItems2 / 2);
-        const redstoneCount = Math.floor(totalItems2 / 2);
-        const ironCount = Math.floor((totalItems2 / 2) * 3);
-        const goldCount = totalItems2;
-        const diamondCount = Math.floor(totalItems2 / 2);
-
-        // 2성 결과 출력
-        document.getElementById('res2Oyster').textContent = formatStackCount(oysterCount);
-        document.getElementById('res2Conch').textContent = formatStackCount(conchCount);
-        document.getElementById('res2Octopus').textContent = formatStackCount(octopusCount);
-        document.getElementById('res2Seaweed').textContent = formatStackCount(seaweed2Count);
-        document.getElementById('res2SeaUrchin').textContent = formatStackCount(seaUrchinCount);
-
-        document.getElementById('resSeaweedItem').textContent = formatStackCount(seaweedItemCount);
-        document.getElementById('resOakLeaf').textContent = formatStackCount(leafCount);
-        document.getElementById('resSpruceLeaf').textContent = formatStackCount(leafCount);
-        document.getElementById('resBirchLeaf').textContent = formatStackCount(leafCount);
-        document.getElementById('resCherryLeaf').textContent = formatStackCount(leafCount);
-        document.getElementById('resDarkOakLeaf').textContent = formatStackCount(leafCount);
-
-        document.getElementById('resKelp').textContent = formatStackCount(kelpCount);
-        document.getElementById('resLapis').textContent = formatStackCount(lapisCount);
-        document.getElementById('resRedstone').textContent = formatStackCount(redstoneCount);
-        document.getElementById('resIron').textContent = formatStackCount(ironCount);
-        document.getElementById('resGold').textContent = formatStackCount(goldCount);
-        document.getElementById('resDiamond').textContent = formatStackCount(diamondCount);
+        // 결정 광물 및 켈프 세분화
+        document.getElementById('resKelp').textContent = formatStackCount(Math.floor(totalItems2 * 5));
+        document.getElementById('resLapis').textContent = formatStackCount(Math.floor(totalItems2 / 2));
+        document.getElementById('resRedstone').textContent = formatStackCount(Math.floor(totalItems2 / 2));
+        document.getElementById('resIron').textContent = formatStackCount(Math.floor((totalItems2 / 2) * 3));
+        document.getElementById('resGold').textContent = formatStackCount(totalItems2);
+        document.getElementById('resDiamond').textContent = formatStackCount(Math.floor(totalItems2 / 2));
       } else {
         res2Box.style.display = 'none';
       }
 
-      // --- 3성 연금 계산 (신규 레시피 수량 적용) ---
+      // --- 3성 연금 계산 (2개 카테고리 구분) ---
       const res3Box = document.getElementById('res3StarBox');
       if (res3Box) {
         if (totalItems3 > 0) {
           res3Box.style.display = 'block';
 
-          // 1) 목표 3성 세트당 필요 영약 수량
-          // 아쿠아 펄스: 불멸 1, 파동장벽 1, 맹독파동 1
-          // 나우틸러스 손: 파동장벽 1, 생명광란 1, 불멸 1
-          // 무저의 척추: 타락침식 1, 맹독파동 1, 생명광란 1
-          const elixir1Req = totalItems3 * 2; // 불멸 재생의 영약
-          const elixir2Req = totalItems3 * 2; // 파동 장벽의 영약
-          const elixir3Req = totalItems3 * 1; // 타락 침식의 영약
-          const elixir4Req = totalItems3 * 2; // 생명 광란의 영약
-          const elixir5Req = totalItems3 * 2; // 맹독 파동의 영약
+          // 영약 수량 계산
+          const elixir1Req = totalItems3 * 2; // 불멸 재생
+          const elixir2Req = totalItems3 * 2; // 파동 장벽
+          const elixir3Req = totalItems3 * 1; // 타락 침식
+          const elixir4Req = totalItems3 * 2; // 생명 광란
+          const elixir5Req = totalItems3 * 2; // 맹독 파동
 
-          // 2) 영약 합산에 따른 필요 하위 엘릭서 수량
-          const subElixir1Req = elixir1Req + elixir2Req; // 수호의 엘릭서 (불멸1 + 파동장벽1)
-          const subElixir2Req = elixir2Req + elixir5Req; // 파동의 엘릭서 (파동장벽1 + 맹독파동1)
-          const subElixir3Req = elixir3Req + elixir4Req; // 혼란의 엘릭서 (타락침식1 + 생명광란1)
-          const subElixir4Req = elixir1Req + elixir4Req; // 생명의 엘릭서 (불멸1 + 생명광란1)
-          const subElixir5Req = elixir3Req + elixir5Req; // 부식의 엘릭서 (타락침식1 + 맹독파동1)
+          // 엘릭서 필요 수량
+          const subElixir1Req = elixir1Req + elixir2Req; // 수호
+          const subElixir2Req = elixir2Req + elixir5Req; // 파동
+          const subElixir3Req = elixir3Req + elixir4Req; // 혼란
+          const subElixir4Req = elixir1Req + elixir4Req; // 생명
+          const subElixir5Req = elixir3Req + elixir5Req; // 부식
 
-          // 3) 공통 재료 계산
+          // 공통 재료 계산
           const totalElixirs = subElixir1Req + subElixir2Req + subElixir3Req + subElixir4Req + subElixir5Req;
           const totalPotions = elixir1Req + elixir2Req + elixir3Req + elixir4Req + elixir5Req;
 
-          const seaSquirtReq = totalElixirs * 2;
-          const glassBottleReq = totalElixirs * 3;
-          const kelpPileReq = totalPotions * 3;
-          const glowBerryReq = totalPotions * 4;
+          // 1) 3성 엘릭서 카테고리
+          document.getElementById('res3SeaSquirt').textContent = formatStackCount(totalElixirs * 2);
+          document.getElementById('res3GlassBottle').textContent = formatStackCount(totalElixirs * 3);
+          document.getElementById('res3Netherrack').textContent = formatStackCount(subElixir1Req * 8);
+          document.getElementById('res3Magma').textContent = formatStackCount(subElixir2Req * 4);
+          document.getElementById('res3SoulSoil').textContent = formatStackCount(subElixir3Req * 4);
+          document.getElementById('res3Crimson').textContent = formatStackCount(subElixir4Req * 4);
+          document.getElementById('res3Warped').textContent = formatStackCount(subElixir5Req * 4);
 
-          // 4) 특수 재료 (네더 및 산호)
-          const netherrackReq = subElixir1Req * 8; // 수호의 엘릭서당 8개
-          const magmaReq = subElixir2Req * 4;      // 파동의 엘릭서당 4개
-          const soulSoilReq = subElixir3Req * 4;   // 혼란의 엘릭서당 4개
-          const crimsonReq = subElixir4Req * 4;    // 생명의 엘릭서당 4개
-          const warpedReq = subElixir5Req * 4;     // 부식의 엘릭서당 4개
-
-          const coralPipeReq = elixir1Req * 2;   // 불멸 재생 영약당 2개
-          const coralTubeReq = elixir2Req * 2;   // 파동 장벽 영약당 2개
-          const coralBubbleReq = elixir3Req * 2; // 타락 침식 영약당 2개
-          const coralFireReq = elixir4Req * 2;   // 생명 광란 영약당 2개
-          const coralBrainReq = elixir5Req * 2;  // 맹독 파동 영약당 2개
-
-          // 3성 결과 출력
-          document.getElementById('res3Elixir1').textContent = formatStackCount(elixir1Req);
-          document.getElementById('res3Elixir2').textContent = formatStackCount(elixir2Req);
-          document.getElementById('res3Elixir3').textContent = formatStackCount(elixir3Req);
-          document.getElementById('res3Elixir4').textContent = formatStackCount(elixir4Req);
-          document.getElementById('res3Elixir5').textContent = formatStackCount(elixir5Req);
-
-          document.getElementById('res3SubElixir1').textContent = formatStackCount(subElixir1Req);
-          document.getElementById('res3SubElixir2').textContent = formatStackCount(subElixir2Req);
-          document.getElementById('res3SubElixir3').textContent = formatStackCount(subElixir3Req);
-          document.getElementById('res3SubElixir4').textContent = formatStackCount(subElixir4Req);
-          document.getElementById('res3SubElixir5').textContent = formatStackCount(subElixir5Req);
-
-          document.getElementById('res3SeaSquirt').textContent = formatStackCount(seaSquirtReq);
-          document.getElementById('res3GlassBottle').textContent = formatStackCount(glassBottleReq);
-          document.getElementById('res3KelpPile').textContent = formatStackCount(kelpPileReq);
-          document.getElementById('res3GlowBerry').textContent = formatStackCount(glowBerryReq);
-
-          document.getElementById('res3Netherrack').textContent = formatStackCount(netherrackReq);
-          document.getElementById('res3Magma').textContent = formatStackCount(magmaReq);
-          document.getElementById('res3SoulSoil').textContent = formatStackCount(soulSoilReq);
-          document.getElementById('res3Crimson').textContent = formatStackCount(crimsonReq);
-          document.getElementById('res3Warped').textContent = formatStackCount(warpedReq);
-
-          document.getElementById('res3CoralPipe').textContent = formatStackCount(coralPipeReq);
-          document.getElementById('res3CoralTube').textContent = formatStackCount(coralTubeReq);
-          document.getElementById('res3CoralBubble').textContent = formatStackCount(coralBubbleReq);
-          document.getElementById('res3CoralFire').textContent = formatStackCount(coralFireReq);
-          document.getElementById('res3CoralBrain').textContent = formatStackCount(coralBrainReq);
+          // 2) 3성 영약 카테고리
+          document.getElementById('res3KelpPile').textContent = formatStackCount(totalPotions * 3);
+          document.getElementById('res3GlowBerry').textContent = formatStackCount(totalPotions * 4);
+          document.getElementById('res3CoralPipe').textContent = formatStackCount(elixir1Req * 2);
+          document.getElementById('res3CoralTube').textContent = formatStackCount(elixir2Req * 2);
+          document.getElementById('res3CoralBubble').textContent = formatStackCount(elixir3Req * 2);
+          document.getElementById('res3CoralFire').textContent = formatStackCount(elixir4Req * 2);
+          document.getElementById('res3CoralBrain').textContent = formatStackCount(elixir5Req * 2);
 
         } else {
           res3Box.style.display = 'none';
